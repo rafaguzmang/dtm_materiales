@@ -1,0 +1,7 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_dtm_materiales,access.dtm.materiales,model_dtm_materiales,base.group_user,1,1,1,1
+access_dtm_nombre_material,access.dtm.nombre.material,model_dtm_nombre_material,base.group_user,1,1,1,1
+access_dtm_calibre_material,access.dtm.calibre.material,model_dtm_calibre_material,base.group_user,1,1,1,1
+access_dtm_largo_material,access.dtm.largo.material,model_dtm_largo_material,base.group_user,1,1,1,1
+access_dtm_ancho_material,access.dtm.ancho.material,model_dtm_ancho_material,base.group_user,1,1,1,1
+

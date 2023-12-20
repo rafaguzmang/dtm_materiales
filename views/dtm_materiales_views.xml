@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="dtm_materiales_tree" model="ir.ui.view">
+        <field name="name">dtm_materiales_tree</field>
+        <field name="model">dtm.materiales</field>
+        <field name="arch" type="xml">
+            <tree>
+                    <field name="material_id"/>
+                    <field name="calibre_id"/>
+                    <field name="largo_id"/>
+                    <field name="ancho_id"/>
+                    <field name="cantidad"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="dtm_materiales_view_form" model="ir.ui.view">
+        <field name="name">dtm_materiales_view_form</field>
+        <field name="model">dtm.materiales</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="material_id" options = "{'no_open': True}"/>
+                        <field name="calibre_id" options = "{'no_open': True}"/>
+                        <field name="largo_id" options = "{'no_open': True}"/>
+                        <field name="ancho_id" options = "{'no_open': True}"/>
+                        <field name="cantidad" options = "{'no_open': True}"/>  
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="dtm_materiales_accion" model="ir.actions.act_window">
+        <field name="name">Materiales</field>
+        <field name="res_model">dtm.materiales</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="dtm_materiales" parent="" action="dtm_materiales_accion"/>
+    
+   
+</odoo>
