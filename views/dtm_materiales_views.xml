@@ -19,13 +19,18 @@
         <field name="model">dtm.materiales</field>
         <field name="arch" type="xml">
             <form string="">
+                <header>
+                        <button name="accion_salidas" type="object" string="Salidas"/>
+                    </header>
                 <sheet>
                     <group>
                         <field name="material_id" options = "{'no_open': True}"/>
                         <field name="calibre_id" options = "{'no_open': True}"/>
                         <field name="largo_id" options = "{'no_open': True}"/>
                         <field name="ancho_id" options = "{'no_open': True}"/>
-                        <field name="cantidad" options = "{'no_open': True}"/>  
+                        <field name="salidas"/>
+                        <field name="entradas"/>
+                        <field name="cantidad" />
                     </group>
                 </sheet>
             </form>
