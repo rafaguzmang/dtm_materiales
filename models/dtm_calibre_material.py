@@ -1,4 +1,5 @@
-from odoo import fields,models
+from odoo import api,fields,models
+
 
 
 class MaterialCalibre(models.Model):
@@ -6,3 +7,10 @@ class MaterialCalibre(models.Model):
     _rec_name = "calibre"
 
     calibre = fields.Char(string="Calibre")
+
+
+
+
+
+
+

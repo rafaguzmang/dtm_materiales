@@ -5,11 +5,14 @@
         <field name="model">dtm.materiales</field>
         <field name="arch" type="xml">
             <tree>
+                    <field name="id"/>
                     <field name="material_id"/>
                     <field name="calibre_id"/>
                     <field name="largo_id"/>
                     <field name="ancho_id"/>
                     <field name="cantidad"/>
+                    <field name="apartado" />
+                    <field name="disponible" />
             </tree>
         </field>
     </record>
@@ -28,9 +31,10 @@
                         <field name="calibre_id" options = "{'no_open': True}"/>
                         <field name="largo_id" options = "{'no_open': True}"/>
                         <field name="ancho_id" options = "{'no_open': True}"/>
-                        <field name="salidas"/>
                         <field name="entradas"/>
                         <field name="cantidad" />
+                        <field name="apartado" />
+                        <field name="disponible" />
                     </group>
                 </sheet>
             </form>
