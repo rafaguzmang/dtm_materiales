@@ -22,19 +22,15 @@ class Materiales(models.Model):
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
-
         get_info = self.env['dtm.materiales'].search([])
-        print(get_info)
+        # print(get_info)
         numero = 1
         for result in get_info:
             # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
 
             if result.cantidad <= 0 and result.apartado == 0:
                 self.env.cr.execute("DELETE FROM dtm_materiales  WHERE id = "+ str(result.id)+";")
-
             numero += 1
-
-
         return res
 
     @api.onchange("calibre_id")
@@ -44,10 +40,10 @@ class Materiales(models.Model):
         self.CleanTables("dtm.calibre.material","calibre")
         verdadero = self.MatchFunction(text)
         if verdadero and text:
-            print(verdadero, text)
+            # print(verdadero, text)
             result = self.convertidor_medidas(text)
             self.calibre = result
-            print(result)
+            # print(result)
 
     @api.onchange("largo_id")
     def _onchange_largo_id(self):
@@ -57,12 +53,10 @@ class Materiales(models.Model):
         self.MatchFunction(text)
         verdadero = self.MatchFunction(text)
         if verdadero and text:
-            print(verdadero, text)
             result = self.convertidor_medidas(text)
             self.largo = result
             self.area = self.ancho * self.largo
         if self.ancho > self.largo:
-
             raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
     @api.onchange("ancho_id")
@@ -137,13 +131,13 @@ class Materiales(models.Model):
             for res in save:
               save_float.append(float(res))
             sum = save_float[0]+save_float[1]/save_float[2]
-            return sum
+            return round(sum,4)
         elif re.match("^[\d]+\/[\d]+$",text):
             x = re.split("\/",text)
             for res in x:
               save.append(float(res))
             sum = save[0]/save[1]
-            return sum
+            return round(sum,4)
         else:
             return float(text)
 
@@ -155,7 +149,6 @@ class Materiales(models.Model):
         table = table.replace(".","_")
         for result in get_info:
             text = result[data]
-
             x = re.match('^[\d]+$',text)
             if not x:
                 x = re.match("^[\d]+\/[\d]+$",text)
