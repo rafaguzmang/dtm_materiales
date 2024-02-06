@@ -22,6 +22,7 @@ class Materiales(models.Model):
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
+<<<<<<< HEAD
 
         get_info = self.env['dtm.materiales'].search([])
         print(get_info)
@@ -35,12 +36,24 @@ class Materiales(models.Model):
             numero += 1
 
 
+=======
+        get_info = self.env['dtm.materiales'].search([])
+        # print(get_info)
+        numero = 1
+        for result in get_info:
+            # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
+
+            if result.cantidad <= 0 and result.apartado == 0:
+                self.env.cr.execute("DELETE FROM dtm_materiales  WHERE id = "+ str(result.id)+";")
+            numero += 1
+>>>>>>> refs/remotes/origin/main
         return res
 
     @api.onchange("calibre_id")
     def _onchange_calibre_id(self):
         text = self.calibre_id
         text = text.calibre
+<<<<<<< HEAD
         if text:
             self.CleanTables("dtm.calibre.material","calibre")
             verdadero = self.MatchFunction(text)
@@ -49,12 +62,22 @@ class Materiales(models.Model):
                 result = self.convertidor_medidas(text)
                 self.calibre = result
                 print(result)
+=======
+        self.CleanTables("dtm.calibre.material","calibre")
+        verdadero = self.MatchFunction(text)
+        if verdadero and text:
+            # print(verdadero, text)
+            result = self.convertidor_medidas(text)
+            self.calibre = result
+            # print(result)
+>>>>>>> refs/remotes/origin/main
 
     @api.onchange("largo_id")
     def _onchange_largo_id(self):
         text = self.largo_id
         text = text.largo
         self.CleanTables("dtm.largo.material","largo")
+<<<<<<< HEAD
         if text:
             self.MatchFunction(text)
             verdadero = self.MatchFunction(text)
@@ -66,12 +89,23 @@ class Materiales(models.Model):
             if self.ancho > self.largo:
 
                 raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+=======
+        self.MatchFunction(text)
+        verdadero = self.MatchFunction(text)
+        if verdadero and text:
+            result = self.convertidor_medidas(text)
+            self.largo = result
+            self.area = self.ancho * self.largo
+        if self.ancho > self.largo:
+            raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+>>>>>>> refs/remotes/origin/main
 
     @api.onchange("ancho_id")
     def _onchange_ancho_id(self):
         text = self.ancho_id
         text = text.ancho
         self.CleanTables("dtm.ancho.material","ancho")
+<<<<<<< HEAD
         if text:
             self.MatchFunction(text)
             verdadero = self.MatchFunction(text)
@@ -84,6 +118,19 @@ class Materiales(models.Model):
             if self.ancho > self.largo:
 
                 raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+=======
+        self.MatchFunction(text)
+        verdadero = self.MatchFunction(text)
+        if verdadero and text:
+            # print(verdadero, text)
+            result = self.convertidor_medidas(text)
+            self.ancho = result
+            self.area = self.ancho * self.largo
+
+        if self.ancho > self.largo:
+
+            raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+>>>>>>> refs/remotes/origin/main
 
 
 
@@ -140,13 +187,21 @@ class Materiales(models.Model):
             for res in save:
               save_float.append(float(res))
             sum = save_float[0]+save_float[1]/save_float[2]
+<<<<<<< HEAD
             return sum
+=======
+            return round(sum,4)
+>>>>>>> refs/remotes/origin/main
         elif re.match("^[\d]+\/[\d]+$",text):
             x = re.split("\/",text)
             for res in x:
               save.append(float(res))
             sum = save[0]/save[1]
+<<<<<<< HEAD
             return sum
+=======
+            return round(sum,4)
+>>>>>>> refs/remotes/origin/main
         else:
             return float(text)
 

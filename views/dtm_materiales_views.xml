@@ -27,9 +27,10 @@
         <field name="arch" type="xml">
             <form string="">
                 <header>
-                        <button name="accion_salidas" type="object" string="Salidas"/>
-                    </header>
+                        <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
+                </header>
                 <sheet>
+<<<<<<< HEAD
                     <group>
                         <field name="material_id" options = "{'no_open': True}"/>
                         <field name="calibre_id" options = "{'no_open': True}"/>
@@ -44,6 +45,72 @@
                         <field name="apartado" />
                         <field name="disponible" />
                     </group>
+=======
+                        <div class="row ">
+                            <div class="col-12 d-flex justify-content-center">
+                                <h1>ALMACÉN</h1>
+                            </div>
+                        </div>
+                        <br></br>
+                        <div class="row d-flex justify-content-between">
+                              <div class="col-3 d-flex flex-column justify-content-start" >
+                                    <h2>Material</h2>
+                                    <field name="material_id" options = "{'no_open': True}" />
+                              </div>
+                              <div class="col-3  d-flex flex-column justify-content-start">
+                                <h2>Calibre</h2>
+                                   <field name="calibre_id" options = "{'no_open': True}"/>
+                              </div>
+                              <div class="col-3  d-flex flex-column justify-content-start">
+                                <h2>Largo</h2>
+                                    <field name="largo_id" options = "{'no_open': True}"/>
+                              </div>
+                              <div class="col-3  d-flex flex-column justify-content-start">
+                                <h2>Ancho</h2>
+                                   <field name="ancho_id" options = "{'no_open': True}"/>
+                              </div>
+                        </div>
+                        <div class="row">
+                            <br></br>
+                        </div>
+                        <div class="row ">
+                            <div class="col-12 d-flex justify-content-start">
+                                <div class="col-2 d-flex ">
+                                    <h3 class="text-warning" >Apartado:
+
+                                        <field name="apartado"  />
+                                    </h3>
+                                </div>
+                                 <div class="col-2 d-flex ">
+                                     <h3 class="text-primary">Disponible:
+                                       <field name="disponible" />
+                                     </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <br></br><br></br>
+                         <div class="row ">
+                            <div class="col-12 d-flex justify-content-between">
+                                <h1 class="text-success">Stock:
+                                    <field name="cantidad" />
+                                </h1>
+                                <h1 >
+                                    Entradas:
+                                    <field name="entradas" />
+                                </h1>
+                            </div>
+                        </div>
+                        <group>
+                            <field name="calibre" options = "{'no_open': True}" invisible="1"/>
+                            <field name="largo" options = "{'no_open': True}" invisible="1"/>
+                            <field name="ancho" options = "{'no_open': True}" invisible="1"/>
+                            <field name="area" options = "{'no_open': True}" invisible="1"/>
+
+
+
+                        </group>
+
+>>>>>>> refs/remotes/origin/main
                 </sheet>
             </form>
         </field>
