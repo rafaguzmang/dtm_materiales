@@ -5,11 +5,15 @@
         <field name="model">dtm.materiales</field>
         <field name="arch" type="xml">
             <tree>
-                    <field name="id"/>
+                    <field name="id" invisible="1"/>
                     <field name="material_id"/>
                     <field name="calibre_id"/>
+                    <field name="calibre" invisible="1"/>
                     <field name="largo_id"/>
+                    <field name="largo" invisible="1"/>
                     <field name="ancho_id"/>
+                    <field name="ancho" invisible="1"/>
+                    <field name="area" invisible="1"/>
                     <field name="cantidad"/>
                     <field name="apartado" />
                     <field name="disponible" />
@@ -29,8 +33,12 @@
                     <group>
                         <field name="material_id" options = "{'no_open': True}"/>
                         <field name="calibre_id" options = "{'no_open': True}"/>
+                        <field name="calibre" options = "{'no_open': True}" invisible="1"/>
                         <field name="largo_id" options = "{'no_open': True}"/>
+                        <field name="largo" options = "{'no_open': True}" invisible="1"/>
                         <field name="ancho_id" options = "{'no_open': True}"/>
+                        <field name="ancho" options = "{'no_open': True}" invisible="1"/>
+                        <field name="area" options = "{'no_open': True}" invisible="1"/>
                         <field name="entradas"/>
                         <field name="cantidad" />
                         <field name="apartado" />
