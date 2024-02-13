@@ -20,6 +20,11 @@ class Materiales(models.Model):
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
 
+    def accion_proyecto(self):
+        self.apartado -= 1
+        self.cantidad -= 1
+
+
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales'].search([])
