@@ -30,22 +30,6 @@
                         <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
                 </header>
                 <sheet>
-<<<<<<< HEAD
-                    <group>
-                        <field name="material_id" options = "{'no_open': True}"/>
-                        <field name="calibre_id" options = "{'no_open': True}"/>
-                        <field name="calibre" options = "{'no_open': True}" invisible="1"/>
-                        <field name="largo_id" options = "{'no_open': True}"/>
-                        <field name="largo" options = "{'no_open': True}" invisible="1"/>
-                        <field name="ancho_id" options = "{'no_open': True}"/>
-                        <field name="ancho" options = "{'no_open': True}" invisible="1"/>
-                        <field name="area" options = "{'no_open': True}" invisible="1"/>
-                        <field name="entradas"/>
-                        <field name="cantidad" />
-                        <field name="apartado" />
-                        <field name="disponible" />
-                    </group>
-=======
                         <div class="row ">
                             <div class="col-12 d-flex justify-content-center">
                                 <h1>ALMACÉN</h1>
@@ -109,8 +93,6 @@
 
 
                         </group>
-
->>>>>>> refs/remotes/origin/main
                 </sheet>
             </form>
         </field>
