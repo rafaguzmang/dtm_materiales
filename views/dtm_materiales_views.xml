@@ -28,6 +28,7 @@
             <form string="">
                 <header>
                         <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
+                        <button name="accion_proyecto" type="object" string="Salida de Proyecto" class="btn btn-primary"/>
                 </header>
                 <sheet>
                         <div class="row ">
