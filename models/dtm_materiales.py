@@ -43,13 +43,15 @@ class Materiales(models.Model):
         self.env.cr.execute("UPDATE public.dtm_calibre_material SET  calibre='0' WHERE largo is NULL;")
         text = self.calibre_id
         text = text.calibre
-        self.CleanTables("dtm.calibre.material","calibre")
-        verdadero = self.MatchFunction(text)
-        if verdadero and text:
-            # print(verdadero, text)
-            result = self.convertidor_medidas(text)
-            self.calibre = result
-            # print(result)
+        if text:
+            self.CleanTables("dtm.calibre.material","calibre")
+            verdadero = self.MatchFunction(text)
+            if verdadero and text:
+                print(verdadero, text)
+                result = self.convertidor_medidas(text)
+                self.calibre = result
+                print(result)
+
 
     @api.onchange("largo_id")
     def _onchange_largo_id(self):
@@ -57,14 +59,17 @@ class Materiales(models.Model):
         text = self.largo_id
         text = text.largo
         self.CleanTables("dtm.largo.material","largo")
-        self.MatchFunction(text)
-        verdadero = self.MatchFunction(text)
-        if verdadero and text:
-            result = self.convertidor_medidas(text)
-            self.largo = result
-            self.area = self.ancho * self.largo
-        if self.ancho > self.largo:
-            raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+        if text:
+            self.MatchFunction(text)
+            verdadero = self.MatchFunction(text)
+            if verdadero and text:
+                print(verdadero, text)
+                result = self.convertidor_medidas(text)
+                self.largo = result
+                self.area = self.ancho * self.largo
+            if self.ancho > self.largo:
+
+                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
     @api.onchange("ancho_id")
     def _onchange_ancho_id(self):
@@ -72,17 +77,18 @@ class Materiales(models.Model):
         text = self.ancho_id
         text = text.ancho
         self.CleanTables("dtm.ancho.material","ancho")
-        self.MatchFunction(text)
-        verdadero = self.MatchFunction(text)
-        if verdadero and text:
-            # print(verdadero, text)
-            result = self.convertidor_medidas(text)
-            self.ancho = result
-            self.area = self.ancho * self.largo
+        if text:
+            self.MatchFunction(text)
+            verdadero = self.MatchFunction(text)
+            if verdadero and text:
+                # print(verdadero, text)
+                result = self.convertidor_medidas(text)
+                self.ancho = result
+                self.area = self.ancho * self.largo
 
-        if self.ancho > self.largo:
+            if self.ancho > self.largo:
 
-            raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):
