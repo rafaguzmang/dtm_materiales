@@ -40,6 +40,7 @@ class Materiales(models.Model):
 
     @api.onchange("calibre_id")
     def _onchange_calibre_id(self):
+        self.env.cr.execute("UPDATE public.dtm_calibre_material SET  calibre='0' WHERE largo is NULL;")
         text = self.calibre_id
         text = text.calibre
         self.CleanTables("dtm.calibre.material","calibre")
@@ -52,6 +53,7 @@ class Materiales(models.Model):
 
     @api.onchange("largo_id")
     def _onchange_largo_id(self):
+        self.env.cr.execute("UPDATE public.dtm_largo_material SET  largo='0' WHERE largo is NULL;")
         text = self.largo_id
         text = text.largo
         self.CleanTables("dtm.largo.material","largo")
@@ -66,6 +68,7 @@ class Materiales(models.Model):
 
     @api.onchange("ancho_id")
     def _onchange_ancho_id(self):
+        self.env.cr.execute("UPDATE public.dtm_ancho_material SET  ancho='0' WHERE largo is NULL;")
         text = self.ancho_id
         text = text.ancho
         self.CleanTables("dtm.ancho.material","ancho")
@@ -80,8 +83,6 @@ class Materiales(models.Model):
         if self.ancho > self.largo:
 
             raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
-
-
 
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):
@@ -99,7 +100,6 @@ class Materiales(models.Model):
                         return False
 
         return True
-
 
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
@@ -161,6 +161,36 @@ class Materiales(models.Model):
                     x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
                     if not x:
                         self.env.cr.execute("DELETE FROM "+table+" WHERE "+ data +" = '"+ text +"'")
+
+
+
+class NombreMaterial(models.Model):
+    _name = "dtm.nombre.material"
+    _description = "Se guardan los diferentes tipos de valores"
+    _rec_name = "nombre"
+
+    nombre = fields.Char(string= 'Material')
+
+class MaterialCalibre(models.Model):
+    _name = "dtm.calibre.material"
+    _description = "Se guardan los diferentes tipos de valores"
+    _rec_name = "calibre"
+
+    calibre = fields.Char(string="Calibre")
+
+class MaterialAncho(models.Model):
+    _name = "dtm.ancho.material"
+    _description = "Se guardan los diferentes tipos de valores"
+    _rec_name = "ancho"
+
+    ancho = fields.Char(string="Ancho", default="0")
+
+class MaterialLargo(models.Model):
+    _name = "dtm.largo.material"
+    _description = "Se guardan los diferentes tipos de valores"
+    _rec_name = "largo"
+
+    largo = fields.Char(string="Largo", defaul="0")
 
 
    
