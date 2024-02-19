@@ -5,6 +5,7 @@ import re
 class Materiales(models.Model):
     _name = "dtm.materiales"
     _rec_name = "material_id"
+    _description = "Lista de materiales"
    
     material_id = fields.Many2one("dtm.nombre.material",string="MATERIAL",required=True)
     calibre_id = fields.Many2one("dtm.calibre.material",string="CALIBRE",required=True)
