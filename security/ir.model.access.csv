@@ -12,3 +12,12 @@ access_dtm_perfiles_largo,access.dtm.perfiles.largo,model_dtm_perfiles_largo,bas
 access_dtm_perfiles_ancho,access.dtm.perfiles.ancho,model_dtm_perfiles_ancho,base.group_user,1,1,1,1
 access_dtm_perfiles_alto,access.dtm.perfiles.alto,model_dtm_perfiles_alto,base.group_user,1,1,1,1
 
+access_dtm_materiales_tubos,access.dtm.materiales.tubos,model_dtm_materiales_tubos,base.group_user,1,1,1,1
+access_dtm_tubos_nombre,access.dtm.tubos.nombre,model_dtm_tubos_nombre,base.group_user,1,1,1,1
+access_dtm_tubos_calibre,access.dtm.tubos.calibre,model_dtm_tubos_calibre,base.group_user,1,1,1,1
+access_dtm_tubos_diametro,access.dtm.tubos.diametro,model_dtm_tubos_diametro,base.group_user,1,1,1,1
+access_dtm_tubos_largo,access.dtm.tubos.largo,model_dtm_tubos_largo,base.group_user,1,1,1,1
+
+
+
+

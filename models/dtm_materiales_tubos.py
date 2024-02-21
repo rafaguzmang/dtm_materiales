@@ -1,20 +1,20 @@
-from odoo import api,models,fields
+from odoo import fields,models,api
 from odoo.exceptions import ValidationError
 import re
 
-class Materiales(models.Model):
-    _name = "dtm.materiales"
-    _description = "Sección para llevar el inventario de las làminas"
+class Tubos(models.Model):
+    _name = "dtm.materiales.tubos"
+    _description = "Sección para llevar el inventario de los tubos"
     _rec_name = "material_id"
-   
-    material_id = fields.Many2one("dtm.nombre.material",string="MATERIAL",required=True)
-    calibre_id = fields.Many2one("dtm.calibre.material",string="CALIBRE",required=True)
+
+    material_id = fields.Many2one("dtm.tubos.nombre",string="MATERIAL",required=True)
+    calibre_id = fields.Many2one("dtm.tubos.calibre",string="CALIBRE",required=True)
     calibre = fields.Float(string="Decimal")
-    largo_id = fields.Many2one("dtm.largo.material",string="LARGO", required=True)
+    diametro_id = fields.Many2one("dtm.tubos.diametro",string="ANCHO", required=True)
+    diametro = fields.Float(string="Decimal")
+    largo_id = fields.Many2one("dtm.tubos.largo",string="LARGO", required=True)
     largo = fields.Float(string="Decimal")
-    ancho_id = fields.Many2one("dtm.ancho.material",string="ANCHO", required=True)
-    ancho = fields.Float(string="Decimal")
-    area = fields.Float(string="Area")
+    # area = fields.Float(string="Area")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
     cantidad = fields.Integer(string="Stock", default=0)
@@ -33,25 +33,25 @@ class Materiales(models.Model):
 
 
     def get_view(self, view_id=None, view_type='form', **options):
-        res = super(Materiales,self).get_view(view_id, view_type,**options)
-        get_info = self.env['dtm.materiales'].search([])
+        res = super(Tubos,self).get_view(view_id, view_type,**options)
+        get_info = self.env['dtm.materiales.tubos'].search([])
         # print(get_info)
         numero = 1
         for result in get_info:
             # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
 
             if result.cantidad <= 0 and result.apartado == 0:
-                self.env.cr.execute("DELETE FROM dtm_materiales  WHERE id = "+ str(result.id)+";")
+                self.env.cr.execute("DELETE FROM dtm_materiales_tubos  WHERE id = "+ str(result.id)+";")
             numero += 1
         return res
 
     @api.onchange("calibre_id")
     def _onchange_calibre_id(self):
-        self.env.cr.execute("UPDATE public.dtm_calibre_material SET  calibre='0' WHERE calibre is NULL;")
+        self.env.cr.execute("UPDATE dtm_tubos_calibre SET  calibre='0' WHERE calibre is NULL;")
         text = self.calibre_id
         text = text.calibre
         if text:
-            self.CleanTables("dtm.calibre.material","calibre")
+            self.CleanTables("dtm.tubos.calibre","calibre")
             verdadero = self.MatchFunction(text)
             if verdadero and text:
                 # print(verdadero, text)
@@ -59,13 +59,12 @@ class Materiales(models.Model):
                 self.calibre = result
                 # print(result)
 
-
     @api.onchange("largo_id")
     def _onchange_largo_id(self):
-        self.env.cr.execute("UPDATE public.dtm_largo_material SET  largo='0' WHERE largo is NULL;")
+        self.env.cr.execute("UPDATE dtm_tubos_largo SET  largo='0' WHERE largo is NULL;")
         text = self.largo_id
         text = text.largo
-        self.CleanTables("dtm.largo.material","largo")
+        self.CleanTables("dtm.tubos.largo","largo")
         if text:
             self.MatchFunction(text)
             verdadero = self.MatchFunction(text)
@@ -73,17 +72,16 @@ class Materiales(models.Model):
                 # print(verdadero, text)
                 result = self.convertidor_medidas(text)
                 self.largo = result
-                self.area = self.ancho * self.largo
-            if self.ancho > self.largo:
-
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+                # self.area = self.ancho * self.largo
+            # if self.ancho > self.largo:
+                # raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
     @api.onchange("ancho_id")
     def _onchange_ancho_id(self):
-        self.env.cr.execute("UPDATE public.dtm_ancho_material SET  ancho='0' WHERE ancho    is NULL;")
+        self.env.cr.execute("UPDATE dtm_tubos_largo SET  largo='0' WHERE largo    is NULL;")
         text = self.ancho_id
         text = text.ancho
-        self.CleanTables("dtm.ancho.material","ancho")
+        self.CleanTables("dtm.tubos.largo","largo")
         if text:
             self.MatchFunction(text)
             verdadero = self.MatchFunction(text)
@@ -93,8 +91,8 @@ class Materiales(models.Model):
                 self.ancho = result
                 self.area = self.ancho * self.largo
 
-            if self.ancho > self.largo:
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+            # if self.ancho > self.largo:
+            #     raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):
@@ -133,7 +131,7 @@ class Materiales(models.Model):
     def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
         res = []
         for result in self:
-            res.append((result.id,f'{result.id}: {result.material_id.nombre} CALIBRE: {result.calibre_id.calibre} LARGO:  {result.largo_id.largo}  ANCHO: {result.ancho_id.ancho} '))
+            res.append((result.id,f'{result.id}: {result.material_id.nombre} CALIBRE: {result.calibre_id.calibre} DIAMETRO: {result.diametro_id.diametro} LARGO:  {result.largo_id.largo}   '))
         return res
 
     def convertidor_medidas(self,text):
@@ -162,7 +160,6 @@ class Materiales(models.Model):
             return float(text)
 
 
-
  # Limpia los valores de las tablas que no cumplan con el formato de medidas
     def CleanTables(self,table,data):
         get_info = self.env[table].search([])
@@ -180,39 +177,31 @@ class Materiales(models.Model):
 
 
 class NombreMaterial(models.Model):
-    _name = "dtm.nombre.material"
+    _name = "dtm.tubos.nombre"
     _description = "Se guardan los diferentes tipos de valores"
     _rec_name = "nombre"
 
     nombre = fields.Char(string= 'Material')
 
 class MaterialCalibre(models.Model):
-    _name = "dtm.calibre.material"
+    _name = "dtm.tubos.calibre"
     _description = "Se guardan los diferentes tipos de valores"
     _rec_name = "calibre"
 
     calibre = fields.Char(string="Calibre")
 
 class MaterialAncho(models.Model):
-    _name = "dtm.ancho.material"
+    _name = "dtm.tubos.diametro"
     _description = "Se guardan los diferentes tipos de valores"
-    _rec_name = "ancho"
+    _rec_name = "diametro"
 
-    ancho = fields.Char(string="Ancho", default="0")
+    diametro = fields.Char(string="Diametro", default="0")
 
 class MaterialLargo(models.Model):
-    _name = "dtm.largo.material"
+    _name = "dtm.tubos.largo"
     _description = "Se guardan los diferentes tipos de valores"
     _rec_name = "largo"
 
     largo = fields.Char(string="Largo", defaul="0")
-
-
-   
-        
-        
-
-            
-        
 
 
