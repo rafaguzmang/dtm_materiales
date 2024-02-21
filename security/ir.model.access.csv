@@ -18,6 +18,13 @@ access_dtm_tubos_calibre,access.dtm.tubos.calibre,model_dtm_tubos_calibre,base.g
 access_dtm_tubos_diametro,access.dtm.tubos.diametro,model_dtm_tubos_diametro,base.group_user,1,1,1,1
 access_dtm_tubos_largo,access.dtm.tubos.largo,model_dtm_tubos_largo,base.group_user,1,1,1,1
 
+access_dtm_materiales_angulos,access.dtm.materiales.angulos,model_dtm_materiales_angulos,base.group_user,1,1,1,1
+access_dtm_angulos_nombre,access.dtm.angulos.nombre,model_dtm_angulos_nombre,base.group_user,1,1,1,1
+access_dtm_angulos_calibre,access.dtm.angulos.calibre,model_dtm_angulos_calibre,base.group_user,1,1,1,1
+access_dtm_angulos_largo,access.dtm.angulos.largo,model_dtm_angulos_largo,base.group_user,1,1,1,1
+access_dtm_angulos_ancho,access.dtm.angulos.ancho,model_dtm_angulos_ancho,base.group_user,1,1,1,1
+access_dtm_angulos_alto,access.dtm.angulos.alto,model_dtm_angulos_alto,base.group_user,1,1,1,1
+
 
 
 

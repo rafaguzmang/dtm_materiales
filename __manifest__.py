@@ -6,6 +6,7 @@
         'views/dtm_materiales_views.xml',
         'views/dtm_perfiles_views.xml',
         'views/dtm_tubos_views.xml',
+        'views/dtm_angulos_views.xml',
         'views/dtm_menu.xml'
     ]
 }
