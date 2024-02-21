@@ -74,7 +74,11 @@ class Materiales(models.Model):
 
     @api.onchange("ancho_id")
     def _onchange_ancho_id(self):
+<<<<<<< HEAD
         self.env.cr.execute("UPDATE public.dtm_ancho_material SET  ancho='0' WHERE ancho is NULL;")
+=======
+        self.env.cr.execute("UPDATE public.dtm_ancho_material SET  ancho='0' WHERE ancho    is NULL;")
+>>>>>>> a379edf4feb36ce5c651a566fdfd5256e9b289c5
         text = self.ancho_id
         text = text.ancho
         self.CleanTables("dtm.ancho.material","ancho")
@@ -88,7 +92,6 @@ class Materiales(models.Model):
                 self.area = self.ancho * self.largo
 
             if self.ancho > self.largo:
-
                 raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
     # Filtra si los datos no corresponden al formato de medidas
