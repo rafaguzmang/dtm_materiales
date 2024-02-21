@@ -102,7 +102,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="dtm_materiales_tubos" parent="" action="dtm_materiales.dtm_materiales_tubos_accion"/>
+<!--    <menuitem id="dtm_materiales_tubos" parent="" action="dtm_materiales.dtm_materiales_tubos_accion"/>-->
     
    
 </odoo>
