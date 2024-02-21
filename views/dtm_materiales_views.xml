@@ -101,12 +101,12 @@
 
 
     <record id="dtm_materiales_accion" model="ir.actions.act_window">
-        <field name="name">Materiales</field>
+        <field name="name">Lámina</field>
         <field name="res_model">dtm.materiales</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="dtm_materiales" parent="" action="dtm_materiales_accion"/>
+<!--    <menuitem id="dtm_materiales" parent="" action="dtm_materiales_accion"/>-->
     
    
 </odoo>
