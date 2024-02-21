@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+     <menuitem name="Almacén" id="menu_root_dtm_materiales">
+<!--          <menuitem id="dtm_materiales"  action="dtm_materiales.dtm_materiales_accion"/>-->
+<!--          <menuitem id="dtm_perfiles" parent="" action="dtm_materiales.dtm_perfiles_accion"/>-->
+
+     </menuitem>
+</odoo>

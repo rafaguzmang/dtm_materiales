@@ -74,11 +74,8 @@ class Materiales(models.Model):
 
     @api.onchange("ancho_id")
     def _onchange_ancho_id(self):
-<<<<<<< HEAD
         self.env.cr.execute("UPDATE public.dtm_ancho_material SET  ancho='0' WHERE ancho is NULL;")
-=======
-        self.env.cr.execute("UPDATE public.dtm_ancho_material SET  ancho='0' WHERE ancho    is NULL;")
->>>>>>> a379edf4feb36ce5c651a566fdfd5256e9b289c5
+
         text = self.ancho_id
         text = text.ancho
         self.CleanTables("dtm.ancho.material","ancho")
