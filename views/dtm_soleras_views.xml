@@ -106,7 +106,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="dtm_materiales_solera" parent="" action="dtm_materiales_solera_accion"/>
+<!--    <menuitem id="dtm_materiales_solera" parent="" action="dtm_materiales_solera_accion"/>-->
     
    
 </odoo>
