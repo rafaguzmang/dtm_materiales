@@ -4,6 +4,7 @@
         <menuitem id="dtm_materiales" action="dtm_materiales.dtm_materiales_accion"/>
         <menuitem id="dtm_perfiles" action="dtm_materiales.dtm_perfiles_accion"/>
         <menuitem id="dtm_materiales_tubos"  action="dtm_materiales.dtm_materiales_tubos_accion"/>
-        <menuitem id="dtm_angulos"  action="dtm_angulos_accion"/>
+        <menuitem id="dtm_angulos"  action="dtm_materiales.dtm_angulos_accion"/>
+        <menuitem id="dtm_materiales_solera" action="dtm_materiales.dtm_materiales_solera_accion"/>
      </menuitem>
 </odoo>
