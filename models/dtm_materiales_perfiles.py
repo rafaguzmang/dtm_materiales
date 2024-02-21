@@ -6,6 +6,7 @@ import re
 class Perfiles(models.Model):
     _name = "dtm.materiales.perfiles"
     _description = "Sección para llevar el inventario de los perfiles"
+    _rec_name = "material_id"
 
 
     material_id = fields.Many2one("dtm.perfiles.nombre",string="MATERIAL",required=True)
