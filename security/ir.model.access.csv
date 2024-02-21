@@ -25,6 +25,12 @@ access_dtm_angulos_largo,access.dtm.angulos.largo,model_dtm_angulos_largo,base.g
 access_dtm_angulos_ancho,access.dtm.angulos.ancho,model_dtm_angulos_ancho,base.group_user,1,1,1,1
 access_dtm_angulos_alto,access.dtm.angulos.alto,model_dtm_angulos_alto,base.group_user,1,1,1,1
 
+access_dtm_materiales_solera,access.dtm.materiales.solera,model_dtm_materiales_solera,base.group_user,1,1,1,1
+access_dtm_solera_nombre,access.dtm.solera.nombre,model_dtm_solera_nombre,base.group_user,1,1,1,1
+access_dtm_solera_calibre,access.dtm.solera.calibre,model_dtm_solera_calibre,base.group_user,1,1,1,1
+access_dtm_solera_largo,access.dtm.solera.largo,model_dtm_solera_largo,base.group_user,1,1,1,1
+access_dtm_solera_ancho,access.dtm.solera.ancho,model_dtm_solera_ancho,base.group_user,1,1,1,1
+
 
 
 
