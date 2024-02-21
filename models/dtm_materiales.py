@@ -22,8 +22,14 @@ class Materiales(models.Model):
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
 
     def accion_proyecto(self):
-        self.apartado -= 1
-        self.cantidad -= 1
+        if self.apartado <= 0:
+            self.apartado = 0
+        else:
+            self.apartado -= 1
+        if self.cantidad <= 0:
+            self.cantidad = 0
+        else:
+            self.cantidad -= 1
 
 
     def get_view(self, view_id=None, view_type='form', **options):
@@ -116,7 +122,10 @@ class Materiales(models.Model):
 
     def accion_salidas(self):#-----------------Resta una unidad al stock----------------------------------------------
         # print(self.cantidad)
-        self.cantidad -= 1
+         if self.cantidad <= 0:
+            self.cantidad = 0
+         else:
+            self.cantidad -= 1
 
     def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
         for result in self:
@@ -125,7 +134,7 @@ class Materiales(models.Model):
     def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
         res = []
         for result in self:
-            res.append((result.id,f'{result.id}: {result.material_id.nombre} CALIBRE: {result.calibre_id.calibre} LARGO:  {result.largo_id.largo}  ANCHO: {result.ancho_id.ancho} DISPONIBLE: {result.disponible}'))
+            res.append((result.id,f'{result.id}: {result.material_id.nombre} CALIBRE: {result.calibre_id.calibre} LARGO:  {result.largo_id.largo}  ANCHO: {result.ancho_id.ancho} '))
         return res
 
     def convertidor_medidas(self,text):
