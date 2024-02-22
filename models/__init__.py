@@ -7,3 +7,4 @@ from . import dtm_materiales_varilla
 from . import dtm_materiales_canal
 from . import dtm_materiales_tornillos
 from . import dtm_materiales_rodamientos
+from . import dtm_materiales_pintura
