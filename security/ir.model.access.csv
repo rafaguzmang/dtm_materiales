@@ -52,3 +52,6 @@ access_dtm_tornillos_diametro,access.dtm.tornillos.diametro,model_dtm_tornillos_
 access_dtm_materiales_rodamientos,access.dtm.materiales.rodamientos,model_dtm_materiales_rodamientos,base.group_user,1,1,1,1
 access_dtm_rodamientos_nombre,access.dtm.rodamientos.nombre,model_dtm_rodamientos_nombre,base.group_user,1,1,1,1
 
+access_dtm_materiales_pintura,access.dtm.materiales.pintura,model_dtm_materiales_pintura,base.group_user,1,1,1,1
+access_dtm_pintura_nombre,access.dtm.pintura.nombre,model_dtm_pintura_nombre,base.group_user,1,1,1,1
+
