@@ -49,3 +49,6 @@ access_dtm_tornillos_tipo,access.dtm.tornillos.tipo,model_dtm_tornillos_tipo,bas
 access_dtm_tornillos_largo,access.dtm.tornillos.largo,model_dtm_tornillos_largo,base.group_user,1,1,1,1
 access_dtm_tornillos_diametro,access.dtm.tornillos.diametro,model_dtm_tornillos_diametro,base.group_user,1,1,1,1
 
+access_dtm_materiales_rodamientos,access.dtm.materiales.rodamientos,model_dtm_materiales_rodamientos,base.group_user,1,1,1,1
+access_dtm_rodamientos_nombre,access.dtm.rodamientos.nombre,model_dtm_rodamientos_nombre,base.group_user,1,1,1,1
+
