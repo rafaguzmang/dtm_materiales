@@ -93,7 +93,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="dtm_materiales_rodamientos"  action="dtm_materiales_rodamientos_accion"/>
+<!--    <menuitem id="dtm_materiales_rodamientos"  action="dtm_materiales_rodamientos_accion"/>-->
     
    
 </odoo>
