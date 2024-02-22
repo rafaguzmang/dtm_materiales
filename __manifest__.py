@@ -11,6 +11,7 @@
         'views/dtm_angulos_views.xml',
         'views/dtm_soleras_views.xml',
         'views/dtm_varilla_views.xml',
+        'views/dtm_canal_views.xml',
         'views/dtm_menu.xml'
     ]
 }

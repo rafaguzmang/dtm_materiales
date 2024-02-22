@@ -36,5 +36,10 @@ access_dtm_varilla_nombre,access.dtm.varilla.nombre,model_dtm_varilla_nombre,bas
 access_dtm_varilla_diametro,access.dtm.varilla.diametro,model_dtm_varilla_diametro,base.group_user,1,1,1,1
 access_dtm_varilla_largo,access.dtm.varilla.largo,model_dtm_varilla_largo,base.group_user,1,1,1,1
 
-
+access_dtm_materiales_canal,access.dtm.materiales.canal,model_dtm_materiales_canal,base.group_user,1,1,1,1
+access_dtm_canal_nombre,access.dtm.canal.nombre,model_dtm_canal_nombre,base.group_user,1,1,1,1
+access_dtm_canal_espesor,access.dtm.canal.espesor,model_dtm_canal_espesor,base.group_user,1,1,1,1
+access_dtm_canal_largo,access.dtm.canal.largo,model_dtm_canal_largo,base.group_user,1,1,1,1
+access_dtm_canal_alto,access.dtm.canal.alto,model_dtm_canal_alto,base.group_user,1,1,1,1
+access_dtm_canal_ancho,access.dtm.canal.ancho,model_dtm_canal_ancho,base.group_user,1,1,1,1
 
