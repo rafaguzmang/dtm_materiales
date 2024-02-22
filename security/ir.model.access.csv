@@ -43,3 +43,9 @@ access_dtm_canal_largo,access.dtm.canal.largo,model_dtm_canal_largo,base.group_u
 access_dtm_canal_alto,access.dtm.canal.alto,model_dtm_canal_alto,base.group_user,1,1,1,1
 access_dtm_canal_ancho,access.dtm.canal.ancho,model_dtm_canal_ancho,base.group_user,1,1,1,1
 
+access_dtm_materiales_tornillos,access.dtm.materiales.tornillos,model_dtm_materiales_tornillos,base.group_user,1,1,1,1
+access_dtm_tornillos_nombre,access.dtm.tornillos.nombre,model_dtm_tornillos_nombre,base.group_user,1,1,1,1
+access_dtm_tornillos_tipo,access.dtm.tornillos.tipo,model_dtm_tornillos_tipo,base.group_user,1,1,1,1
+access_dtm_tornillos_largo,access.dtm.tornillos.largo,model_dtm_tornillos_largo,base.group_user,1,1,1,1
+access_dtm_tornillos_diametro,access.dtm.tornillos.diametro,model_dtm_tornillos_diametro,base.group_user,1,1,1,1
+
