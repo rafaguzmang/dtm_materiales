@@ -31,6 +31,10 @@ access_dtm_solera_calibre,access.dtm.solera.calibre,model_dtm_solera_calibre,bas
 access_dtm_solera_largo,access.dtm.solera.largo,model_dtm_solera_largo,base.group_user,1,1,1,1
 access_dtm_solera_ancho,access.dtm.solera.ancho,model_dtm_solera_ancho,base.group_user,1,1,1,1
 
+access_dtm_materiales_varilla,access.dtm.materiales.varilla,model_dtm_materiales_varilla,base.group_user,1,1,1,1
+access_dtm_varilla_nombre,access.dtm.varilla.nombre,model_dtm_varilla_nombre,base.group_user,1,1,1,1
+access_dtm_varilla_diametro,access.dtm.varilla.diametro,model_dtm_varilla_diametro,base.group_user,1,1,1,1
+access_dtm_varilla_largo,access.dtm.varilla.largo,model_dtm_varilla_largo,base.group_user,1,1,1,1
 
 
 
