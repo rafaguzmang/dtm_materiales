@@ -8,6 +8,7 @@
         <menuitem id="dtm_materiales_solera" action="dtm_materiales.dtm_materiales_solera_accion"/>
         <menuitem id="dtm_materiales_varilla" action="dtm_materiales.dtm_materiales_varilla_accion"/>
         <menuitem id="dtm_canal"  action="dtm_materiales.dtm_canal_accion"/>
-         <menuitem id="dtm_materiales_tornillos"  action="dtm_materiales.dtm_materiales_tornillos_accion"/>
+        <menuitem id="dtm_materiales_tornillos"  action="dtm_materiales.dtm_materiales_tornillos_accion"/>
+        <menuitem id="dtm_materiales_rodamientos"  action="dtm_materiales_rodamientos_accion"/>
      </menuitem>
 </odoo>
