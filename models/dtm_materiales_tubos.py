@@ -10,7 +10,7 @@ class Tubos(models.Model):
     material_id = fields.Many2one("dtm.tubos.nombre",string="MATERIAL",required=True)
     calibre_id = fields.Many2one("dtm.tubos.calibre",string="CALIBRE",required=True)
     calibre = fields.Float(string="Decimal")
-    diametro_id = fields.Many2one("dtm.tubos.diametro",string="ANCHO", required=True)
+    diametro_id = fields.Many2one("dtm.tubos.diametro",string="DIÁMETRO", required=True)
     diametro = fields.Float(string="Decimal")
     largo_id = fields.Many2one("dtm.tubos.largo",string="LARGO", required=True)
     largo = fields.Float(string="Decimal")
@@ -30,7 +30,6 @@ class Tubos(models.Model):
             self.cantidad = 0
         else:
             self.cantidad -= 1
-
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Tubos,self).get_view(view_id, view_type,**options)
@@ -111,7 +110,6 @@ class Tubos(models.Model):
 
         return True
 
-
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):
         # print(self.cantidad)
@@ -158,7 +156,6 @@ class Tubos(models.Model):
             return round(sum,4)
         else:
             return float(text)
-
 
  # Limpia los valores de las tablas que no cumplan con el formato de medidas
     def CleanTables(self,table,data):

@@ -17,7 +17,7 @@ class Angulos(models.Model):
     ancho_id = fields.Many2one("dtm.angulos.ancho",string="ANCHO", required=True)
     ancho = fields.Float(string="Decimal")
     alto_id = fields.Many2one("dtm.angulos.alto",string="ALTO", required=True)
-    alto = fields.Float(string="Decimal")
+    alto = fields.Float(string="Decimal", compute="_compute_alto_id", store=True)
     area = fields.Float(string="Area")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
@@ -43,7 +43,6 @@ class Angulos(models.Model):
         # print(get_info)
         numero = 1
         for result in get_info:
-            # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
             if result.cantidad <= 0 and result.apartado == 0:
                 self.env.cr.execute("DELETE FROM dtm_materiales_angulos  WHERE id = "+ str(result.id)+";")
             numero += 1
@@ -78,9 +77,8 @@ class Angulos(models.Model):
                 result = self.convertidor_medidas(text)
                 self.largo = result
                 self.area = self.ancho * self.largo
-            if self.ancho > self.largo:
-
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+            # if self.ancho > self.largo:
+            #     raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
     @api.onchange("ancho_id")
     def _onchange_ancho_id(self):
@@ -97,26 +95,27 @@ class Angulos(models.Model):
                 self.ancho = result
                 self.area = self.ancho * self.largo
 
-            if self.ancho > self.largo:
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+            # if self.ancho > self.largo:
+            #     raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
-    @api.onchange("alto_id")
-    def _onchange_ancho_id(self):
-        self.env.cr.execute("UPDATE dtm_angulos_alto SET  alto='0' WHERE alto    is NULL;")
-        text = self.ancho_id
-        text = text.ancho
-        self.CleanTables("dtm.angulos.alto","alto")
-        if text:
-            self.MatchFunction(text)
-            verdadero = self.MatchFunction(text)
-            if verdadero and text:
-                # print(verdadero, text)
-                result = self.convertidor_medidas(text)
-                self.ancho = result
-                self.area = self.ancho * self.largo
+    @api.depends("alto_id")
+    def _compute_alto_id(self):
+        for result in self:
+            self.env.cr.execute("UPDATE dtm_angulos_alto SET  alto='0' WHERE alto    is NULL;")
+            text = result.alto_id
+            text = text.alto
+            result.CleanTables("dtm.angulos.alto","alto")
+            if text:
+                result.MatchFunction(text)
+                verdadero = result.MatchFunction(text)
+                if verdadero and text:
+                    # print(verdadero, text)
+                    resultIn = result.convertidor_medidas(text)
+                    result.alto = resultIn
+                    result.area = result.ancho * result.largo * result.alto
+                    print(result.alto)
 
-            if self.ancho > self.largo:
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+
 
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):
@@ -132,7 +131,6 @@ class Angulos(models.Model):
                                               "  1/1    \"Fracción\"\n" +
                                               "  1 1/1 \"Números espacio fracción\" \n")
                         return False
-
         return True
 
 
@@ -183,8 +181,6 @@ class Angulos(models.Model):
         else:
             return float(text)
 
-
-
  # Limpia los valores de las tablas que no cumplan con el formato de medidas
     def CleanTables(self,table,data):
         get_info = self.env[table].search([])
@@ -198,8 +194,6 @@ class Angulos(models.Model):
                     x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
                     if not x:
                         self.env.cr.execute("DELETE FROM "+table+" WHERE "+ data +" = '"+ text +"'")
-
-
 
 class NombreMaterial(models.Model):
     _name = "dtm.angulos.nombre"
