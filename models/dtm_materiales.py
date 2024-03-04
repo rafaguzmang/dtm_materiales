@@ -32,6 +32,19 @@ class Materiales(models.Model):
             self.cantidad -= 1
 
 
+    # def Apartado(self,result,cantidad):
+    #     nombre = result.materials_list.nombre
+    #     nombre = nombre[len("Lámina "):len(nombre)-1]
+    #     medida = result.materials_list.medida
+    #     calibre = medida[medida.index("@")+2:]
+    #     largo = medida[:medida.index("x")-1]
+    #     ancho = medida[medida.index("x")+2:medida.index("@")-2]
+    #     get_lamina = self.env['dtm.materiales'].search([("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho))])
+    #     for get in get_lamina:
+    #         if get.material_id.nombre == nombre:
+    #             # print("result 3",get_lamina.material_id.nombre)
+    #             self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cantidad)+" WHERE id="+str(get.id))
+
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales'].search([])
@@ -43,6 +56,35 @@ class Materiales(models.Model):
             if result.cantidad <= 0 and result.apartado == 0:
                 self.env.cr.execute("DELETE FROM dtm_materiales  WHERE id = "+ str(result.id)+";")
             numero += 1
+
+        # actualiza el campo de apartado
+
+
+
+        get_mater = self.env['dtm.materials.line'].search([])
+        for get in get_mater:
+            nombre = get.materials_list.nombre
+            if nombre.find("Lámina") >= 0 or nombre.find("Lamina") >= 0 or nombre.find("lamina") >= 0 or nombre.find("LAMINA") >= 0 or nombre.find("lámina") >= 0 or nombre.find("LÁMINA") >= 0:
+                medida = get.materials_list.medida
+                # print(medida)
+                if  medida.find(" x ") >= 0 or medida.find(" X "):
+                    if medida.find(" @ ") >= 0:
+                        nombre = nombre[len("Lámina "):len(nombre)-1]
+                        calibre = medida[medida.index("@")+2:]
+                        largo = medida[:medida.index("x")-1]
+                        ancho = medida[medida.index("x")+2:medida.index("@")-2]
+                        get_mid = self.env['dtm.nombre.material'].search([("nombre","=",nombre)]).id
+                        get_lamina = self.env['dtm.materiales'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho))])
+                        if get_lamina:
+                            suma = 0
+                            print(get_lamina)
+                            get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+                            print(get_cant)
+                            for cant in get_cant:
+                                suma += cant.materials_cuantity
+                                self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(suma)+" WHERE id="+str(get_lamina.id))
+
+
         return res
 
     @api.onchange("calibre_id")

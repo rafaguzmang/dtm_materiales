@@ -29,7 +29,6 @@ class Varilla(models.Model):
         else:
             self.cantidad -= 1
 
-
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Varilla,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.varilla'].search([])
@@ -109,7 +108,6 @@ class Varilla(models.Model):
 
         return True
 
-
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):
         # print(self.cantidad)
@@ -171,8 +169,6 @@ class Varilla(models.Model):
                     x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
                     if not x:
                         self.env.cr.execute("DELETE FROM "+table+" WHERE "+ data +" = '"+ text +"'")
-
-
 
 class NombreMaterial(models.Model):
     _name = "dtm.varilla.nombre"

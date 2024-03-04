@@ -13,7 +13,7 @@ class Solera(models.Model):
     ancho_id = fields.Many2one("dtm.canal.ancho",string="ANCHO", required=True)
     ancho = fields.Float(string="Decimal")
     alto_id = fields.Many2one("dtm.canal.alto",string="ALTO", required=True)
-    alto = fields.Float(string="Decimal")
+    alto = fields.Float(string="Decimal", compute="_compute_alto_id", store=True)
     largo_id = fields.Many2one("dtm.canal.largo",string="LARGO", required=True)
     largo = fields.Float(string="Decimal")
     area = fields.Float(string="Area")
@@ -97,6 +97,22 @@ class Solera(models.Model):
 
             # if self.ancho > self.largo:
             #     raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+
+    @api.depends("alto_id")
+    def _compute_alto_id(self):
+        self.env.cr.execute("UPDATE dtm_canal_alto SET  alto='0' WHERE alto    is NULL;")
+        for result in self:
+            text = result.alto_id
+            text = text.alto
+            result.CleanTables("dtm.canal.alto","alto")
+            if text:
+                result.MatchFunction(text)
+                verdadero = result.MatchFunction(text)
+                if verdadero and text:
+                    # print(verdadero, text)
+                    resultIn = result.convertidor_medidas(text)
+                    result.alto = resultIn
+
 
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):

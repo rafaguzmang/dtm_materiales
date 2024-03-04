@@ -8,23 +8,21 @@ class Perfiles(models.Model):
     _description = "Sección para llevar el inventario de los perfiles"
     _rec_name = "material_id"
 
-
     material_id = fields.Many2one("dtm.perfiles.nombre",string="MATERIAL",required=True)
     calibre_id = fields.Many2one("dtm.perfiles.calibre",string="CALIBRE",required=True)
     calibre = fields.Float(string="Decimal")
     largo_id = fields.Many2one("dtm.perfiles.largo",string="LARGO", required=True)
     largo = fields.Float(string="Decimal")
     ancho_id = fields.Many2one("dtm.perfiles.ancho",string="ANCHO", required=True)
-    ancho = fields.Float(string="Decimal")
+    ancho = fields.Float(string="Decimal", compute="_compute_ancho_id", store= True)
     alto_id = fields.Many2one("dtm.perfiles.alto",string="ALTO", required=True)
-    alto = fields.Float(string="Decimal")
+    alto = fields.Float(string="Decimal", compute="_compute_alto_id", store= True)
     area = fields.Float(string="Area")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
     cantidad = fields.Integer(string="Stock", default=0)
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
-
 
     def accion_proyecto(self):
         if self.apartado <= 0:
@@ -35,7 +33,6 @@ class Perfiles(models.Model):
             self.cantidad = 0
         else:
             self.cantidad -= 1
-
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Perfiles,self).get_view(view_id, view_type,**options)
@@ -63,7 +60,6 @@ class Perfiles(models.Model):
                 self.calibre = result
                 # print(result)
 
-
     @api.onchange("largo_id")
     def _onchange_largo_id(self):
         self.env.cr.execute("UPDATE dtm_perfiles_largo SET  largo='0' WHERE largo is NULL;")
@@ -82,41 +78,35 @@ class Perfiles(models.Model):
 
                 raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
-    @api.onchange("ancho_id")
-    def _onchange_ancho_id(self):
+    @api.depends("ancho_id")
+    def _compute_ancho_id(self):
         self.env.cr.execute("UPDATE dtm_perfiles_ancho SET  ancho='0' WHERE ancho    is NULL;")
-        text = self.ancho_id
-        text = text.ancho
-        self.CleanTables("dtm.perfiles.ancho","ancho")
-        if text:
-            self.MatchFunction(text)
-            verdadero = self.MatchFunction(text)
-            if verdadero and text:
-                # print(verdadero, text)
-                result = self.convertidor_medidas(text)
-                self.ancho = result
-                self.area = self.ancho * self.largo
+        for result in self:
+            text = result.ancho_id
+            text = text.ancho
+            result.CleanTables("dtm.perfiles.ancho","ancho")
+            if text:
+                result.MatchFunction(text)
+                verdadero = result.MatchFunction(text)
+                if verdadero and text:
+                    # print(verdadero, text)
+                    resultIn = result.convertidor_medidas(text)
+                    result.ancho = resultIn
 
-            if self.ancho > self.largo:
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
-
-    @api.onchange("alto_id")
-    def _onchange_ancho_id(self):
+    @api.depends("alto_id")
+    def _compute_alto_id(self):
         self.env.cr.execute("UPDATE dtm_perfiles_alto SET  alto='0' WHERE alto    is NULL;")
-        text = self.ancho_id
-        text = text.ancho
-        self.CleanTables("dtm.perfiles.alto","alto")
-        if text:
-            self.MatchFunction(text)
-            verdadero = self.MatchFunction(text)
-            if verdadero and text:
-                # print(verdadero, text)
-                result = self.convertidor_medidas(text)
-                self.ancho = result
-                self.area = self.ancho * self.largo
-
-            if self.ancho > self.largo:
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
+        for result in self:
+            text = result.alto_id
+            text = text.alto
+            result.CleanTables("dtm.perfiles.alto","alto")
+            if text:
+                result.MatchFunction(text)
+                verdadero = result.MatchFunction(text)
+                if verdadero and text:
+                    # print(verdadero, text)
+                    resultIn = result.convertidor_medidas(text)
+                    result.alto = resultIn
 
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):
@@ -134,7 +124,6 @@ class Perfiles(models.Model):
                         return False
 
         return True
-
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):
@@ -183,8 +172,6 @@ class Perfiles(models.Model):
         else:
             return float(text)
 
-
-
  # Limpia los valores de las tablas que no cumplan con el formato de medidas
     def CleanTables(self,table,data):
         get_info = self.env[table].search([])
@@ -198,8 +185,6 @@ class Perfiles(models.Model):
                     x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
                     if not x:
                         self.env.cr.execute("DELETE FROM "+table+" WHERE "+ data +" = '"+ text +"'")
-
-
 
 class NombreMaterial(models.Model):
     _name = "dtm.perfiles.nombre"
