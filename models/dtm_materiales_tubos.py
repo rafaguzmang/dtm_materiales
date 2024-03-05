@@ -11,7 +11,7 @@ class Tubos(models.Model):
     calibre_id = fields.Many2one("dtm.tubos.calibre",string="CALIBRE",required=True)
     calibre = fields.Float(string="Decimal")
     diametro_id = fields.Many2one("dtm.tubos.diametro",string="DIÁMETRO", required=True)
-    diametro = fields.Float(string="Decimal")
+    diametro = fields.Float(string="Decimal", store=True)
     largo_id = fields.Many2one("dtm.tubos.largo",string="LARGO", required=True)
     largo = fields.Float(string="Decimal")
     # area = fields.Float(string="Area")
@@ -75,20 +75,20 @@ class Tubos(models.Model):
             # if self.ancho > self.largo:
                 # raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
 
-    @api.onchange("ancho_id")
-    def _onchange_ancho_id(self):
-        self.env.cr.execute("UPDATE dtm_tubos_largo SET  largo='0' WHERE largo    is NULL;")
-        text = self.ancho_id
-        text = text.ancho
-        self.CleanTables("dtm.tubos.largo","largo")
+    @api.onchange("diametro_id")
+    def _onchange_diametro_id(self):
+        self.env.cr.execute("UPDATE dtm_tubos_diametro SET  diametro='0' WHERE diametro is NULL;")
+        text = self.diametro_id
+        # print(text)
+        text = text.diametro
+        self.CleanTables("dtm.tubos.diametro","diametro")
         if text:
             self.MatchFunction(text)
             verdadero = self.MatchFunction(text)
             if verdadero and text:
                 # print(verdadero, text)
                 result = self.convertidor_medidas(text)
-                self.ancho = result
-                self.area = self.ancho * self.largo
+                self.diametro = result
 
             # if self.ancho > self.largo:
             #     raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
@@ -187,7 +187,7 @@ class MaterialCalibre(models.Model):
 
     calibre = fields.Char(string="Calibre")
 
-class MaterialAncho(models.Model):
+class MaterialDiametro(models.Model):
     _name = "dtm.tubos.diametro"
     _description = "Se guardan los diferentes tipos de valores"
     _rec_name = "diametro"
