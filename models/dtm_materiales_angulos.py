@@ -132,7 +132,6 @@ class Angulos(models.Model):
                 # print(verdadero, text)
                 result = self.convertidor_medidas(text)
                 self.ancho = result
-                self.area = self.ancho * self.largo
 
             # if self.ancho > self.largo:
             #     raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
@@ -152,7 +151,7 @@ class Angulos(models.Model):
                     resultIn = result.convertidor_medidas(text)
                     result.alto = resultIn
                     result.area = result.ancho * result.largo * result.alto
-                    print(result.alto)
+                    # print(result.alto)
 
 
 
