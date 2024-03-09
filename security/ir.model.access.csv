@@ -55,3 +55,11 @@ access_dtm_rodamientos_nombre,access.dtm.rodamientos.nombre,model_dtm_rodamiento
 access_dtm_materiales_pintura,access.dtm.materiales.pintura,model_dtm_materiales_pintura,base.group_user,1,1,1,1
 access_dtm_pintura_nombre,access.dtm.pintura.nombre,model_dtm_pintura_nombre,base.group_user,1,1,1,1
 
+access_dtm_materiales_consumibles,access.dtm.materiales.consumibles,model_dtm_materiales_consumibles,base.group_user,1,1,1,1
+access_dtm_consumibles_nombre,access.dtm.consumibles.nombre,model_dtm_consumibles_nombre,base.group_user,1,1,1,1
+
+access_dtm_materiales_herramientas,access.dtm.materiales.herramientas,model_dtm_materiales_herramientas,base.group_user,1,1,1,1
+access_dtm_herramientas_nombre,access.dtm.herramientas.nombre,model_dtm_herramientas_nombre,base.group_user,1,1,1,1
+
+access_dtm_materiales_otros,access.dtm.materiales.otros,model_dtm_materiales_otros,base.group_user,1,1,1,1
+access_dtm_otros_nombre,access.dtm.otros.nombre,model_dtm_otros_nombre,base.group_user,1,1,1,1

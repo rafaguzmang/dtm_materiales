@@ -29,6 +29,25 @@ class Varilla(models.Model):
         else:
             self.cantidad -= 1
 
+    @api.model
+    def create (self,vals):
+        res = super(Varilla, self).create(vals)
+        get_info = self.env['dtm.materiales.canal'].search([])
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            diametro_id = get.diametro_id
+            diametro = get.diametro
+            largo_id = get.largo_id
+            largo = get.largo
+            cadena = material_id,diametro_id,diametro,largo_id,largo
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_canal WHERE id="+str(get.id))
+                raise ValidationError("Material Duplicado")
+            else:
+                mapa[cadena] = 1
+        return res
+
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Varilla,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.varilla'].search([])

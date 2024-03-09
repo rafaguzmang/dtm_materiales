@@ -36,16 +36,55 @@ class Angulos(models.Model):
         else:
             self.cantidad -= 1
 
+    @api.model
+    def create (self,vals):
+        res = super(Angulos, self).create(vals)
+        get_info = self.env['dtm.materiales.angulos'].search([])
+
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            calibre_id = get.calibre_id
+            calibre = get.calibre
+            largo_id = get.largo_id
+            largo = get.largo
+            ancho_id = get.ancho_id
+            ancho = get.ancho
+            alto_id = get.alto_id
+            alto = get.alto
+
+            cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho,alto_id,alto
+
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_angulos WHERE id="+str(get.id))
+                raise ValidationError("Material Duplicado")
+            else:
+                mapa[cadena] = 1
+        return res
+
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Angulos,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.angulos'].search([])
-        # print(get_info)
-        numero = 1
-        for result in get_info:
-            if result.cantidad <= 0 and result.apartado == 0:
-                self.env.cr.execute("DELETE FROM dtm_materiales_angulos  WHERE id = "+ str(result.id)+";")
-            numero += 1
+
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            calibre_id = get.calibre_id
+            calibre = get.calibre
+            largo_id = get.largo_id
+            largo = get.largo
+            ancho_id = get.ancho_id
+            ancho = get.ancho
+            alto_id = get.alto_id
+            alto = get.alto
+
+            cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho,alto_id,alto
+
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_angulos WHERE id="+str(get.id))
+            else:
+                mapa[cadena] = 1
         return res
 
     @api.onchange("calibre_id")

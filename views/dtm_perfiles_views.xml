@@ -6,19 +6,19 @@
         <field name="arch" type="xml">
             <tree>
                     <field name="id" invisible="1"/>
-                    <field name="material_id"/>
-                    <field name="calibre_id"/>
+                    <field name="material_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="calibre_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
                     <field name="calibre" invisible="1"/>
-                    <field name="largo_id"/>
+                    <field name="largo_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
                     <field name="largo" invisible="1"/>
-                    <field name="ancho_id"/>
+                    <field name="ancho_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
                     <field name="ancho" invisible="1"/>
-                    <field name="alto_id"/>
+                    <field name="alto_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
                     <field name="alto" invisible="1"/>
                     <field name="area" invisible="1"/>
-                    <field name="cantidad"/>
-                    <field name="apartado" />
-                    <field name="disponible" />
+                    <field name="cantidad" attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="apartado"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}"/>
             </tree>
         </field>
     </record>
@@ -86,7 +86,7 @@
                                 </h1>
                                 <h1 >
                                     Entradas:
-                                    <field name="entradas" />
+                                    <field name="entradas" options='{"type": "number"}'/>
                                 </h1>
                             </div>
                         </div>

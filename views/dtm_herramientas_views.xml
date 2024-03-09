@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="dtm_materiales_rodamientos_tree" model="ir.ui.view">
-        <field name="name">dtm_materiales_rodamientos_tree</field>
-        <field name="model">dtm.materiales.rodamientos</field>
+    <record id="dtm_herramientas_tree" model="ir.ui.view">
+        <field name="name">dtm_materiales_herramientas_tree</field>
+        <field name="model">dtm.materiales.herramientas</field>
         <field name="arch" type="xml">
             <tree>
                     <field name="id" invisible="1"/>
-                    <field name="material_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="descripcion" invisible="1"/>
-                    <field name="cantidad" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="apartado"  attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="nombre_id"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="descripcion"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="entradas"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="cantidad"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="apartado"  attrs="{'invisible': [('cantidad','=',0)]}" />
+                    <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}" />
             </tree>
         </field>
     </record>
 
-    <record id="dtm_materiales_rodamientos_view_form" model="ir.ui.view">
-        <field name="name">dtm_materiales_rodamientos_view_form</field>
-        <field name="model">dtm.materiales.rodamientos</field>
+    <record id="dtm_herramientas_view_form" model="ir.ui.view">
+        <field name="name">dtm_materiales_herramientas_view_form</field>
+        <field name="model">dtm.materiales.herramientas</field>
         <field name="arch" type="xml">
             <form string="">
                 <header>
@@ -27,21 +28,20 @@
                 <sheet>
                         <div class="row ">
                             <div class="col-12 d-flex justify-content-center">
-                                <h1>ALMACÉN</h1>
+                                <h1>Consumibles</h1>
                             </div>
                         </div>
                         <br></br>
                         <div class="row d-flex justify-content-between">
-                              <div class="col-6 d-flex flex-column justify-content-start" >
-                                    <h2>Nombre</h2>
-                                    <field name="material_id" options = "{'no_open': True}" />
-                              </div>
-
-
-                              <div class="col-6  d-flex flex-column justify-content-start">
+                            <div class="col-6 d-flex flex-column justify-content-start" >
+                                <h2>Nombre</h2>
+                                <field name="nombre_id" options = "{'no_open': True}" />
+                            </div>
+                            <div class="col-12 d-flex flex-column justify-content-start" >
                                 <h2>Descripción</h2>
-                                    <field name="descripcion" options = "{'no_open': True}"/>
-                              </div>
+                                <field name="descripcion" options = "{'no_open': True}" />
+                            </div>
+
                         </div>
                         <div class="row">
                             <br></br>
@@ -64,7 +64,7 @@
                          <div class="row ">
                             <div class="col-12 d-flex justify-content-between">
                                 <h1 class="text-success">Stock:
-                                    <field name="cantidad" />
+                                    <field name="cantidad"  />
                                 </h1>
                                 <h1 >
                                     Entradas:
@@ -72,28 +72,17 @@
                                 </h1>
                             </div>
                         </div>
-                        <group>
-<!--                            <field name="tipo" options = "{'no_open': True}" invisible="1"/>-->
-<!--                            <field name="largo" options = "{'no_open': True}" invisible="1"/>-->
-<!--                            <field name="diametro" options = "{'no_open': True}" invisible="1"/>-->
-<!--                            <field name="area" options = "{'no_open': True}" invisible="1"/>-->
-
-
-
-                        </group>
                 </sheet>
             </form>
         </field>
     </record>
 
-
-    <record id="dtm_materiales_rodamientos_accion" model="ir.actions.act_window">
-        <field name="name">Rodamientos</field>
-        <field name="res_model">dtm.materiales.rodamientos</field>
+    <record id="dtm_materiales_herramientas_accion" model="ir.actions.act_window">
+        <field name="name">Herramientas</field>
+        <field name="res_model">dtm.materiales.herramientas</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-<!--    <menuitem id="dtm_materiales_rodamientos"  action="dtm_materiales_rodamientos_accion"/>-->
-    
+<!--    <menuitem id="dtm_materiales_herramientas" parent="" action="dtm_materiales.dtm_materiales_herramientas_accion"/>-->
    
 </odoo>

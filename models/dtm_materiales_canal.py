@@ -2,7 +2,7 @@ from odoo import api,models,fields
 from odoo.exceptions import ValidationError
 import re
 
-class Solera(models.Model):
+class Canal(models.Model):
     _name = "dtm.materiales.canal"
     _description = "Sección para llevar el inventario de las canal"
     _rec_name = "material_id"
@@ -33,18 +33,53 @@ class Solera(models.Model):
         else:
             self.cantidad -= 1
 
+    @api.model
+    def create (self,vals):
+        res = super(Canal, self).create(vals)
+        get_info = self.env['dtm.materiales.canal'].search([])
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            espesor_id = get.espesor_id
+            espesor = get.espesor
+            ancho_id = get.ancho_id
+            ancho = get.ancho
+            alto_id = get.alto_id
+            alto = get.alto
+            largo_id = get.largo_id
+            largo = get.largo
+            area = get.area
+            cadena = material_id,espesor_id,espesor,largo_id,largo,ancho_id,ancho,area,alto,alto_id
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_canal WHERE id="+str(get.id))
+                raise ValidationError("Material Duplicado")
+            else:
+                mapa[cadena] = 1
+        return res
+
 
     def get_view(self, view_id=None, view_type='form', **options):
-        res = super(Solera,self).get_view(view_id, view_type,**options)
+        res = super(Canal,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.canal'].search([])
-        # print(get_info)
-        numero = 1
-        for result in get_info:
-            # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
 
-            if result.cantidad <= 0 and result.apartado == 0:
-                self.env.cr.execute("DELETE FROM dtm_materiales_canal  WHERE id = "+ str(result.id)+";")
-            numero += 1
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            espesor_id = get.espesor_id
+            espesor = get.espesor
+            ancho_id = get.ancho_id
+            ancho = get.ancho
+            alto_id = get.alto_id
+            alto = get.alto
+            largo_id = get.largo_id
+            largo = get.largo
+            area = get.area
+            cadena = material_id,espesor_id,espesor,largo_id,largo,ancho_id,ancho,area,alto,alto_id
+
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_canal WHERE id="+str(get.id))
+            else:
+                mapa[cadena] = 1
         return res
 
     @api.onchange("espesor_id")

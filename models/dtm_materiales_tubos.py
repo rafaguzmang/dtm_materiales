@@ -31,17 +31,44 @@ class Tubos(models.Model):
         else:
             self.cantidad -= 1
 
+    @api.model
+    def create (self,vals):
+        res = super(Tubos, self).create(vals)
+        get_info = self.env['dtm.materiales.tubos'].search([])
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            calibre_id = get.calibre_id
+            calibre = get.calibre
+            diametro_id = get.diametro_id
+            diametro = get.diametro
+            largo_id = get.largo_id
+            largo = get.largo
+            cadena = material_id,calibre_id,calibre,largo_id,largo,diametro_id,diametro
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_tubos WHERE id="+str(get.id))
+                raise ValidationError("Material Duplicado")
+            else:
+                mapa[cadena] = 1
+        return res
+
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Tubos,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.tubos'].search([])
-        # print(get_info)
-        numero = 1
-        for result in get_info:
-            # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
-
-            if result.cantidad <= 0 and result.apartado == 0:
-                self.env.cr.execute("DELETE FROM dtm_materiales_tubos  WHERE id = "+ str(result.id)+";")
-            numero += 1
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            calibre_id = get.calibre_id
+            calibre = get.calibre
+            diametro_id = get.diametro_id
+            diametro = get.diametro
+            largo_id = get.largo_id
+            largo = get.largo
+            cadena = material_id,calibre_id,calibre,largo_id,largo,diametro_id,diametro
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_tubos WHERE id="+str(get.id))
+            else:
+                mapa[cadena] = 1
         return res
 
     @api.onchange("calibre_id")

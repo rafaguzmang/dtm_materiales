@@ -30,18 +30,44 @@ class Tornillos(models.Model):
         else:
             self.cantidad -= 1
 
+    @api.model
+    def create (self,vals):
+        res = super(Tornillos, self).create(vals)
+        get_info = self.env['dtm.materiales.tornillos'].search([])
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            tipo_id = get.tipo_id
+            diametro_id = get.diametro_id
+            diametro = get.diametro
+            largo_id = get.largo_id
+            largo = get.largo
+            cadena = material_id,tipo_id,diametro_id,largo_id,largo,diametro
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_tornillos WHERE id="+str(get.id))
+                raise ValidationError("Material Duplicado")
+            else:
+                mapa[cadena] = 1
+        return res
+
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Tornillos,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.tornillos'].search([])
-        # print(get_info)
-        numero = 1
-        for result in get_info:
-            # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
-
-            if result.cantidad <= 0 and result.apartado == 0:
-                self.env.cr.execute("DELETE FROM dtm_materiales_tornillos  WHERE id = "+ str(result.id)+";")
-            numero += 1
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            tipo_id = get.tipo_id
+            diametro_id = get.diametro_id
+            diametro = get.diametro
+            largo_id = get.largo_id
+            largo = get.largo
+            cadena = material_id,tipo_id,diametro_id,largo_id,largo,diametro
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_tornillos WHERE id="+str(get.id))
+                raise ValidationError("Material Duplicado")
+            else:
+                mapa[cadena] = 1
         return res
 
     @api.onchange("largo_id")

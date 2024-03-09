@@ -11,5 +11,8 @@
         <menuitem id="dtm_materiales_tornillos"  action="dtm_materiales.dtm_materiales_tornillos_accion"/>
         <menuitem id="dtm_materiales_rodamientos"  action="dtm_materiales_rodamientos_accion"/>
         <menuitem id="dtm_materiales_pintura"  action="dtm_materiales_pintura_accion"/>
+        <menuitem id="dtm_materiales_herramientas"  action="dtm_materiales.dtm_materiales_herramientas_accion"/>
+        <menuitem id="dtm_materiales_consumibles"  action="dtm_materiales.dtm_materiales_consumibles_accion"/>
+        <menuitem id="dtm_materiales_otros"  action="dtm_materiales.dtm_materiales_otros_accion"/>
      </menuitem>
 </odoo>

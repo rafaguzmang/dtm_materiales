@@ -15,6 +15,9 @@
         'views/dtm_tornillos_views.xml',
         'views/dtm_rodamientos_views.xml',
         'views/dtm_pintura_views.xml',
+        'views/dtm_consumibles_views.xml',
+        'views/dtm_herramientas_views.xml',
+        'views/dtm_otros_views.xml',
         'views/dtm_menu.xml'
     ]
 }
