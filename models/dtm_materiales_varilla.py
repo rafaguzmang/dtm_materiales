@@ -32,7 +32,7 @@ class Varilla(models.Model):
     @api.model
     def create (self,vals):
         res = super(Varilla, self).create(vals)
-        get_info = self.env['dtm.materiales.canal'].search([])
+        get_info = self.env['dtm.materiales.varilla'].search([])
         mapa ={}
         for get in get_info:
             material_id = get.material_id
@@ -42,7 +42,7 @@ class Varilla(models.Model):
             largo = get.largo
             cadena = material_id,diametro_id,diametro,largo_id,largo
             if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_canal WHERE id="+str(get.id))
+                self.env.cr.execute("DELETE FROM dtm_materiales_varilla WHERE id="+str(get.id))
                 raise ValidationError("Material Duplicado")
             else:
                 mapa[cadena] = 1
@@ -51,14 +51,61 @@ class Varilla(models.Model):
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Varilla,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.varilla'].search([])
-        # print(get_info)
-        numero = 1
-        for result in get_info:
-            # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            diametro_id = get.diametro_id
+            diametro = get.diametro
+            largo_id = get.largo_id
+            largo = get.largo
+            cadena = material_id,diametro_id,diametro,largo_id,largo
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_varilla WHERE id="+str(get.id))
+                raise ValidationError("Material Duplicado")
+            else:
+                mapa[cadena] = 1
 
-            if result.cantidad <= 0 and result.apartado == 0:
-                self.env.cr.execute("DELETE FROM dtm_materiales_varilla  WHERE id = "+ str(result.id)+";")
-            numero += 1
+            get_mater = self.env['dtm.materials.line'].search([])
+            for get in get_mater:
+                 if get:
+                    nombre = str(get.materials_list.nombre)
+                    if re.match(".*[vV][aA][rR][iI][lL][lL][aA].*",nombre):
+                        nombre = re.sub("^\s+","",nombre)
+                        nombre = nombre[nombre.index(" "):]
+                        nombre = re.sub("^\s+","",nombre)
+                        nombre = re.sub("\s+$","",nombre)
+                        medida = get.materials_list.medida
+                        medida = re.sub("^\s+","",medida)
+                        medida = re.sub("\s+$","",medida)
+                        # print("result 1",nombre,medida)
+
+                        if  medida.find(" x ") >= 0 or medida.find(" X "):
+                                medida = re.sub("X","x",medida)
+                                # print(calibre)
+                                if medida.find("x"):
+                                    diametro = medida[:medida.index("x")-1]
+                                    largo = medida[medida.index("x")+1:]
+
+                                # Convierte fracciones a decimales
+                                regx = re.match("\d+/\d+", diametro)
+                                if regx:
+                                    diametro = float(diametro[0:diametro.index("/")]) / float(diametro[diametro.index("/") + 1:len(diametro)])
+                                regx = re.match("\d+/\d+", largo)
+                                if regx:
+                                    largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
+                        # print(nombre,diametro,largo)
+                        # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
+                        get_mid = self.env['dtm.varilla.nombre'].search([("nombre","=",nombre)]).id
+                        get_angulo = self.env['dtm.materiales.varilla'].search([("material_id","=",get_mid),("diametro","=",float(diametro)),("largo","=",float(largo))])
+                        # print(get_mid,nombre,medida,get_angulo)
+                        if get_angulo:
+                            suma = 0
+                            # print(get.materials_list.nombre,get.materials_list.medida)
+                            get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+                            # print(get_cant)
+                            for cant in get_cant:
+                                suma += cant.materials_cuantity
+                                self.env.cr.execute("UPDATE dtm_materiales_varilla SET apartado="+str(suma)+" WHERE id="+str(get_angulo.id))
         return res
 
     @api.onchange("calibre_id")

@@ -68,6 +68,48 @@ class Tornillos(models.Model):
                 raise ValidationError("Material Duplicado")
             else:
                 mapa[cadena] = 1
+
+            get_mater = self.env['dtm.materials.line'].search([])
+            for get in get_mater:
+                 if get:
+                    nombre = str(get.materials_list.nombre)
+                    if re.match(".*[tT][uU][bB][oO].*",nombre):
+                        nombre = re.sub("^\s+","",nombre)
+                        nombre = nombre[nombre.index(" "):]
+                        nombre = re.sub("^\s+","",nombre)
+                        nombre = re.sub("\s+$","",nombre)
+                        medida = get.materials_list.medida
+                        medida = re.sub("^\s+","",medida)
+                        medida = re.sub("\s+$","",medida)
+                        # print("result 1",nombre,medida)
+
+                        if  medida.find(" x ") >= 0 or medida.find(" X "):
+                                medida = re.sub("X","x",medida)
+                                # print(calibre)
+                                if medida.find("x"):
+                                    diametro = medida[:medida.index("x")-1]
+                                    largo = medida[medida.index("x")+1:]
+
+                                # Convierte fracciones a decimales
+                                regx = re.match("\d+/\d+", diametro)
+                                if regx:
+                                    diametro = float(diametro[0:diametro.index("/")]) / float(diametro[diametro.index("/") + 1:len(diametro)])
+                                regx = re.match("\d+/\d+", largo)
+                                if regx:
+                                    largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
+                        # print(nombre,diametro,largo)
+                        # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
+                        get_mid = self.env['dtm.tornillos.nombre'].search([("nombre","=",nombre)]).id
+                        get_angulo = self.env['dtm.materiales.tornillos'].search([("material_id","=",get_mid),("diametro","=",float(diametro)),("largo","=",float(largo))])
+                        # print(get_mid,nombre,medida,get_angulo)
+                        if get_angulo:
+                            suma = 0
+                            # print(get.materials_list.nombre,get.materials_list.medida)
+                            get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+                            # print(get_cant)
+                            for cant in get_cant:
+                                suma += cant.materials_cuantity
+                                self.env.cr.execute("UPDATE dtm_materiales_tornillos SET apartado="+str(suma)+" WHERE id="+str(get_angulo.id))
         return res
 
     @api.onchange("largo_id")

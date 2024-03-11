@@ -78,13 +78,61 @@ class Angulos(models.Model):
             ancho = get.ancho
             alto_id = get.alto_id
             alto = get.alto
-
             cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho,alto_id,alto
 
             if mapa.get(cadena):
                 self.env.cr.execute("DELETE FROM dtm_materiales_angulos WHERE id="+str(get.id))
             else:
                 mapa[cadena] = 1
+
+            get_mater = self.env['dtm.materials.line'].search([])
+            for get in get_mater:
+                 if get:
+                    nombre = str(get.materials_list.nombre)
+                    if re.match(".*[aáAÁ][nN][gG][uU][lL][oO][sS]*.*",nombre):
+                        nombre = re.sub("^\s+","",nombre)
+                        nombre = nombre[nombre.index(" "):]
+                        nombre = re.sub("^\s+", "", nombre)
+                        nombre = re.sub("\s+$", "", nombre)
+                        medida = get.materials_list.medida
+                        print("result 1",nombre,medida)
+                        if  medida.find(" x ") >= 0 or medida.find(" X "):
+                            if medida.find(" @ ") >= 0:
+                                # print(nombre)
+                                # nombre = nombre[len("Lámina "):len(nombre)-1]
+                                calibre = medida[medida.index("@")+2:medida.index(",")]
+                                medida = re.sub("X","x",medida)
+                                # print(medida)
+                                if medida.find("x"):
+                                    alto = medida[:medida.index("x")-1]
+                                    ancho = medida[medida.index("x")+2:medida.index("@")]
+                                    largo = medida[medida.index(",")+1:]
+
+                                # Convierte fracciones a decimales
+                                regx = re.match("\d+/\d+", calibre)
+                                if regx:
+                                    calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
+                                regx = re.match("\d+/\d+", largo)
+                                if regx:
+                                    largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
+                                regx = re.match("\d+/\d+", ancho)
+                                if regx:
+                                    ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
+                                regx = re.match("\d+/\d+", alto)
+                                if regx:
+                                    alto = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
+                                # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
+                                get_mid = self.env['dtm.angulos.nombre'].search([("nombre","=",nombre)]).id
+                                get_angulo = self.env['dtm.materiales.angulos'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho)),("alto","=",float(alto))])
+                                # print("largo",largo,"ancho",ancho,"calibre", calibre,"alto",alto,get_angulo)
+                                if get_angulo:
+                                    suma = 0
+                                    # print(get_angulo)
+                                    get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+    #                                 print(get_cant)
+                                    for cant in get_cant:
+                                        suma += cant.materials_cuantity
+                                        self.env.cr.execute("UPDATE dtm_materiales_angulos SET apartado="+str(suma)+" WHERE id="+str(get_angulo.id))
         return res
 
     @api.onchange("calibre_id")

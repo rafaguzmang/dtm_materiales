@@ -32,20 +32,6 @@ class Materiales(models.Model):
         else:
             self.cantidad -= 1
 
-
-    # def Apartado(self,result,cantidad):
-    #     nombre = result.materials_list.nombre
-    #     nombre = nombre[len("Lámina "):len(nombre)-1]
-    #     medida = result.materials_list.medida
-    #     calibre = medida[medida.index("@")+2:]
-    #     largo = medida[:medida.index("x")-1]
-    #     ancho = medida[medida.index("x")+2:medida.index("@")-2]
-    #     get_lamina = self.env['dtm.materiales'].search([("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho))])
-    #     for get in get_lamina:
-    #         if get.material_id.nombre == nombre:
-    #             # print("result 3",get_lamina.material_id.nombre)
-    #             self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cantidad)+" WHERE id="+str(get.id))
-
     @api.model
     def create (self,vals):
         res = super(Materiales, self).create(vals)
@@ -90,16 +76,14 @@ class Materiales(models.Model):
             else:
                 mapa[cadena] = 1
 
-        return res
-
         # actualiza el campo de apartado
         get_mater = self.env['dtm.materials.line'].search([])
         for get in get_mater:
             if get:
                 nombre = str(get.materials_list.nombre)
-                if nombre.find("Lámina") >= 0 or nombre.find("Lamina") >= 0 or nombre.find("lamina") >= 0 or nombre.find("LAMINA") >= 0 or nombre.find("lámina") >= 0 or nombre.find("LÁMINA") >= 0:
+                if  re.match(".*[Ll][aáAÁ][mM][iI][nN][aA][sS]*.*",nombre):
                     nombre = re.sub("^\s+","",nombre)
-                    nombre = nombre[6:]
+                    nombre = nombre[nombre.index(" "):]
                     nombre = re.sub("^\s+", "", nombre)
                     nombre = re.sub("\s+$", "", nombre)
                     medida = get.materials_list.medida
