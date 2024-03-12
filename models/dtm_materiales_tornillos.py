@@ -255,6 +255,6 @@ class MaterialLargo(models.Model):
     _description = "Se guardan los diferentes tipos de valores"
     _rec_name = "largo"
 
-    largo = fields.Char(string="Largo", defaul="0")
+    largo = fields.Char(string="Largo", default="0")
 
 

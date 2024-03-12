@@ -58,9 +58,18 @@ class Materiales(models.Model):
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
-        get_info = self.env['dtm.materiales'].search([])
 
-        mapa ={}
+        # get_dup = self.env['dtm.largo.material'].search([])
+        # mapa ={}
+        # for get in get_dup:
+        #     if mapa.get(get.largo):
+        #         self.env.cr.execute("DELETE FROM dtm_largo_material WHERE id="+str(get.id))
+        #     else:
+        #         mapa[get.largo]= 1
+
+
+        get_info = self.env['dtm.materiales'].search([])
+        mapa = {}
         for get in get_info:
             material_id = get.material_id
             calibre_id = get.calibre_id
@@ -283,7 +292,7 @@ class MaterialLargo(models.Model):
     _description = "Se guardan los diferentes tipos de valores"
     _rec_name = "largo"
 
-    largo = fields.Char(string="Largo", defaul="0")
+    largo = fields.Char(string="Largo", default="0")
 
 
    

@@ -59,14 +59,23 @@ class Solera(models.Model):
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Solera,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.solera'].search([])
-        # print(get_info)
-        numero = 1
-        for result in get_info:
-            # self.env.cr.execute("UPDATE dtm_materiales SET id = "+ str(numero) + " WHERE id = "+ str(result.id))
 
-            if result.cantidad <= 0 and result.apartado == 0:
-                self.env.cr.execute("DELETE FROM dtm_materiales_solera  WHERE id = "+ str(result.id)+";")
-            numero += 1
+        mapa = {}
+        for get in get_info:
+            material_id = get.material_id
+            calibre_id = get.calibre_id
+            calibre = get.calibre
+            largo_id = get.largo_id
+            largo = get.largo
+            ancho_id = get.ancho_id
+            ancho = get.ancho
+            area = get.area
+            cadena = material_id, calibre_id, calibre, largo_id, largo, ancho_id, ancho, area
+
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_solera WHERE id=" + str(get.id))
+            else:
+                mapa[cadena] = 1
 
             get_mater = self.env['dtm.materials.line'].search([])
             for get in get_mater:
@@ -273,7 +282,7 @@ class MaterialLargo(models.Model):
     _description = "Se guardan los diferentes tipos de valores"
     _rec_name = "largo"
 
-    largo = fields.Char(string="Largo", defaul="0")
+    largo = fields.Char(string="Largo", default="0")
 
 
    
