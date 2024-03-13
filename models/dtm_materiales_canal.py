@@ -58,30 +58,8 @@ class Canal(models.Model):
 
         return res
 
-
-    def get_view(self, view_id=None, view_type='form', **options):
-        res = super(Canal,self).get_view(view_id, view_type,**options)
-        get_info = self.env['dtm.materiales.canal'].search([])
-
-        mapa ={}
-        for get in get_info:
-            material_id = get.material_id
-            espesor_id = get.espesor_id
-            espesor = get.espesor
-            ancho_id = get.ancho_id
-            ancho = get.ancho
-            alto_id = get.alto_id
-            alto = get.alto
-            largo_id = get.largo_id
-            largo = get.largo
-            area = get.area
-            cadena = material_id,espesor_id,espesor,largo_id,largo,ancho_id,ancho,area,alto,alto_id
-
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_canal WHERE id="+str(get.id))
-            else:
-                mapa[cadena] = 1
-
+    def material_cantidad(self,modelo):
+         # actualiza el campo de apartado
             get_mater = self.env['dtm.materials.line'].search([])
             for get in get_mater:
                  if get:
@@ -121,7 +99,7 @@ class Canal(models.Model):
 
                                 # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
                                 get_mid = self.env['dtm.canal.nombre'].search([("nombre","=",nombre)]).id
-                                get_angulo = self.env['dtm.materiales.canal'].search([("material_id","=",get_mid),("espesor","=",float(espesor)),("largo","=",float(largo)),("ancho","=",float(ancho)),("alto","=",float(alto))])
+                                get_angulo = self.env['dtm.materiales.canal'].search([("material_id","=",get_mid),("espesor","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho)),("alto","=",float(alto))])
                                 # print("largo",largo,"ancho",ancho,"espesor", calibre,"alto",alto,get_angulo)
                                 if get_angulo:
                                     suma = 0
@@ -131,7 +109,42 @@ class Canal(models.Model):
                                     for cant in get_cant:
                                         suma += cant.materials_cuantity
                                         self.env.cr.execute("UPDATE dtm_materiales_canal SET apartado="+str(suma)+" WHERE id="+str(get_angulo.id))
-        return res
+
+
+                                    return (suma,get_angulo.id)
+
+
+
+    def get_view(self, view_id=None, view_type='form', **options):
+        res = super(Canal,self).get_view(view_id, view_type,**options)
+        get_info = self.env['dtm.materiales.canal'].search([])
+
+        mapa ={}
+        for get in get_info:
+            material_id = get.material_id
+            espesor_id = get.espesor_id
+            espesor = get.espesor
+            ancho_id = get.ancho_id
+            ancho = get.ancho
+            alto_id = get.alto_id
+            alto = get.alto
+            largo_id = get.largo_id
+            largo = get.largo
+            area = get.area
+            cadena = material_id,espesor_id,espesor,largo_id,largo,ancho_id,ancho,area,alto,alto_id
+
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales_canal WHERE id="+str(get.id))
+            else:
+                mapa[cadena] = 1
+
+            cant = self.material_cantidad("dtm.materials.line")
+            cant2 = self.material_cantidad("dtm.materials.npi")
+            if cant[1] == cant2[1]:
+                self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
+
+
+            return res
 
     @api.onchange("espesor_id")
     def _onchange_espesor_id(self):

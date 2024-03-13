@@ -56,37 +56,9 @@ class Materiales(models.Model):
 
         return res
 
-    def get_view(self, view_id=None, view_type='form', **options):
-        res = super(Materiales,self).get_view(view_id, view_type,**options)
-
-        # get_dup = self.env['dtm.largo.material'].search([])
-        # mapa ={}
-        # for get in get_dup:
-        #     if mapa.get(get.largo):
-        #         self.env.cr.execute("DELETE FROM dtm_largo_material WHERE id="+str(get.id))
-        #     else:
-        #         mapa[get.largo]= 1
-
-
-        get_info = self.env['dtm.materiales'].search([])
-        mapa = {}
-        for get in get_info:
-            material_id = get.material_id
-            calibre_id = get.calibre_id
-            calibre = get.calibre
-            largo_id = get.largo_id
-            largo = get.largo
-            ancho_id = get.ancho_id
-            ancho = get.ancho
-            cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho
-
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales WHERE id="+str(get.id))
-            else:
-                mapa[cadena] = 1
-
-        # actualiza el campo de apartado
-        get_mater = self.env['dtm.materials.line'].search([])
+    def material_cantidad(self,modelo):
+         # actualiza el campo de apartado
+        get_mater = self.env[modelo].search([])
         for get in get_mater:
             if get:
                 nombre = str(get.materials_list.nombre)
@@ -123,11 +95,36 @@ class Materiales(models.Model):
                                 suma = 0
                                 # print("largo",largo,"ancho",ancho,"calibre", calibre)
                                 # print(get_lamina)
-                                get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+                                get_cant = self.env[modelo].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
 #                                 print(get_cant)
                                 for cant in get_cant:
                                     suma += cant.materials_cuantity
-                                    self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(suma)+" WHERE id="+str(get_lamina.id))
+                                return (suma,get_lamina.id)
+
+
+    def get_view(self, view_id=None, view_type='form', **options):
+        res = super(Materiales,self).get_view(view_id, view_type,**options)
+        get_info = self.env['dtm.materiales'].search([])
+        mapa = {}
+        for get in get_info:
+            material_id = get.material_id
+            calibre_id = get.calibre_id
+            calibre = get.calibre
+            largo_id = get.largo_id
+            largo = get.largo
+            ancho_id = get.ancho_id
+            ancho = get.ancho
+            cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho
+
+            if mapa.get(cadena):
+                self.env.cr.execute("DELETE FROM dtm_materiales WHERE id="+str(get.id))
+            else:
+                mapa[cadena] = 1
+
+            cant = self.material_cantidad("dtm.materials.line")
+            cant2 = self.material_cantidad("dtm.materials.npi")
+            if cant[1] == cant2[1]:
+                self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
         return res
 
