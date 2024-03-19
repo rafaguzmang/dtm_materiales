@@ -85,6 +85,11 @@
                                 </h1>
                             </div>
                         </div>
+                        <notebook>
+                            <page string="Notas">
+                                <field name="descripcion" />
+                            </page>
+                        </notebook>
                         <group>
 <!--                            <field name="tipo" options = "{'no_open': True}" invisible="1"/>-->
                             <field name="largo" options = "{'no_open': True}" invisible="1"/>

@@ -85,14 +85,17 @@
                                 </h1>
                             </div>
                         </div>
+
+                        <notebook>
+                            <page string="Notas">
+                                <field name="descripcion" />
+                            </page>
+                        </notebook>
                         <group>
                             <field name="calibre" options = "{'no_open': True}" invisible="1"/>
                             <field name="largo" options = "{'no_open': True}" invisible="1"/>
                             <field name="ancho" options = "{'no_open': True}" invisible="1"/>
                             <field name="area" options = "{'no_open': True}" invisible="1"/>
-
-
-
                         </group>
                 </sheet>
             </form>

@@ -66,6 +66,7 @@ class Rodamientos(models.Model):
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Rodamientos,self).get_view(view_id, view_type,**options)
+
         get_info = self.env['dtm.materiales.rodamientos'].search([])
 
         mapa ={}
@@ -79,7 +80,7 @@ class Rodamientos(models.Model):
 
             cant = self.material_cantidad("dtm.materials.line")
             cant2 = self.material_cantidad("dtm.materials.npi")
-            if cant[1] == cant2[1]:
+            if cant and cant[1] == cant2[1]:
                 self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
             return res

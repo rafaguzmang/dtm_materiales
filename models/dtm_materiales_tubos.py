@@ -120,7 +120,7 @@ class Tubos(models.Model):
                 mapa[cadena] = 1
             cant = self.material_cantidad("dtm.materials.line")
             cant2 = self.material_cantidad("dtm.materials.npi")
-            if cant[1] == cant2[1]:
+            if cant and cant[1] == cant2[1]:
                 self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
 
