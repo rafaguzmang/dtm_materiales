@@ -24,6 +24,33 @@ class Perfiles(models.Model):
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
 
+    def write(self,vals):
+        res = super(Perfiles,self).write(vals)
+        nombre = "Perfil " + self.material_id.nombre
+        medida = str(self.alto) + " x " + str(self.ancho) + " @ " + str(self.calibre) +", " + str(self.largo)
+        get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+
+
+        descripcion = ""
+        if self.descripcion:
+            descripcion = self.descripcion
+
+        if get_info:
+            # print("existe")
+            print(self.disponible,self.area,descripcion,nombre,medida)
+            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+        else:
+            # print("no existe")
+            # print(nombre,medida,self.largo,self.disponible)
+            get_id = self.env['dtm.diseno.almacen'].search_count([])
+            for result2 in range (1,get_id+1):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                    id = result2
+                    break
+            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
+
+        return res
+
     def accion_proyecto(self):
         if self.apartado <= 0:
             self.apartado = 0
@@ -60,6 +87,7 @@ class Perfiles(models.Model):
                 mapa[cadena] = 1
 
         return res
+
     def material_cantidad(self,modelo):
         get_mater = self.env['dtm.materials.line'].search([])
         for get in get_mater:
@@ -118,7 +146,9 @@ class Perfiles(models.Model):
         get_info = self.env['dtm.materiales.perfiles'].search([])
 
         mapa ={}
+        print(get_info)
         for get in get_info:
+            print(get)
             material_id = get.material_id
             calibre_id = get.calibre_id
             calibre = get.calibre
@@ -137,6 +167,26 @@ class Perfiles(models.Model):
             else:
                 mapa[cadena] = 1
 
+            nombre = "Perfil " + get.material_id.nombre
+            medida = str(get.alto) + " x " + str(get.ancho) + " @ " + str(get.calibre) +", " + str(get.largo)
+            get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            if not get.descripcion:
+                descripcion = ""
+            else:
+                descripcion = get.descripcion
+
+            if get_esp:
+                self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+            else:
+                print(nombre,medida)
+                get_id = self.env['dtm.diseno.almacen'].search_count([])
+                for result2 in range (1,get_id+1):
+                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                        id = result2
+                        break
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ descripcion+ "')")
+
+
             cant = self.material_cantidad("dtm.materials.line")
             cant2 = self.material_cantidad("dtm.materials.npi")
 
@@ -144,7 +194,7 @@ class Perfiles(models.Model):
                 self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
 
-            return res
+        return res
 
     @api.onchange("calibre_id")
     def _onchange_calibre_id(self):

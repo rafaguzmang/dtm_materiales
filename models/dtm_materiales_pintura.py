@@ -17,6 +17,31 @@ class Pintura(models.Model):
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
 
+    def write(self,vals):
+        res = super(Pintura,self).write(vals)
+        nombre = "Rodamientos "+self.material_id.nombre
+        medida = str(self.descripcion)
+        get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+        descripcion = ""
+        if self.descripcion:
+            descripcion = self.descripcion
+
+        if get_info:
+            # print("existe")
+            print(self.disponible,self.area,descripcion,nombre,medida)
+            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+        else:
+            # print("no existe")
+            # print(nombre,medida,self.largo,self.disponible)
+            get_id = self.env['dtm.diseno.almacen'].search_count([])
+            for result2 in range (1,get_id+1):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                    id = result2
+                    break
+            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
+
+        return res
+
     @api.depends("tipo")
     def _compute_cantidades(self):
         for result in self:
@@ -101,12 +126,32 @@ class Pintura(models.Model):
             else:
                 mapa[cadena] = 1
 
+            nombre = "Pintura "+get.material_id.nombre
+            medida = str(get.cantidades)
+            get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            if not get.descripcion:
+                descripcion = ""
+            else:
+                descripcion = get.descripcion
+
+            if get_esp:
+                self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area=0, caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+            else:
+                # print(nombre,medida)
+                get_id = self.env['dtm.diseno.almacen'].search_count([])
+                for result2 in range (1,get_id+1):
+                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                        id = result2
+                        break
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"', '"+ descripcion+ "')")
+
+
             cant = self.material_cantidad("dtm.materials.line")
             cant2 = self.material_cantidad("dtm.materials.npi")
             if cant and cant[1] == cant2[1]:
                 self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
-            return res
+        return res
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):

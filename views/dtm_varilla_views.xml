@@ -73,7 +73,7 @@
                                 </h1>
                                 <h1 >
                                     Entradas:
-                                    <field name="entradas" options='{"type": "number"}'/>
+                                    <field name="entradas" />
                                 </h1>
                             </div>
                         </div>

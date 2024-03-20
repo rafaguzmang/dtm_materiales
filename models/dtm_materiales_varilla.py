@@ -19,6 +19,32 @@ class Varilla(models.Model):
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
 
+    def write(self,vals):
+        res = super(Varilla,self).write(vals)
+        nombre = "Varilla "+  self.material_id.nombre
+        medida = str(self.diametro) + " x " + str(self.largo)
+        get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+        descripcion = ""
+        if self.descripcion:
+            descripcion = self.descripcion
+
+        if get_info:
+            # print("existe")
+            # print(self.disponible,self.area,descripcion,nombre,medida)
+            print(self.disponible, get_info)
+            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+        else:
+            # print("no existe")
+            # print(nombre,medida,self.largo,self.disponible)
+            get_id = self.env['dtm.diseno.almacen'].search_count([])
+            for result2 in range (1,get_id+1):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                    id = result2
+                    break
+            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
+
+        return res
+
     def accion_proyecto(self):
         if self.apartado <= 0:
             self.apartado = 0
@@ -107,6 +133,26 @@ class Varilla(models.Model):
                 raise ValidationError("Material Duplicado")
             else:
                 mapa[cadena] = 1
+
+            nombre = "Tubo "+  get.material_id.nombre
+            medida = str(get.diametro) + " x " + str(get.largo) + " @ " + str(get.calibre)
+            get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            if not get.descripcion:
+                descripcion = ""
+            else:
+                descripcion = get.descripcion
+
+            if get_esp:
+                self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+            else:
+                print(nombre,medida)
+                get_id = self.env['dtm.diseno.almacen'].search_count([])
+                for result2 in range (1,get_id+1):
+                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                        id = result2
+                        break
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ descripcion+ "')")
+
 
             cant = self.material_cantidad("dtm.materials.line")
             cant2 = self.material_cantidad("dtm.materials.npi")

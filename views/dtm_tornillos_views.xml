@@ -43,7 +43,7 @@
                                     <field name="material_id" options = "{'no_open': True}" />
                               </div>
                               <div class="col-3  d-flex flex-column justify-content-start">
-                                <h2>Material</h2>
+                                <h2>Tipo</h2>
                                    <field name="tipo_id" options = "{'no_open': True}"/>
                               </div>
                               <div class="col-3  d-flex flex-column justify-content-start">
@@ -81,7 +81,7 @@
                                 </h1>
                                 <h1 >
                                     Entradas:
-                                    <field name="entradas" options='{"type": "number"}'/>
+                                    <field name="entradas" />
                                 </h1>
                             </div>
                         </div>
