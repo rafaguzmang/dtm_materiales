@@ -65,7 +65,7 @@ class Perfiles(models.Model):
     def create (self,vals):
         res = super(Perfiles, self).create(vals)
         get_info = self.env['dtm.materiales.perfiles'].search([])
-
+        print(get_info)
         mapa ={}
         for get in get_info:
             material_id = get.material_id
@@ -104,6 +104,7 @@ class Perfiles(models.Model):
                         if medida.find("@") >= 0:
                             # print(nombre)
                             # nombre = nombre[len("Lámina "):len(nombre)-1]
+                            # print(medida)
                             calibre = medida[medida.index("@")+len("@"):medida.index(",")]
                             medida = re.sub("X","x",medida)
                             # print(calibre)
@@ -146,9 +147,9 @@ class Perfiles(models.Model):
         get_info = self.env['dtm.materiales.perfiles'].search([])
 
         mapa ={}
-        print(get_info)
+        # print(get_info)
         for get in get_info:
-            print(get)
+#             print(get)
             material_id = get.material_id
             calibre_id = get.calibre_id
             calibre = get.calibre
@@ -178,7 +179,7 @@ class Perfiles(models.Model):
             if get_esp:
                 self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
             else:
-                print(nombre,medida)
+                # print(nombre,medida)
                 get_id = self.env['dtm.diseno.almacen'].search_count([])
                 for result2 in range (1,get_id+1):
                     if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):

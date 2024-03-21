@@ -134,9 +134,9 @@ class Varilla(models.Model):
             else:
                 mapa[cadena] = 1
 
-            nombre = "Tubo "+  get.material_id.nombre
-            medida = str(get.diametro) + " x " + str(get.largo) + " @ " + str(get.calibre)
-            get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            nombre = "Varilla " + get.material_id.nombre
+            medida = str(get.diametro) + " x " + str(get.largo)
+            get_esp = self.env['dtm.diseno.almacen'].search([("nombre", "=", nombre), ("medida", "=", medida)])
             if not get.descripcion:
                 descripcion = ""
             else:
@@ -159,7 +159,7 @@ class Varilla(models.Model):
             if cant and cant[1] == cant2[1]:
                 self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
-            return res
+        return res
 
     @api.onchange("calibre_id")
     def _onchange_calibre_id(self):

@@ -145,15 +145,16 @@ class Tubos(models.Model):
             else:
                 mapa[cadena] = 1
 
-            nombre = "Varilla "+  self.material_id.nombre
-            medida = str(self.diametro) + " x " + str(self.largo)
-            get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            nombre = "Tubo " + get.material_id.nombre
+            medida = str(get.diametro) + " x " + str(get.largo) + " @ " + str(get.calibre)
+            get_info = self.env['dtm.diseno.almacen'].search([("nombre", "=", nombre), ("medida", "=", medida)])
+
             if not get.descripcion:
                 descripcion = ""
             else:
                 descripcion = get.descripcion
 
-            if get_esp:
+            if get_info:
                 self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
             else:
                 # print(nombre,medida)
