@@ -20,7 +20,7 @@ class Materiales(models.Model):
     entradas = fields.Integer(string="Entradas", default=0)
     cantidad = fields.Integer(string="Stock", default=0)
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
-    disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
+    disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" ,store=True)
 
     def accion_proyecto(self):
         if self.apartado <= 0:
@@ -81,54 +81,50 @@ class Materiales(models.Model):
 
         return res
 
-
-
-
-
-    def material_cantidad(self,modelo):
-         # actualiza el campo de apartado
-        get_mater = self.env[modelo].search([])
-        for get in get_mater:
-            if get:
-                nombre = str(get.materials_list.nombre)
-                if  re.match(".*[Ll][aáAÁ][mM][iI][nN][aA][sS]*.*",nombre):
-                    nombre = re.sub("^\s+","",nombre)
-                    nombre = nombre[nombre.index(" "):]
-                    nombre = re.sub("^\s+", "", nombre)
-                    nombre = re.sub("\s+$", "", nombre)
-                    medida = get.materials_list.medida
-                    # print("result 1",nombre,medida)
-                    if  medida.find(" x ") >= 0 or medida.find(" X "):
-                        if medida.find(" @ ") >= 0:
-                            # print(nombre)
-                            # nombre = nombre[len("Lámina "):len(nombre)-1]
-                            calibre = medida[medida.index("@")+2:]
-                            medida = re.sub("X","x",medida)
-                            # print(medida)
-                            if medida.find("x"):
-                                largo = medida[:medida.index("x")-1]
-                                ancho = medida[medida.index("x")+2:medida.index("@")]
-                            # Convierte fracciones a decimales
-                            regx = re.match("\d+/\d+", calibre)
-                            if regx:
-                                calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
-                            regx = re.match("\d+/\d+", largo)
-                            if regx:
-                                largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
-                            regx = re.match("\d+/\d+", ancho)
-                            if regx:
-                                ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
-                            get_mid = self.env['dtm.nombre.material'].search([("nombre","=",nombre)]).id
-                            get_lamina = self.env['dtm.materiales'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho))])
-                            if get_lamina:
-                                suma = 0
-                                # print("largo",largo,"ancho",ancho,"calibre", calibre)
-                                # print(get_lamina)
-                                get_cant = self.env[modelo].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
-#                                 print(get_cant)
-                                for cant in get_cant:
-                                    suma += cant.materials_cuantity
-                                return (suma,get_lamina.id)
+#     def material_cantidad(self,modelo):
+#          # actualiza el campo de apartado
+#         get_mater = self.env[modelo].search([])
+#         for get in get_mater:
+#             if get:
+#                 nombre = str(get.materials_list.nombre)
+#                 if  re.match(".*[Ll][aáAÁ][mM][iI][nN][aA][sS]*.*",nombre):
+#                     nombre = re.sub("^\s+","",nombre)
+#                     nombre = nombre[nombre.index(" "):]
+#                     nombre = re.sub("^\s+", "", nombre)
+#                     nombre = re.sub("\s+$", "", nombre)
+#                     medida = get.materials_list.medida
+#                     # print("result 1",nombre,medida)
+#                     if  medida.find(" x ") >= 0 or medida.find(" X "):
+#                         if medida.find(" @ ") >= 0:
+#                             # print(nombre)
+#                             # nombre = nombre[len("Lámina "):len(nombre)-1]
+#                             calibre = medida[medida.index("@")+2:]
+#                             medida = re.sub("X","x",medida)
+#                             # print(medida)
+#                             if medida.find("x"):
+#                                 largo = medida[:medida.index("x")-1]
+#                                 ancho = medida[medida.index("x")+2:medida.index("@")]
+#                             # Convierte fracciones a decimales
+#                             regx = re.match("\d+/\d+", calibre)
+#                             if regx:
+#                                 calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
+#                             regx = re.match("\d+/\d+", largo)
+#                             if regx:
+#                                 largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
+#                             regx = re.match("\d+/\d+", ancho)
+#                             if regx:
+#                                 ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
+#                             get_mid = self.env['dtm.nombre.material'].search([("nombre","=",nombre)]).id
+#                             get_lamina = self.env['dtm.materiales'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho))])
+#                             if get_lamina:
+#                                 suma = 0
+#                                 # print("largo",largo,"ancho",ancho,"calibre", calibre)
+#                                 # print(get_lamina)
+#                                 get_cant = self.env[modelo].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+# #                                 print(get_cant)
+#                                 for cant in get_cant:
+#                                     suma += cant.materials_cuantity
+#                                 return (suma,get_lamina.id)
 
 
     def get_view(self, view_id=None, view_type='form', **options):
@@ -175,11 +171,6 @@ class Materiales(models.Model):
                     self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.area)+", '"+ descripcion+ "')")
 
 
-            cant = self.material_cantidad("dtm.materials.line")
-            cant2 = self.material_cantidad("dtm.materials.npi")
-            # print(cant,cant2)
-            if cant and cant2 and cant[1] == cant2[1]:
-                self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
         return res
 
@@ -265,9 +256,9 @@ class Materiales(models.Model):
          else:
             self.cantidad -= 1
 
-    def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
-        for result in self:
-            result.disponible = result.cantidad - result.apartado
+    # def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
+    #     for result in self:
+    #         result.disponible = result.cantidad - result.apartado
 
     def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
         res = []

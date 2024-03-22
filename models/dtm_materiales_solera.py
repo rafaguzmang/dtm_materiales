@@ -80,49 +80,49 @@ class Solera(models.Model):
                 mapa[cadena] = 1
         return res
 
-    def material_cantidad(self,modelo):
-        get_mater = self.env['dtm.materials.line'].search([])
-        for get in get_mater:
-            if get:
-                nombre = str(get.materials_list.nombre)
-                if  re.match(".*[sS][oO][lL][eE][rR][aA].*",nombre):
-                    nombre = re.sub("^\s+","",nombre)
-                    nombre = nombre[nombre.index(" "):]
-                    nombre = re.sub("^\s+", "", nombre)
-                    nombre = re.sub("\s+$", "", nombre)
-                    medida = get.materials_list.medida
-                    # print("result 1",nombre,medida)
-                    if  medida.find(" x ") >= 0 or medida.find(" X "):
-                        if medida.find(" @ ") >= 0:
-                            # print(nombre)
-                            # nombre = nombre[len("Lámina "):len(nombre)-1]
-                            calibre = medida[medida.index("@")+2:]
-                            medida = re.sub("X","x",medida)
-                            # print(medida)
-                            if medida.find("x"):
-                                largo = medida[:medida.index("x")-1]
-                                ancho = medida[medida.index("x")+2:medida.index("@")]
-                            # Convierte fracciones a decimales
-                            regx = re.match("\d+/\d+", calibre)
-                            if regx:
-                                calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
-                            regx = re.match("\d+/\d+", largo)
-                            if regx:
-                                largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
-                            regx = re.match("\d+/\d+", ancho)
-                            if regx:
-                                ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
-                            get_mid = self.env['dtm.solera.nombre'].search([("nombre","=",nombre)]).id
-                            get_solera = self.env['dtm.materiales.solera'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho))])
-                            if get_solera:
-                                suma = 0
-                                # print("largo",largo,"ancho",ancho,"calibre", calibre)
-                                # print(get_solera)
-                                get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
-#                                 print(get_cant)
-                                for cant in get_cant:
-                                    suma += cant.materials_cuantity
-                                return (suma,get_solera.id)
+#     def material_cantidad(self,modelo):
+#         get_mater = self.env['dtm.materials.line'].search([])
+#         for get in get_mater:
+#             if get:
+#                 nombre = str(get.materials_list.nombre)
+#                 if  re.match(".*[sS][oO][lL][eE][rR][aA].*",nombre):
+#                     nombre = re.sub("^\s+","",nombre)
+#                     nombre = nombre[nombre.index(" "):]
+#                     nombre = re.sub("^\s+", "", nombre)
+#                     nombre = re.sub("\s+$", "", nombre)
+#                     medida = get.materials_list.medida
+#                     # print("result 1",nombre,medida)
+#                     if  medida.find(" x ") >= 0 or medida.find(" X "):
+#                         if medida.find(" @ ") >= 0:
+#                             # print(nombre)
+#                             # nombre = nombre[len("Lámina "):len(nombre)-1]
+#                             calibre = medida[medida.index("@")+2:]
+#                             medida = re.sub("X","x",medida)
+#                             # print(medida)
+#                             if medida.find("x"):
+#                                 largo = medida[:medida.index("x")-1]
+#                                 ancho = medida[medida.index("x")+2:medida.index("@")]
+#                             # Convierte fracciones a decimales
+#                             regx = re.match("\d+/\d+", calibre)
+#                             if regx:
+#                                 calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
+#                             regx = re.match("\d+/\d+", largo)
+#                             if regx:
+#                                 largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
+#                             regx = re.match("\d+/\d+", ancho)
+#                             if regx:
+#                                 ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
+#                             get_mid = self.env['dtm.solera.nombre'].search([("nombre","=",nombre)]).id
+#                             get_solera = self.env['dtm.materiales.solera'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho))])
+#                             if get_solera:
+#                                 suma = 0
+#                                 # print("largo",largo,"ancho",ancho,"calibre", calibre)
+#                                 # print(get_solera)
+#                                 get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+# #                                 print(get_cant)
+#                                 for cant in get_cant:
+#                                     suma += cant.materials_cuantity
+#                                 return (suma,get_solera.id)
 
 
 
@@ -165,12 +165,6 @@ class Solera(models.Model):
                         id = result2
                         break
                 self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ descripcion+ "')")
-
-
-            cant = self.material_cantidad("dtm.materials.line")
-            cant2 = self.material_cantidad("dtm.materials.npi")
-            if cant and cant[1] == cant2[1]:
-                self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
         return res
 
