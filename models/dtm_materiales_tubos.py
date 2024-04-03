@@ -29,11 +29,9 @@ class Tubos(models.Model):
         descripcion = ""
         if self.descripcion:
             descripcion = self.descripcion
-
         if get_info:
             # print("existe")
             # print(self.disponible,self.area,descripcion,nombre,medida)
-            print(self.disponible, get_info)
             self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
         else:
             # print("no existe")

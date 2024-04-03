@@ -37,7 +37,7 @@ class Perfiles(models.Model):
 
         if get_info:
             # print("existe")
-            print(self.disponible,self.area,descripcion,nombre,medida)
+            # print(self.disponible,self.area,descripcion,nombre,medida)
             self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
         else:
             # print("no existe")
@@ -65,7 +65,7 @@ class Perfiles(models.Model):
     def create (self,vals):
         res = super(Perfiles, self).create(vals)
         get_info = self.env['dtm.materiales.perfiles'].search([])
-        print(get_info)
+        # print(get_info)
         mapa ={}
         for get in get_info:
             material_id = get.material_id

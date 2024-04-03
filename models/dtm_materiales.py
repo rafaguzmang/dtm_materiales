@@ -78,7 +78,6 @@ class Materiales(models.Model):
                     break
             self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ descripcion+ "')")
 
-
         return res
 
 #     def material_cantidad(self,modelo):

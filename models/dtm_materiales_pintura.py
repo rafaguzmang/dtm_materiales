@@ -19,7 +19,7 @@ class Pintura(models.Model):
 
     def write(self,vals):
         res = super(Pintura,self).write(vals)
-        nombre = "Rodamientos "+self.material_id.nombre
+        nombre = "Pintura "+self.material_id.nombre
         medida = str(self.tipo)
         get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
         descripcion = ""

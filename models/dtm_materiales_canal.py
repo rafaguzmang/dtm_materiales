@@ -30,12 +30,13 @@ class Canal(models.Model):
         get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
 
         descripcion = ""
-        if not self.descripcion:
+        if self.descripcion != False:
+            # print("Description")
             descripcion = self.descripcion
 
         if get_info:
             # print("existe")
-            print(self.disponible,self.area,descripcion,nombre,medida)
+            # print(self.disponible,self.largo,descripcion,nombre,medida)
             self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
         else:
             # print("no existe")

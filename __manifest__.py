@@ -6,8 +6,6 @@
         'views/dtm_materiales_views.xml',
         'views/dtm_perfiles_views.xml',
         'views/dtm_tubos_views.xml',
-
-        #menú
         'views/dtm_angulos_views.xml',
         'views/dtm_soleras_views.xml',
         'views/dtm_varilla_views.xml',
@@ -18,6 +16,10 @@
         'views/dtm_consumibles_views.xml',
         'views/dtm_herramientas_views.xml',
         'views/dtm_otros_views.xml',
+        'views/dtm_control_entradas_views.xml',
+        'views/dtm_control_recibido_views.xml',
+        'views/dtm_control_entregado_views.xml',
+        #menú
         'views/dtm_menu.xml'
     ]
 }

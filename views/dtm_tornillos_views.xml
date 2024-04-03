@@ -7,7 +7,6 @@
             <tree>
                     <field name="id" invisible="1"/>
                     <field name="material_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="tipo_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
 <!--                    <field name="tipo" invisible="1"/>-->
                     <field name="largo_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
                     <field name="largo" invisible="1"/>
@@ -42,10 +41,7 @@
                                     <h2>Material</h2>
                                     <field name="material_id" options = "{'no_open': True}" />
                               </div>
-                              <div class="col-3  d-flex flex-column justify-content-start">
-                                <h2>Tipo</h2>
-                                   <field name="tipo_id" options = "{'no_open': True}"/>
-                              </div>
+
                               <div class="col-3  d-flex flex-column justify-content-start">
                                 <h2>Diámetro</h2>
                                    <field name="diametro_id" options = "{'no_open': True}"/>

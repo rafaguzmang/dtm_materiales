@@ -8,7 +8,6 @@ class Tornillos(models.Model):
     _rec_name = "material_id"
 
     material_id = fields.Many2one("dtm.tornillos.nombre",string="Nombre",required=True)
-    tipo_id = fields.Many2one("dtm.tornillos.tipo",string="material",required=True)
     diametro_id = fields.Many2one("dtm.tornillos.diametro",string="DIAMETRO", required=True)
     diametro = fields.Float(string="Decimal")
     largo_id = fields.Many2one("dtm.tornillos.largo",string="LARGO", required=True)
@@ -23,7 +22,7 @@ class Tornillos(models.Model):
 
     def write(self,vals):
         res = super(Tornillos,self).write(vals)
-        nombre = "Tornillo "+self.material_id.nombre +" " + self.tipo_id.tipo +" " + self.tipo_id.tipo
+        nombre = "Tornillo "+self.material_id.nombre
         medida = str(self.diametro) + " x " + str(self.largo)
         get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
         descripcion = ""
@@ -32,7 +31,7 @@ class Tornillos(models.Model):
 
         if get_info:
             # print("existe")
-            print(self.disponible,self.area,descripcion,nombre,medida)
+            # print(self.disponible,self.area,descripcion,nombre,medida)
             self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
         else:
             # print("no existe")
@@ -63,12 +62,11 @@ class Tornillos(models.Model):
         mapa ={}
         for get in get_info:
             material_id = get.material_id
-            tipo_id = get.tipo_id
             diametro_id = get.diametro_id
             diametro = get.diametro
             largo_id = get.largo_id
             largo = get.largo
-            cadena = material_id,tipo_id,diametro_id,largo_id,largo,diametro
+            cadena = material_id,diametro_id,largo_id,largo,diametro
             if mapa.get(cadena):
                 self.env.cr.execute("DELETE FROM dtm_materiales_tornillos WHERE id="+str(get.id))
                 raise ValidationError("Material Duplicado")
@@ -76,48 +74,7 @@ class Tornillos(models.Model):
                 mapa[cadena] = 1
         return res
 
-    # def material_cantidad(self,modelo):
-    #     get_mater = self.env['dtm.materials.line'].search([])
-    #     for get in get_mater:
-    #          if get:
-    #             nombre = str(get.materials_list.nombre)
-    #             if re.match(".*[tT][oO][rR][nN][lL][lL][oO].*",nombre):
-    #                 nombre = re.sub("^\s+","",nombre)
-    #                 nombre = nombre[nombre.index(" "):]
-    #                 nombre = re.sub("^\s+","",nombre)
-    #                 nombre = re.sub("\s+$","",nombre)
-    #                 medida = get.materials_list.medida
-    #                 medida = re.sub("^\s+","",medida)
-    #                 medida = re.sub("\s+$","",medida)
-    #                 # print("result 1",nombre,medida)
-    #
-    #                 if  medida.find(" x ") >= 0 or medida.find(" X "):
-    #                         medida = re.sub("X","x",medida)
-    #                         # print(calibre)
-    #                         if medida.find("x"):
-    #                             diametro = medida[:medida.index("x")-1]
-    #                             largo = medida[medida.index("x")+1:]
-    #
-    #                         # Convierte fracciones a decimales
-    #                         regx = re.match("\d+/\d+", diametro)
-    #                         if regx:
-    #                             diametro = float(diametro[0:diametro.index("/")]) / float(diametro[diametro.index("/") + 1:len(diametro)])
-    #                         regx = re.match("\d+/\d+", largo)
-    #                         if regx:
-    #                             largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
-    #                         # print(nombre,diametro,largo)
-    #                         # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
-    #                         get_mid = self.env['dtm.tornillos.nombre'].search([("nombre","=",nombre)]).id
-    #                         get_angulo = self.env['dtm.materiales.tornillos'].search([("material_id","=",get_mid),("diametro","=",float(diametro)),("largo","=",float(largo))])
-    #                         # print(get_mid,nombre,medida,get_angulo)
-    #                         if get_angulo:
-    #                             suma = 0
-    #                             # print(get.materials_list.nombre,get.materials_list.medida)
-    #                             get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
-    #                             # print(get_cant)
-    #                             for cant in get_cant:
-    #                                 suma += cant.materials_cuantity
-    #                             return (suma,get_angulo.id)
+
 
 
 
@@ -127,36 +84,33 @@ class Tornillos(models.Model):
         mapa ={}
         for get in get_info:
             material_id = get.material_id
-            tipo_id = get.tipo_id
             diametro_id = get.diametro_id
             diametro = get.diametro
             largo_id = get.largo_id
             largo = get.largo
-            cadena = material_id,tipo_id,diametro_id,largo_id,largo,diametro
+            cadena = material_id,diametro_id,largo_id,largo,diametro
             if mapa.get(cadena):
                 self.env.cr.execute("DELETE FROM dtm_materiales_tornillos WHERE id="+str(get.id))
                 raise ValidationError("Material Duplicado")
             else:
                 mapa[cadena] = 1
 
-            nombre = "Tornillo "+get.material_id.nombre +" " + get.tipo_id.tipo
+            nombre = "Tornillo "+ get.material_id.nombre
             medida = str(get.diametro) + " x " + str(get.largo)
             get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-            if not get.descripcion:
-                descripcion = ""
-            else:
+            descripcion = ""
+            if get.descripcion:
                 descripcion = get.descripcion
 
             if get_esp:
                 self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
             else:
-                print(nombre,medida)
                 get_id = self.env['dtm.diseno.almacen'].search_count([])
                 for result2 in range (1,get_id+1):
                     if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
                         id = result2
                         break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ descripcion+ "')")
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ str(descripcion)+ "')")
 
         return res
 
@@ -232,7 +186,7 @@ class Tornillos(models.Model):
     def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
         res = []
         for result in self:
-            res.append((result.id,f'{result.id}: {result.material_id.nombre} MATERIAL: {result.tipo_id.tipo} DIAMETRO: {result.diametro_id.diametro} LARGO:  {result.largo_id.largo}   '))
+            res.append((result.id,f'{result.id}: {result.material_id.nombre}  DIAMETRO: {result.diametro_id.diametro} LARGO:  {result.largo_id.largo}   '))
         return res
 
     def convertidor_medidas(self,text):
