@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id = "dtm_control_entregado_accion" model="ir.actions.act_window">
+            <field name="name">Entregado</field>
+            <field name="res_model">dtm.control.entregado</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <record id="dtm_control_entregado_tree" model="ir.ui.view">
+            <field name="name">dtm_control_entregado_tree</field>
+            <field name="model">dtm.control.entregado</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="entregado=='si'">
+                    <field name="orden_trabajo"/>
+                    <field name="codigo" />
+                    <field name="nombre"/>
+                    <field name="cantidad"/>
+                    <field name="fecha_recepcion"/>
+                    <field name="entregado" invisible = '1'/>
+                    <button name="action_done" type="object" string="Entregado" class="btn btn-primary" icon="fa-check"/>
+                </tree>
+            </field>
+        </record>
+
+        <menuitem id="dtm_control_entregado_menu" action="dtm_control_entregado_accion" />
+    </data>
+</odoo>

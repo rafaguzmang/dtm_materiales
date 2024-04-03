@@ -11,4 +11,6 @@ from . import dtm_materiales_pintura
 from . import dtm_materiales_consumibles
 from . import dtm_materiales_herramientas
 from . import dtm_materiales_otros
+from . import dtm_control_entradas
+
 

@@ -37,7 +37,7 @@ class Perfiles(models.Model):
 
         if get_info:
             # print("existe")
-            print(self.disponible,self.area,descripcion,nombre,medida)
+            # print(self.disponible,self.area,descripcion,nombre,medida)
             self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
         else:
             # print("no existe")
@@ -65,7 +65,7 @@ class Perfiles(models.Model):
     def create (self,vals):
         res = super(Perfiles, self).create(vals)
         get_info = self.env['dtm.materiales.perfiles'].search([])
-        print(get_info)
+        # print(get_info)
         mapa ={}
         for get in get_info:
             material_id = get.material_id
@@ -88,59 +88,59 @@ class Perfiles(models.Model):
 
         return res
 
-    def material_cantidad(self,modelo):
-        get_mater = self.env['dtm.materials.line'].search([])
-        for get in get_mater:
-             if get:
-                nombre = str(get.materials_list.nombre)
-                if re.match(".*[pP][eE][rR][fF][iI][lL].*",nombre):
-                    nombre = re.sub("^\s+","",nombre)
-                    nombre = nombre[nombre.index(" "):]
-                    nombre = re.sub("^\s+", "", nombre)
-                    nombre = re.sub("\s+$", "", nombre)
-                    medida = get.materials_list.medida
-                    # print("result 1",nombre,medida)
-                    if  medida.find(" x ") >= 0 or medida.find(" X "):
-                        if medida.find("@") >= 0:
-                            # print(nombre)
-                            # nombre = nombre[len("Lámina "):len(nombre)-1]
-                            # print(medida)
-                            calibre = medida[medida.index("@")+len("@"):medida.index(",")]
-                            medida = re.sub("X","x",medida)
-                            # print(calibre)
-                            if medida.find("x"):
-                                alto = medida[:medida.index("x")-1]
-                                ancho = medida[medida.index("x")+2:medida.index(" @ ")]
-                                largo = medida[medida.index(",")+1:]
-
-                            # Convierte fracciones a decimales
-                            regx = re.match("\d+/\d+", calibre)
-                            if regx:
-                                calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
-                            regx = re.match("\d+/\d+", largo)
-                            if regx:
-                                largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
-                            regx = re.match("\d+/\d+", ancho)
-                            if regx:
-                                ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
-                            regx = re.match("\d+/\d+", alto)
-                            if regx:
-                                alto = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
-
-                            # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
-                            get_mid = self.env['dtm.perfiles.nombre'].search([("nombre","=",nombre)]).id
-                            get_angulo = self.env['dtm.materiales.perfiles'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho)),("alto","=",float(alto))])
-                            # print("largo",largo,"ancho",ancho,"espesor", calibre,"alto",alto,get_angulo)
-                            if get_angulo:
-                                suma = 0
-                                # print(get_angulo)
-                                get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
-                                # print(get_cant)
-                                for cant in get_cant:
-                                    suma += cant.materials_cuantity
-                                    self.env.cr.execute("UPDATE dtm_materiales_perfiles SET apartado="+str(suma)+" WHERE id="+str(get_angulo.id))
-                                return (suma,get_angulo.id)
-
+    # def material_cantidad(self,modelo):
+    #     get_mater = self.env['dtm.materials.line'].search([])
+    #     for get in get_mater:
+    #          if get:
+    #             nombre = str(get.materials_list.nombre)
+    #             if re.match(".*[pP][eE][rR][fF][iI][lL].*",nombre):
+    #                 nombre = re.sub("^\s+","",nombre)
+    #                 nombre = nombre[nombre.index(" "):]
+    #                 nombre = re.sub("^\s+", "", nombre)
+    #                 nombre = re.sub("\s+$", "", nombre)
+    #                 medida = get.materials_list.medida
+    #                 # print("result 1",nombre,medida)
+    #                 if  medida.find(" x ") >= 0 or medida.find(" X "):
+    #                     if medida.find("@") >= 0:
+    #                         # print(nombre)
+    #                         # nombre = nombre[len("Lámina "):len(nombre)-1]
+    #                         # print(medida)
+    #                         calibre = medida[medida.index("@")+len("@"):medida.index(",")]
+    #                         medida = re.sub("X","x",medida)
+    #                         # print(calibre)
+    #                         if medida.find("x"):
+    #                             alto = medida[:medida.index("x")-1]
+    #                             ancho = medida[medida.index("x")+2:medida.index(" @ ")]
+    #                             largo = medida[medida.index(",")+1:]
+    #
+    #                         # Convierte fracciones a decimales
+    #                         regx = re.match("\d+/\d+", calibre)
+    #                         if regx:
+    #                             calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
+    #                         regx = re.match("\d+/\d+", largo)
+    #                         if regx:
+    #                             largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
+    #                         regx = re.match("\d+/\d+", ancho)
+    #                         if regx:
+    #                             ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
+    #                         regx = re.match("\d+/\d+", alto)
+    #                         if regx:
+    #                             alto = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
+    #
+    #                         # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
+    #                         get_mid = self.env['dtm.perfiles.nombre'].search([("nombre","=",nombre)]).id
+    #                         get_angulo = self.env['dtm.materiales.perfiles'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho)),("alto","=",float(alto))])
+    #                         # print("largo",largo,"ancho",ancho,"espesor", calibre,"alto",alto,get_angulo)
+    #                         if get_angulo:
+    #                             suma = 0
+    #                             # print(get_angulo)
+    #                             get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+    #                             # print(get_cant)
+    #                             for cant in get_cant:
+    #                                 suma += cant.materials_cuantity
+    #                                 self.env.cr.execute("UPDATE dtm_materiales_perfiles SET apartado="+str(suma)+" WHERE id="+str(get_angulo.id))
+    #                             return (suma,get_angulo.id)
+    #
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Perfiles,self).get_view(view_id, view_type,**options)
@@ -167,7 +167,7 @@ class Perfiles(models.Model):
                 raise ValidationError("Material Duplicado")
             else:
                 mapa[cadena] = 1
-
+            #Inserta el nuevo material en el modulo de dtm_diseno_almacen
             nombre = "Perfil " + get.material_id.nombre
             medida = str(get.alto) + " x " + str(get.ancho) + " @ " + str(get.calibre) +", " + str(get.largo)
             get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
@@ -186,14 +186,6 @@ class Perfiles(models.Model):
                         id = result2
                         break
                 self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ descripcion+ "')")
-
-
-            cant = self.material_cantidad("dtm.materials.line")
-            cant2 = self.material_cantidad("dtm.materials.npi")
-
-            if cant and cant[1] == cant2[1]:
-                self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
-
 
         return res
 

@@ -63,3 +63,7 @@ access_dtm_herramientas_nombre,access.dtm.herramientas.nombre,model_dtm_herramie
 
 access_dtm_materiales_otros,access.dtm.materiales.otros,model_dtm_materiales_otros,base.group_user,1,1,1,1
 access_dtm_otros_nombre,access.dtm.otros.nombre,model_dtm_otros_nombre,base.group_user,1,1,1,1
+
+access_dtm_control_entradas,access.dtm.control.entradas,model_dtm_control_entradas,base.group_user,1,1,1,1
+access_dtm_control_recibido,access.dtm.control.recibido,model_dtm_control_recibido,base.group_user,1,1,1,1
+access_dtm_control_entregado,access.dtm.control.entregado,model_dtm_control_entregado,base.group_user,1,1,1,1

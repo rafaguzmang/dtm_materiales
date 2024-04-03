@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="dtm_control_recibido_tree" model="ir.ui.view">
+        <field name="name">dtm_control_recibido_tree</field>
+        <field name="model">dtm.control.recibido</field>
+        <field name="arch" type="xml">
+            <tree >
+                <field name="proveedor" />
+                <field name="codigo" />
+                <field name="descripcion" />
+                <field name="cantidad" />
+                <field name="fecha_recepcion" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="dtm_control_recibido_view_form" model="ir.ui.view">
+        <field name="name">dtm_control_view_form</field>
+        <field name="model">dtm.control.recibido</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="proveedor" />
+                        <field name="codigo" />
+                        <field name="descripcion" />
+                        <field name="cantidad" />
+                        <field name="fecha_recepcion" />
+                    </group>
+                    <group>
+                        <field name="material_correcto"  widget="boolean_toggle"/>
+                        <field name="material_cantidad" widget="boolean_toggle"/>
+                        <field name="material_calidad" widget="boolean_toggle"/>
+                        <field name="material_entiempo" widget="boolean_toggle"/>
+                        <field name="material_aprobado" widget="boolean_toggle"/>
+                        <field name="fecha_real" />
+                    </group>
+                    <group>
+                        <field name="motivo" attrs="{'invisible':  [('material_aprobado','=',True)]}" />
+                        <field name="correctiva" attrs="{'invisible':  [('material_aprobado','=',True)]}"/>
+                        <field name="cantidad_real" options='{"type": "number"}'/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="dtm_control_recibido_accion" model="ir.actions.act_window">
+        <field name="name">Control de recibido</field>
+        <field name="res_model">dtm.control.recibido</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="dtm_control_recibido" action="dtm_control_recibido_accion"/>
+    
+   
+</odoo>

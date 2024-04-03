@@ -19,8 +19,8 @@ class Pintura(models.Model):
 
     def write(self,vals):
         res = super(Pintura,self).write(vals)
-        nombre = "Rodamientos "+self.material_id.nombre
-        medida = str(self.descripcion)
+        nombre = "Pintura "+self.material_id.nombre
+        medida = str(self.tipo)
         get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
         descripcion = ""
         if self.descripcion:
@@ -28,8 +28,8 @@ class Pintura(models.Model):
 
         if get_info:
             # print("existe")
-            print(self.disponible,self.area,descripcion,nombre,medida)
-            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+            # print(self.disponible,self.area,descripcion,nombre,medida)
+            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
         else:
             # print("no existe")
             # print(nombre,medida,self.largo,self.disponible)
@@ -38,7 +38,7 @@ class Pintura(models.Model):
                 if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
                     id = result2
                     break
-            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
+            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"', '"+ descripcion+ "')")
 
         return res
 
@@ -80,32 +80,32 @@ class Pintura(models.Model):
             else:
                 mapa[cadena] = 1
         return res
-    def material_cantidad(self,modelo):
-        get_mater = self.env['dtm.materials.line'].search([])
-        for get in get_mater:
-             if get:
-                nombre = str(get.materials_list.nombre)
-                if re.match(".*[pP][iI][nN][tT][uU][rR][aA].*",nombre):
-                    nombre = re.sub("^\s+","",nombre)
-                    nombre = nombre[nombre.index(" "):]
-                    nombre = re.sub("^\s+","",nombre)
-                    nombre = re.sub("\s+$","",nombre)
-                    medida = get.materials_list.medida
-                    medida = re.sub("^\s+","",medida)
-                    medida = re.sub("\s+$","",medida)
-                    # print("result 1",nombre,medida)
-                    # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
-                    get_mid = self.env['dtm.pintura.nombre'].search([("nombre","=",nombre)]).id
-                    get_angulo = self.env['dtm.materiales.pintura'].search([("material_id","=",get_mid),("cantidades","=",medida)])
-                    # print(get_mid,nombre,medida,get_angulo)
-                    if get_angulo:
-                        suma = 0
-                        # print(get.materials_list.nombre,get.materials_list.medida)
-                        get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
-                        # print(get_cant)
-                        for cant in get_cant:
-                            suma += cant.materials_cuantity
-                        return (suma,get_angulo.id)
+    # def material_cantidad(self,modelo):
+    #     get_mater = self.env['dtm.materials.line'].search([])
+    #     for get in get_mater:
+    #          if get:
+    #             nombre = str(get.materials_list.nombre)
+    #             if re.match(".*[pP][iI][nN][tT][uU][rR][aA].*",nombre):
+    #                 nombre = re.sub("^\s+","",nombre)
+    #                 nombre = nombre[nombre.index(" "):]
+    #                 nombre = re.sub("^\s+","",nombre)
+    #                 nombre = re.sub("\s+$","",nombre)
+    #                 medida = get.materials_list.medida
+    #                 medida = re.sub("^\s+","",medida)
+    #                 medida = re.sub("\s+$","",medida)
+    #                 # print("result 1",nombre,medida)
+    #                 # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
+    #                 get_mid = self.env['dtm.pintura.nombre'].search([("nombre","=",nombre)]).id
+    #                 get_angulo = self.env['dtm.materiales.pintura'].search([("material_id","=",get_mid),("cantidades","=",medida)])
+    #                 # print(get_mid,nombre,medida,get_angulo)
+    #                 if get_angulo:
+    #                     suma = 0
+    #                     # print(get.materials_list.nombre,get.materials_list.medida)
+    #                     get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
+    #                     # print(get_cant)
+    #                     for cant in get_cant:
+    #                         suma += cant.materials_cuantity
+    #                     return (suma,get_angulo.id)
 
 
 
@@ -127,7 +127,7 @@ class Pintura(models.Model):
                 mapa[cadena] = 1
 
             nombre = "Pintura "+get.material_id.nombre
-            medida = str(get.cantidades)
+            medida = str(get.tipo)
             get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             if not get.descripcion:
                 descripcion = ""
@@ -135,7 +135,7 @@ class Pintura(models.Model):
                 descripcion = get.descripcion
 
             if get_esp:
-                self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area=0, caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+                self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
             else:
                 # print(nombre,medida)
                 get_id = self.env['dtm.diseno.almacen'].search_count([])
@@ -144,12 +144,6 @@ class Pintura(models.Model):
                         id = result2
                         break
                 self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"', '"+ descripcion+ "')")
-
-
-            cant = self.material_cantidad("dtm.materials.line")
-            cant2 = self.material_cantidad("dtm.materials.npi")
-            if cant and cant[1] == cant2[1]:
-                self.env.cr.execute("UPDATE dtm_materiales SET apartado="+str(cant[0] + cant2[0])+" WHERE id="+str(cant2[1]))
 
         return res
 
