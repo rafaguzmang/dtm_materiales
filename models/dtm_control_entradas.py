@@ -754,7 +754,7 @@ class Entradas(models.Model):
                      ("correctiva","=",self.correctiva),
                      ("cantidad_real","=",self.cantidad_real)
                 ])
-
+                 # Pasa los datos del modulo entradas al de entregado
                 if not get_recibido:
                     vals = {
                         "proveedor":self.proveedor,
@@ -773,10 +773,8 @@ class Entradas(models.Model):
                         "cantidad_real":self.cantidad_real,
                     }
                     get_recibido.create(vals)
-
-
-
-
+                print(self.id)
+                self.env.cr.execute("DELETE FROM dtm_control_entradas WHERE id="+str(self.id))
 
     @api.onchange("cantidad_real")
     def _action_cantidad_real(self):
