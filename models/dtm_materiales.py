@@ -255,9 +255,9 @@ class Materiales(models.Model):
          else:
             self.cantidad -= 1
 
-    # def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
-    #     for result in self:
-    #         result.disponible = result.cantidad - result.apartado
+    def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
+        for result in self:
+            result.disponible = result.cantidad - result.apartado
 
     def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
         res = []
