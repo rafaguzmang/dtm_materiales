@@ -43,13 +43,38 @@ class Perfiles(models.Model):
             # print("no existe")
             # print(nombre,medida,self.largo,self.disponible)
             get_id = self.env['dtm.diseno.almacen'].search_count([])
+            id = get_id + 1
             for result2 in range (1,get_id+1):
                 if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
                     id = result2
                     break
             self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
 
+        self.clean_tablas_id("dtm.perfiles.calibre","calibre")
+        self.clean_tablas_id("dtm.perfiles.largo","largo")
+        self.clean_tablas_id("dtm.perfiles.ancho","ancho")
+        self.clean_tablas_id("dtm.perfiles.alto","alto")
         return res
+
+    def clean_tablas_id(self,tabla,dato_id): #Borra datos repetidos de las tablas meny2one
+        get_campo = self.env[tabla].search([])
+        map = {}
+        for campo in get_campo:
+            if map.get(campo[dato_id]):
+                map[campo[dato_id]] = map.get(campo[dato_id])+1
+                sust = self.env[tabla].search([(dato_id,"=",campo[dato_id])])[0].id
+                dato_id = re.sub("nombre","material",dato_id)
+                get_repetido = self.env["dtm.materiales.perfiles"].search([(dato_id+"_id","=",campo.id)])
+                for repetido in get_repetido:
+                    vals = {
+                        dato_id+"_id": sust
+                    }
+                    repetido.write(vals)
+                tabla_main = re.sub("\.","_",tabla)
+                self.env.cr.execute("DELETE FROM "+tabla_main+" WHERE id = "+str(campo.id))
+
+            else:
+                map[campo[dato_id]] = 1
 
     def accion_proyecto(self):
         if self.apartado <= 0:
@@ -88,60 +113,6 @@ class Perfiles(models.Model):
 
         return res
 
-    # def material_cantidad(self,modelo):
-    #     get_mater = self.env['dtm.materials.line'].search([])
-    #     for get in get_mater:
-    #          if get:
-    #             nombre = str(get.materials_list.nombre)
-    #             if re.match(".*[pP][eE][rR][fF][iI][lL].*",nombre):
-    #                 nombre = re.sub("^\s+","",nombre)
-    #                 nombre = nombre[nombre.index(" "):]
-    #                 nombre = re.sub("^\s+", "", nombre)
-    #                 nombre = re.sub("\s+$", "", nombre)
-    #                 medida = get.materials_list.medida
-    #                 # print("result 1",nombre,medida)
-    #                 if  medida.find(" x ") >= 0 or medida.find(" X "):
-    #                     if medida.find("@") >= 0:
-    #                         # print(nombre)
-    #                         # nombre = nombre[len("Lámina "):len(nombre)-1]
-    #                         # print(medida)
-    #                         calibre = medida[medida.index("@")+len("@"):medida.index(",")]
-    #                         medida = re.sub("X","x",medida)
-    #                         # print(calibre)
-    #                         if medida.find("x"):
-    #                             alto = medida[:medida.index("x")-1]
-    #                             ancho = medida[medida.index("x")+2:medida.index(" @ ")]
-    #                             largo = medida[medida.index(",")+1:]
-    #
-    #                         # Convierte fracciones a decimales
-    #                         regx = re.match("\d+/\d+", calibre)
-    #                         if regx:
-    #                             calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
-    #                         regx = re.match("\d+/\d+", largo)
-    #                         if regx:
-    #                             largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
-    #                         regx = re.match("\d+/\d+", ancho)
-    #                         if regx:
-    #                             ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
-    #                         regx = re.match("\d+/\d+", alto)
-    #                         if regx:
-    #                             alto = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
-    #
-    #                         # Busca coincidencias entre el almacen y el aréa de diseno dtm_diseno_almacen
-    #                         get_mid = self.env['dtm.perfiles.nombre'].search([("nombre","=",nombre)]).id
-    #                         get_angulo = self.env['dtm.materiales.perfiles'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho)),("alto","=",float(alto))])
-    #                         # print("largo",largo,"ancho",ancho,"espesor", calibre,"alto",alto,get_angulo)
-    #                         if get_angulo:
-    #                             suma = 0
-    #                             # print(get_angulo)
-    #                             get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
-    #                             # print(get_cant)
-    #                             for cant in get_cant:
-    #                                 suma += cant.materials_cuantity
-    #                                 self.env.cr.execute("UPDATE dtm_materiales_perfiles SET apartado="+str(suma)+" WHERE id="+str(get_angulo.id))
-    #                             return (suma,get_angulo.id)
-    #
-
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Perfiles,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.perfiles'].search([])
@@ -149,7 +120,6 @@ class Perfiles(models.Model):
         mapa ={}
         # print(get_info)
         for get in get_info:
-#             print(get)
             material_id = get.material_id
             calibre_id = get.calibre_id
             calibre = get.calibre
@@ -255,7 +225,7 @@ class Perfiles(models.Model):
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):
         if text:
-            x = re.match('^[\d]+$',text)
+            x = re.match('\d\.{0,1}\d*$',text)
             if not x:
                 x = re.match("^[\d]+\/[\d]+$",text)
                 if not x:
@@ -322,7 +292,7 @@ class Perfiles(models.Model):
         table = table.replace(".","_")
         for result in get_info:
             text = result[data]
-            x = re.match('^[\d]+$',text)
+            x = re.match('\d\.{0,1}\d*$',text)
             if not x:
                 x = re.match("^[\d]+\/[\d]+$",text)
                 if not x:

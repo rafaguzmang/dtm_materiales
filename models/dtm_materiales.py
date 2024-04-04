@@ -281,7 +281,7 @@ class Materiales(models.Model):
         table = table.replace(".","_")
         for result in get_info:
             text = result[data]
-            x = re.match('^[\d]+$',text)
+            x = re.match('\d\.{0,1}\d*$',text)
             if not x:
                 x = re.match("^[\d]+\/[\d]+$",text)
                 if not x:

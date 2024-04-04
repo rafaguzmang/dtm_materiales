@@ -45,7 +45,30 @@ class Solera(models.Model):
                     break
             self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
 
+        self.clean_tablas_id("dtm.solera.calibre","calibre")
+        self.clean_tablas_id("dtm.solera.largo","largo")
+        self.clean_tablas_id("dtm.solera.ancho","ancho")
         return res
+
+    def clean_tablas_id(self,tabla,dato_id): #Borra datos repetidos de las tablas meny2one
+        get_campo = self.env[tabla].search([])
+        map = {}
+        for campo in get_campo:
+            if map.get(campo[dato_id]):
+                map[campo[dato_id]] = map.get(campo[dato_id])+1
+                sust = self.env[tabla].search([(dato_id,"=",campo[dato_id])])[0].id
+                dato_id = re.sub("nombre","material",dato_id)
+                get_repetido = self.env["dtm.materiales.solera"].search([(dato_id+"_id","=",campo.id)])
+                for repetido in get_repetido:
+                    vals = {
+                        dato_id+"_id": sust
+                    }
+                    repetido.write(vals)
+                tabla_main = re.sub("\.","_",tabla)
+                self.env.cr.execute("DELETE FROM "+tabla_main+" WHERE id = "+str(campo.id))
+
+            else:
+                map[campo[dato_id]] = 1
 
     def accion_proyecto(self):
         if self.apartado <= 0:
@@ -223,7 +246,7 @@ class Solera(models.Model):
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):
         if text:
-            x = re.match('^[\d]+$',text)
+            x = re.match('\d\.{0,1}\d*$',text)
             if not x:
                 x = re.match("^[\d]+\/[\d]+$",text)
                 if not x:
