@@ -82,7 +82,7 @@ class Materiales(models.Model):
         self.clean_tablas_id("dtm.calibre.material","calibre")
         self.clean_tablas_id("dtm.largo.material","largo")
         self.clean_tablas_id("dtm.ancho.material","ancho")
-        self.clean_tablas_id("dtm.nombre.material","nombre")
+        # self.clean_tablas_id("dtm.nombre.material","nombre")
 
 
         return res
@@ -91,10 +91,10 @@ class Materiales(models.Model):
         get_campo = self.env[tabla].search([])
         map = {}
         for campo in get_campo:
-            # print(campo[dato_id])
+            print(campo[dato_id])
             if map.get(campo[dato_id]):
                 map[campo[dato_id]] = map.get(campo[dato_id])+1
-                # print(campo[dato_id],campo.id,dato_id)
+                print(campo[dato_id],campo.id,dato_id)
                 sust = self.env[tabla].search([(dato_id,"=",campo[dato_id])])[0].id
                 dato_id = re.sub("nombre","material",dato_id)
                 get_repetido = self.env["dtm.materiales"].search([(dato_id+"_id","=",campo.id)])
@@ -103,9 +103,9 @@ class Materiales(models.Model):
                         dato_id+"_id": sust
                     }
                     repetido.write(vals)
-                    # print(repetido)
+                    print(repetido)
                 tabla_main = re.sub("\.","_",tabla)
-                # print(tabla_main)
+                print(tabla_main)
                 self.env.cr.execute("DELETE FROM "+tabla_main+" WHERE id = "+str(campo.id))
 
             else:
