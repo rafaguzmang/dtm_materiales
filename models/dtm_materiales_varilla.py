@@ -31,12 +31,13 @@ class Varilla(models.Model):
         if get_info:
             # print("existe")
             # print(self.disponible,self.area,descripcion,nombre,medida)
-            print(self.disponible, get_info)
+            # print(self.disponible, get_info)
             self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
         else:
             # print("no existe")
             # print(nombre,medida,self.largo,self.disponible)
             get_id = self.env['dtm.diseno.almacen'].search_count([])
+            id = get_id + 1
             for result2 in range (1,get_id+1):
                 if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
                     id = result2
