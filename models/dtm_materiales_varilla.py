@@ -129,11 +129,11 @@ class Varilla(models.Model):
             largo_id = get.largo_id
             largo = get.largo
             cadena = material_id,diametro_id,diametro,largo_id,largo
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_varilla WHERE id="+str(get.id))
-                raise ValidationError("Material Duplicado")
-            else:
-                mapa[cadena] = 1
+            # if mapa.get(cadena):
+            #     self.env.cr.execute("DELETE FROM dtm_materiales_varilla WHERE id="+str(get.id))
+            #     raise ValidationError("Material Duplicado")
+            # else:
+            #     mapa[cadena] = 1
 
             nombre = "Varilla " + get.material_id.nombre
             medida = str(get.diametro) + " x " + str(get.largo)
@@ -153,6 +153,7 @@ class Varilla(models.Model):
                         id = result2
                         break
                 self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ descripcion+ "')")
+
 
         return res
 
