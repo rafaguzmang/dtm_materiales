@@ -4,7 +4,7 @@
         <field name="name">dtm_materiales_tornillos_tree</field>
         <field name="model">dtm.materiales.tornillos</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-danger="cantidad==0">
                     <field name="id" invisible="1"/>
                     <field name="material_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
 <!--                    <field name="tipo" invisible="1"/>-->
@@ -18,6 +18,17 @@
                     <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}"/>
             </tree>
         </field>
+    </record>
+
+    <record id = "dtm_materiales_tornillos_search" model="ir.ui.view">
+               <field name="name">dtm.materiales.tornillos.search</field>
+               <field name="model">dtm.materiales.tornillos</field>
+               <field name ="arch" type="xml">
+                   <search>
+                        <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
+                        <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>
+                   </search>
+               </field>
     </record>
 
     <record id="dtm_materiales_tornillos_view_form" model="ir.ui.view">
@@ -82,6 +93,9 @@
                             </div>
                         </div>
                         <notebook>
+                            <page string="localizacion">
+                                <field name="localizacion" />
+                            </page>
                             <page string="Notas">
                                 <field name="descripcion" />
                             </page>

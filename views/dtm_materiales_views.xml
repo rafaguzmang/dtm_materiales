@@ -55,11 +55,7 @@
                         <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('calibre','like','.1875')]"/>
 
                    </search>
-
-
                </field>
-
-
            </record>
 
     <record id="dtm_materiales_view_form" model="ir.ui.view">

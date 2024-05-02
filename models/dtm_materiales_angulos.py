@@ -24,6 +24,7 @@ class Angulos(models.Model):
     cantidad = fields.Integer(string="Stock", default=0)
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible",store=True )
+    localizacion = fields.Text(string="Localización")
 
     def write(self,vals):
         res = super(Angulos,self).write(vals)
