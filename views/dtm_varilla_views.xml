@@ -6,14 +6,14 @@
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
                     <field name="id" invisible="1"/>
-                    <field name="material_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="diametro_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="material_id" />
+                    <field name="diametro_id" />
                     <field name="diametro" invisible="1"/>
-                    <field name="largo_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="largo_id" />
                     <field name="largo" invisible="1"/>
-                    <field name="cantidad" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="apartado"  attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="cantidad" />
+                    <field name="apartado"  />
+                    <field name="disponible"  />
             </tree>
         </field>
     </record>

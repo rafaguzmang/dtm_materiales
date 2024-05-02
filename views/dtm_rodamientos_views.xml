@@ -4,13 +4,13 @@
         <field name="name">dtm_materiales_rodamientos_tree</field>
         <field name="model">dtm.materiales.rodamientos</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-danger="cantidad==0">
                     <field name="id" invisible="1"/>
-                    <field name="material_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="material_id" />
                     <field name="descripcion" invisible="0"/>
-                    <field name="cantidad" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="apartado"  attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="cantidad" />
+                    <field name="apartado"  />
+                    <field name="disponible"  />
             </tree>
         </field>
     </record>

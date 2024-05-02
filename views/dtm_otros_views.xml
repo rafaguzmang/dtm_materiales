@@ -4,14 +4,14 @@
         <field name="name">dtm_materiales_otros_tree</field>
         <field name="model">dtm.materiales.otros</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-danger="cantidad==0">
                     <field name="id" invisible="1"/>
-                    <field name="nombre_id"  attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="descripcion"  attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="entradas"  attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="cantidad"  attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="apartado"  attrs="{'invisible': [('cantidad','=',0)]}" />
-                    <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}" />
+                    <field name="nombre_id" />
+                    <field name="descripcion" />
+                    <field name="entradas" />
+                    <field name="cantidad" />
+                    <field name="apartado"  />
+                    <field name="disponible"  />
             </tree>
         </field>
     </record>
