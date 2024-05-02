@@ -6,7 +6,7 @@ class Materiales(models.Model):
     _name = "dtm.materiales"
     _description = "Sección para llevar el inventario de las làminas"
     _rec_name = "material_id"
-    _description = "Lista de materiales"
+    _description = "Lista de materiales láminas"
    
     material_id = fields.Many2one("dtm.nombre.material",string="MATERIAL",required=True)
     calibre_id = fields.Many2one("dtm.calibre.material",string="CALIBRE",required=True)
@@ -21,6 +21,7 @@ class Materiales(models.Model):
     cantidad = fields.Integer(string="Stock", default=0)
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" ,store=True)
+    localizacion = fields.Text(string="Localización")
 
     def accion_proyecto(self):
         if self.apartado <= 0:
