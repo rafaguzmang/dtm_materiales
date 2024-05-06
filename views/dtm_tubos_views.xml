@@ -21,7 +21,7 @@
         </field>
     </record>
 
-    <record id = "dtm_tubos_tubos_search" model="ir.ui.view">
+    <record id = "dtm_tubos_search" model="ir.ui.view">
                <field name="name">dtm.materiales.tubos.search</field>
                <field name="model">dtm.materiales.tubos</field>
                <field name ="arch" type="xml">

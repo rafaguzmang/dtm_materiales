@@ -5,7 +5,7 @@
         <field name="model">dtm.materiales</field>
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
-                    <field name="id" invisible="1"/>
+                    <field name="codigo" />
                     <field name="material_id" />
                     <field name="calibre_id" />
                     <field name="calibre" invisible="1"/>
@@ -17,6 +17,7 @@
                     <field name="cantidad" />
                     <field name="apartado"  />
                     <field name="disponible"  />
+                    <field name="localizacion"  />
             </tree>
         </field>
     </record>
@@ -26,8 +27,8 @@
        <field name="model">dtm.materiales</field>
        <field name ="arch" type="xml">
            <search>
-<!--                <field name="calibre"/>-->
-<!--                <field name="apartado"  />-->
+                <field name="calibre"/>
+                <field name="apartado"  />
 
                 <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
                 <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>
@@ -41,7 +42,7 @@
                 <filter string="@ 20" name="diseno_cal_18" domain="[('calibre','like','20')]"/>
                 <filter string="@ 22" name="diseno_cal_22" domain="[('calibre','like','22')]"/>
                 <separator/>
-                <filter string="Ácero al carbón" name="diseno_carbon" domain="[('material_id','ilike','carbón')]"/>
+                <filter string="Acero al carbón" name="diseno_carbon" domain="[('material_id','ilike','carbón')]"/>
                 <filter string="Inoxidable" name="diseno_inox" domain="[('material_id','ilike','inoxidable')]"/>
                 <filter string="Galvanizado" name="diseno_cal_11" domain="[('material_id','ilike','galvanizado')]"/>
                 <filter string="Aluminio" name="diseno_cal_14" domain="[('material_id','ilike','aluminio')]"/>

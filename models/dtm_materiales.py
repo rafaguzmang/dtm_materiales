@@ -7,7 +7,8 @@ class Materiales(models.Model):
     _description = "Sección para llevar el inventario de las làminas"
     _rec_name = "material_id"
     _description = "Lista de materiales láminas"
-   
+
+    codigo = fields.Integer(string="ID")
     material_id = fields.Many2one("dtm.nombre.material",string="MATERIAL",required=True)
     calibre_id = fields.Many2one("dtm.calibre.material",string="CALIBRE",required=True)
     calibre = fields.Float(string="Decimal")
@@ -127,6 +128,10 @@ class Materiales(models.Model):
             ancho_id = get.ancho_id
             ancho = get.ancho
             cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho
+            # vals = {
+            #   "disponible": get.cantidad - get.apartado
+            # }
+            # get.write(vals)
 
             if mapa.get(cadena):
                 self.env.cr.execute("DELETE FROM dtm_materiales WHERE id="+str(get.id))
@@ -135,7 +140,7 @@ class Materiales(models.Model):
                 # Agrega los materiales nuevo al modulo de diseño
                 nombre = "Lámina " + get.material_id.nombre + " "
                 medida = str(get.largo) + " x " + str(get.ancho) + " @ " + str(get.calibre)
-                # print(nombre)
+                # print(nombre,medida)
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
 
                 if not get.descripcion:
@@ -145,8 +150,16 @@ class Materiales(models.Model):
                 # print(get_diseno)
                 # print(get_diseno.nombre,get_diseno.medida)
                 if get_diseno:
-                    # print("existe")
-                    self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.area)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+                    vals = {
+                        "cantidad": get.cantidad - get.apartado,
+                        "caracteristicas":descripcion
+                    }
+                    # self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.area)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
+                    get_diseno.write(vals)
+                    vals = {
+                        "codigo":get_diseno.id
+                    }
+                    get.write(vals)
                 else:
                     get_id = self.env['dtm.diseno.almacen'].search_count([])
                     # print("no existe",get_id)
@@ -232,16 +245,19 @@ class Materiales(models.Model):
         # print(self.cantidad)
         self.cantidad += self.entradas
 
+
     def accion_salidas(self):#-----------------Resta una unidad al stock----------------------------------------------
         # print(self.cantidad)
          if self.cantidad <= 0:
             self.cantidad = 0
          else:
             self.cantidad -= 1
-
+    @api.depends("cantidad")
     def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
         for result in self:
-            result.disponible = result.cantidad - result.apartado
+            result.disponible = 0
+            if result.cantidad - result.apartado > 0:
+                result.disponible = result.cantidad - result.apartado
 
     def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
         res = []
