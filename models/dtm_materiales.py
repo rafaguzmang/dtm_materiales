@@ -8,7 +8,7 @@ class Materiales(models.Model):
     _rec_name = "material_id"
     _description = "Lista de materiales láminas"
 
-    codigo = fields.Integer(string="ID")
+    codigo = fields.Integer(string="ID", readonly=True)
     material_id = fields.Many2one("dtm.nombre.material",string="MATERIAL",required=True)
     calibre_id = fields.Many2one("dtm.calibre.material",string="CALIBRE",required=True)
     calibre = fields.Float(string="Decimal")
@@ -34,143 +34,50 @@ class Materiales(models.Model):
         else:
             self.cantidad -= 1
 
-    @api.model
-    def create (self,vals):
-        res = super(Materiales, self).create(vals)
-        get_info = self.env['dtm.materiales'].search([])
-
-        mapa ={}
-        for get in get_info:
-            material_id = get.material_id
-            calibre_id = get.calibre_id
-            calibre = get.calibre
-            largo_id = get.largo_id
-            largo = get.largo
-            ancho_id = get.ancho_id
-            ancho = get.ancho
-            cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho
-
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales WHERE id="+str(get.id))
-                raise ValidationError("Material Duplicado")
-            else:
-                mapa[cadena] = 1
-        return res
-
-    def write(self,vals):
-        res = super(Materiales,self).write(vals)
-        # print(self.id,self.material_id.nombre,self.calibre,self.largo,self.ancho,self.cantidad,self.disponible)
-        nombre = "Lámina " + self.material_id.nombre + " "
-        medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre)
-        # print(nombre)
-        get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-        # print(get_info)
-        descripcion = ""
-        if self.descripcion:
-            descripcion = self.descripcion
-        if get_info:
-            # print("existe")
-            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.area)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
-        else:
-            # print("no existe")
-            get_id = self.env['dtm.diseno.almacen'].search_count([])
-            id = get_id + 1
-            for result2 in range (1,get_id+1):
-                if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                    id = result2
-                    break
-            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ descripcion+ "')")
-
-        self.clean_tablas_id("dtm.calibre.material","calibre")
-        self.clean_tablas_id("dtm.largo.material","largo")
-        self.clean_tablas_id("dtm.ancho.material","ancho")
-        # self.clean_tablas_id("dtm.nombre.material","nombre")
 
 
-        return res
 
-    def clean_tablas_id(self,tabla,dato_id): #Borra datos repetidos de las tablas meny2one
-        get_campo = self.env[tabla].search([])
-        map = {}
-        for campo in get_campo:
-            print(campo[dato_id])
-            if map.get(campo[dato_id]):
-                map[campo[dato_id]] = map.get(campo[dato_id])+1
-                print(campo[dato_id],campo.id,dato_id)
-                sust = self.env[tabla].search([(dato_id,"=",campo[dato_id])])[0].id
-                dato_id = re.sub("nombre","material",dato_id)
-                get_repetido = self.env["dtm.materiales"].search([(dato_id+"_id","=",campo.id)])
-                for repetido in get_repetido:
-                    vals = {
-                        dato_id+"_id": sust
-                    }
-                    repetido.write(vals)
-                    print(repetido)
-                tabla_main = re.sub("\.","_",tabla)
-                print(tabla_main)
-                self.env.cr.execute("DELETE FROM "+tabla_main+" WHERE id = "+str(campo.id))
+    def accion_guardar(self):
+
+        if not self.descripcion:
+            self.descripcion = ""
+        get_info = self.env['dtm.materiales'].search([("material_id","=",self.material_id.id),("calibre","=",self.calibre),("largo","=",self.largo),("ancho","=",self.ancho)])
+        if len(get_info)==1:
+             # Agrega los materiales nuevo al modulo de diseño
+            nombre = "Lámina " + self.material_id.nombre + " "
+            medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre)
+            get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            if not get_diseno:
+                get_id = self.env['dtm.diseno.almacen'].search_count([])
+
+                id = get_id + 1
+                for result2 in range (1,get_id):
+                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                        id = result2
+                        break
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ self.descripcion + "')")
+                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+                self.codigo = get_diseno[0].id
 
             else:
-                map[campo[dato_id]] = 1
+                vals = {
+                    "cantidad": self.cantidad - self.apartado,
+                    "caracteristicas":self.descripcion
+                }
+                get_diseno.write(vals)
+                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+                self.codigo = get_diseno[0].id
 
+        elif len(get_info)>1:
+            raise ValidationError("Material Duplicado")
 
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
-        get_info = self.env['dtm.materiales'].search([])
-        mapa = {}
-        for get in get_info:
-            material_id = get.material_id
-            calibre_id = get.calibre_id
-            calibre = get.calibre
-            largo_id = get.largo_id
-            largo = get.largo
-            ancho_id = get.ancho_id
-            ancho = get.ancho
-            cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho
-            # vals = {
-            #   "disponible": get.cantidad - get.apartado
-            # }
-            # get.write(vals)
-
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales WHERE id="+str(get.id))
-            else:
-                mapa[cadena] = 1
-                # Agrega los materiales nuevo al modulo de diseño
-                nombre = "Lámina " + get.material_id.nombre + " "
-                medida = str(get.largo) + " x " + str(get.ancho) + " @ " + str(get.calibre)
-                # print(nombre,medida)
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-
-                if not get.descripcion:
-                    descripcion = ""
-                else:
-                    descripcion = get.descripcion
-                # print(get_diseno)
-                # print(get_diseno.nombre,get_diseno.medida)
-                if get_diseno:
-                    vals = {
-                        "cantidad": get.cantidad - get.apartado,
-                        "caracteristicas":descripcion
-                    }
-                    # self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.area)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
-                    get_diseno.write(vals)
-                    vals = {
-                        "codigo":get_diseno.id
-                    }
-                    get.write(vals)
-                else:
-                    get_id = self.env['dtm.diseno.almacen'].search_count([])
-                    # print("no existe",get_id)
-                    id = get_id + 1
-                    for result2 in range (1,get_id):
-                        if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                            id = result2
-                            break
-                    self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.area)+", '"+ descripcion+ "')")
-
+        get_info = self.env['dtm.materiales'].search([("codigo","=",False)])
+        get_info.unlink()
         return res
+
 
     @api.onchange("calibre_id")
     def _onchange_calibre_id(self):
@@ -181,10 +88,10 @@ class Materiales(models.Model):
             self.CleanTables("dtm.calibre.material","calibre")
             verdadero = self.MatchFunction(text)
             if verdadero and text:
-                # print(verdadero, text)
+
                 result = self.convertidor_medidas(text)
                 self.calibre = result
-                # print(result)
+
 
     @api.onchange("largo_id")
     def _onchange_largo_id(self):
@@ -196,7 +103,7 @@ class Materiales(models.Model):
             self.MatchFunction(text)
             verdadero = self.MatchFunction(text)
             if verdadero and text:
-                # print(verdadero, text)
+
                 result = self.convertidor_medidas(text)
                 self.largo = result
                 self.area = self.ancho * self.largo
@@ -215,7 +122,7 @@ class Materiales(models.Model):
             self.MatchFunction(text)
             verdadero = self.MatchFunction(text)
             if verdadero and text:
-                # print(verdadero, text)
+
                 result = self.convertidor_medidas(text)
                 self.ancho = result
                 self.area = self.ancho * self.largo
@@ -242,12 +149,12 @@ class Materiales(models.Model):
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):
-        # print(self.cantidad)
+
         self.cantidad += self.entradas
 
 
     def accion_salidas(self):#-----------------Resta una unidad al stock----------------------------------------------
-        # print(self.cantidad)
+
          if self.cantidad <= 0:
             self.cantidad = 0
          else:
@@ -309,10 +216,10 @@ class Materiales(models.Model):
         # get_calibre = self.env['dtm.calibre.material'].search([])
         # map = {}
         # for calibre in get_calibre:
-        #     # print(calibre.calibre)
+
         #     if map.get(calibre.calibre):
         #         map[calibre.calibre] = map.get(calibre.calibre)+1
-        #         print(calibre.id)
+
         #         sust = self.env['dtm.calibre.material'].search([("calibre","=",calibre.calibre)])[0].id
         #         get_repetido = self.env["dtm.materiales"].search([("calibre_id","=",calibre.id)])
         #         for repetido in get_repetido:
@@ -320,12 +227,12 @@ class Materiales(models.Model):
         #                 "calibre_id": sust
         #             }
         #             repetido.write(vals)
-        #             print(repetido)
+
         #
         #     else:
         #         map[calibre.calibre] = 1
         #
-        # print(map)
+
 
 
 
