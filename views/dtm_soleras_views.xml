@@ -5,18 +5,19 @@
         <field name="model">dtm.materiales.solera</field>
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
-                    <field name="id" invisible="1"/>
-                    <field name="material_id" />
-                    <field name="calibre_id" />
-                    <field name="calibre" invisible="1"/>
-                    <field name="largo_id" />
-                    <field name="largo" invisible="1"/>
-                    <field name="ancho_id" />
-                    <field name="ancho" invisible="1"/>
-                    <field name="area" invisible="1"/>
-                    <field name="cantidad" />
-                    <field name="apartado"  />
-                    <field name="disponible"  />
+                <field name="codigo" />
+                <field name="id" invisible="1"/>
+                <field name="material_id" />
+                <field name="calibre_id" />
+                <field name="calibre" invisible="1"/>
+                <field name="largo_id" />
+                <field name="largo" invisible="1"/>
+                <field name="ancho_id" />
+                <field name="ancho" invisible="1"/>
+                <field name="area" invisible="1"/>
+                <field name="cantidad" />
+                <field name="apartado"  />
+                <field name="disponible"  />
             </tree>
         </field>
     </record>
@@ -69,8 +70,11 @@
                 </header>
                 <sheet>
                         <div class="row ">
-                            <div class="col-12 d-flex justify-content-center">
-                                <h1>ALMACÉN</h1>
+                            <div class="col-10 d-flex justify-content-center">
+                                <h1>Solera</h1>
+                            </div>
+                            <div class="col-2 d-flex justify-content-right ">
+                                <h1><field name="codigo" /> </h1>
                             </div>
                         </div>
                         <br></br>
@@ -119,6 +123,7 @@
                                 <h1 >
                                     Entradas:
                                     <field name="entradas" />
+                                    <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary"/>
                                 </h1>
                             </div>
                         </div>

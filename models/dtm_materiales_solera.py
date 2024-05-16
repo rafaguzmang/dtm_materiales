@@ -6,7 +6,8 @@ class Solera(models.Model):
     _name = "dtm.materiales.solera"
     _description = "Sección para llevar el inventario de las solera"
     _rec_name = "material_id"
-   
+
+    codigo = fields.Integer(string="ID", readonly=True)
     material_id = fields.Many2one("dtm.solera.nombre",string="MATERIAL",required=True)
     calibre_id = fields.Many2one("dtm.solera.calibre",string="CALIBRE",required=True)
     calibre = fields.Float(string="Decimal")
@@ -22,34 +23,40 @@ class Solera(models.Model):
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
     localizacion = fields.Text(string="Localización")
 
-    def write(self,vals):
-        res = super(Solera,self).write(vals)
-        nombre = "Solera "+  self.material_id.nombre
-        medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre)
-        get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-        descripcion = ""
-        if self.descripcion:
-            descripcion = self.descripcion
+    def accion_guardar(self):
 
-        if get_info:
-            # print("existe")
-            print(self.disponible,self.area,descripcion,nombre,medida)
-            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
-        else:
-            # print("no existe")
-            # print(nombre,medida,self.largo,self.disponible)
-            get_id = self.env['dtm.diseno.almacen'].search_count([])
-            id = get_id + 1
-            for result2 in range (1,get_id+1):
-                if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                    id = result2
-                    break
-            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
+        if not self.descripcion:
+            self.descripcion = ""
+        get_info = self.env['dtm.materiales.solera'].search([("material_id","=",self.material_id.id),("calibre","=",self.calibre),("largo","=",self.largo),("ancho","=",self.ancho)])
+        if len(get_info)==1:
+             # Agrega los materiales nuevo al modulo de diseño
+            nombre = "Solera " + self.material_id.nombre + " "
+            medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre)
+            get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            if not get_diseno:
+                get_id = self.env['dtm.diseno.almacen'].search_count([])
 
-        self.clean_tablas_id("dtm.solera.calibre","calibre")
-        self.clean_tablas_id("dtm.solera.largo","largo")
-        self.clean_tablas_id("dtm.solera.ancho","ancho")
-        return res
+                id = get_id + 1
+                for result2 in range (1,get_id):
+                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                        id = result2
+                        break
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ self.descripcion + "')")
+                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+                self.codigo = get_diseno[0].id
+
+            else:
+                vals = {
+                    "cantidad": self.cantidad - self.apartado,
+                    "caracteristicas":self.descripcion
+                }
+                get_diseno.write(vals)
+                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+                self.codigo = get_diseno[0].id
+
+        elif len(get_info)>1:
+            raise ValidationError("Material Duplicado")
+
 
     def clean_tablas_id(self,tabla,dato_id): #Borra datos repetidos de las tablas meny2one
         get_campo = self.env[tabla].search([])
@@ -81,117 +88,15 @@ class Solera(models.Model):
         else:
             self.cantidad -= 1
 
-    @api.model
-    def create (self,vals):
-        res = super(Solera, self).create(vals)
-        get_info = self.env['dtm.materiales.solera'].search([])
-
-        mapa ={}
-        for get in get_info:
-            material_id = get.material_id
-            calibre_id = get.calibre_id
-            calibre = get.calibre
-            largo_id = get.largo_id
-            largo = get.largo
-            ancho_id = get.ancho_id
-            ancho = get.ancho
-            area = get.area
-            cadena = material_id,calibre_id,calibre,largo_id,largo,ancho_id,ancho,area
-
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_solera WHERE id="+str(get.id))
-                raise ValidationError("Material Duplicado")
-            else:
-                mapa[cadena] = 1
-        return res
-
-#     def material_cantidad(self,modelo):
-#         get_mater = self.env['dtm.materials.line'].search([])
-#         for get in get_mater:
-#             if get:
-#                 nombre = str(get.materials_list.nombre)
-#                 if  re.match(".*[sS][oO][lL][eE][rR][aA].*",nombre):
-#                     nombre = re.sub("^\s+","",nombre)
-#                     nombre = nombre[nombre.index(" "):]
-#                     nombre = re.sub("^\s+", "", nombre)
-#                     nombre = re.sub("\s+$", "", nombre)
-#                     medida = get.materials_list.medida
-#                     # print("result 1",nombre,medida)
-#                     if  medida.find(" x ") >= 0 or medida.find(" X "):
-#                         if medida.find(" @ ") >= 0:
-#                             # print(nombre)
-#                             # nombre = nombre[len("Lámina "):len(nombre)-1]
-#                             calibre = medida[medida.index("@")+2:]
-#                             medida = re.sub("X","x",medida)
-#                             # print(medida)
-#                             if medida.find("x"):
-#                                 largo = medida[:medida.index("x")-1]
-#                                 ancho = medida[medida.index("x")+2:medida.index("@")]
-#                             # Convierte fracciones a decimales
-#                             regx = re.match("\d+/\d+", calibre)
-#                             if regx:
-#                                 calibre = float(calibre[0:calibre.index("/")]) / float(calibre[calibre.index("/") + 1:len(calibre)])
-#                             regx = re.match("\d+/\d+", largo)
-#                             if regx:
-#                                 largo = float(largo[0:largo.index("/")]) / float(largo[largo.index("/") + 1:len(largo)])
-#                             regx = re.match("\d+/\d+", ancho)
-#                             if regx:
-#                                 ancho = float(ancho[0:ancho.index("/")]) / float(ancho[ancho.index("/") + 1:len(ancho)])
-#                             get_mid = self.env['dtm.solera.nombre'].search([("nombre","=",nombre)]).id
-#                             get_solera = self.env['dtm.materiales.solera'].search([("material_id","=",get_mid),("calibre","=",float(calibre)),("largo","=",float(largo)),("ancho","=",float(ancho))])
-#                             if get_solera:
-#                                 suma = 0
-#                                 # print("largo",largo,"ancho",ancho,"calibre", calibre)
-#                                 # print(get_solera)
-#                                 get_cant = self.env['dtm.materials.line'].search([("nombre","=",get.materials_list.nombre),("medida","=",get.materials_list.medida)])
-# #                                 print(get_cant)
-#                                 for cant in get_cant:
-#                                     suma += cant.materials_cuantity
-#                                 return (suma,get_solera.id)
 
 
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Solera,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.solera'].search([])
-
-        mapa = {}
-        for get in get_info:
-            material_id = get.material_id
-            calibre_id = get.calibre_id
-            calibre = get.calibre
-            largo_id = get.largo_id
-            largo = get.largo
-            ancho_id = get.ancho_id
-            ancho = get.ancho
-            area = get.area
-            cadena = material_id, calibre_id, calibre, largo_id, largo, ancho_id, ancho, area
-
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_solera WHERE id=" + str(get.id))
-            else:
-                mapa[cadena] = 1
-
-            nombre = "Solera "+  get.material_id.nombre
-            medida = str(get.largo) + " x " + str(get.ancho) + " @ " + str(get.calibre)
-            get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-            if not get.descripcion:
-                descripcion = ""
-            else:
-                descripcion = get.descripcion
-
-            if get_esp:
-                self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
-            else:
-                print(nombre,medida)
-                get_id = self.env['dtm.diseno.almacen'].search_count([])
-                for result2 in range (1,get_id+1):
-                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                        id = result2
-                        break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ descripcion+ "')")
-
         return res
+
+
 
     @api.onchange("calibre_id")
     def _onchange_calibre_id(self):
