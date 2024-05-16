@@ -92,7 +92,6 @@ class Materiales(models.Model):
                 result = self.convertidor_medidas(text)
                 self.calibre = result
 
-
     @api.onchange("largo_id")
     def _onchange_largo_id(self):
         self.env.cr.execute("UPDATE public.dtm_largo_material SET  largo='0' WHERE largo is NULL;")
@@ -212,29 +211,6 @@ class Materiales(models.Model):
                     x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
                     if not x:
                         self.env.cr.execute("DELETE FROM "+table+" WHERE "+ data +" = '"+ text +"'")
-
-        # get_calibre = self.env['dtm.calibre.material'].search([])
-        # map = {}
-        # for calibre in get_calibre:
-
-        #     if map.get(calibre.calibre):
-        #         map[calibre.calibre] = map.get(calibre.calibre)+1
-
-        #         sust = self.env['dtm.calibre.material'].search([("calibre","=",calibre.calibre)])[0].id
-        #         get_repetido = self.env["dtm.materiales"].search([("calibre_id","=",calibre.id)])
-        #         for repetido in get_repetido:
-        #             vals = {
-        #                 "calibre_id": sust
-        #             }
-        #             repetido.write(vals)
-
-        #
-        #     else:
-        #         map[calibre.calibre] = 1
-        #
-
-
-
 
 
 class NombreMaterial(models.Model):
