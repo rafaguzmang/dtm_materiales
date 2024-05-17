@@ -7,6 +7,7 @@ class Tubos(models.Model):
     _description = "Sección para llevar el inventario de los tubos"
     _rec_name = "material_id"
 
+    codigo = fields.Integer(string="ID", readonly=True)
     material_id = fields.Many2one("dtm.tubos.nombre",string="MATERIAL",required=True)
     calibre_id = fields.Many2one("dtm.tubos.calibre",string="CALIBRE",required=True)
     calibre = fields.Float(string="Decimal")
@@ -22,32 +23,39 @@ class Tubos(models.Model):
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
     localizacion = fields.Text(string="Localización")
 
-    def write(self,vals):
-        res = super(Tubos,self).write(vals)
-        nombre = "Tubo "+  self.material_id.nombre
-        medida = str(self.diametro) + " x " + str(self.largo) + " @ " + str(self.calibre)
-        get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-        descripcion = ""
-        if self.descripcion:
-            descripcion = self.descripcion
-        if get_info:
-            # print("existe")
-            # print(self.disponible,self.area,descripcion,nombre,medida)
-            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
-        else:
-            # print("no existe")
-            # print(nombre,medida,self.largo,self.disponible)
-            get_id = self.env['dtm.diseno.almacen'].search_count([])
-            id = get_id + 1
-            for result2 in range (1,get_id+1):
-                if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                    id = result2
-                    break
-            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
-        self.clean_tablas_id("dtm.tubos.calibre","calibre")
-        self.clean_tablas_id("dtm.tubos.diametro","diametro")
-        self.clean_tablas_id("dtm.tubos.largo","largo")
-        return res
+    def accion_guardar(self):
+        if not self.descripcion:
+            self.descripcion = ""
+        get_info = self.env['dtm.materiales.tubos'].search([("material_id","=",self.material_id.id),("calibre","=",self.calibre),("largo","=",self.largo),("diametro","=",self.diametro)])
+        if len(get_info)==1:
+             # Agrega los materiales nuevo al modulo de diseño
+            nombre = "Tubo " + self.material_id.nombre
+            medida = str(self.largo) + " x " + str(self.diametro) + " @ " + str(self.calibre)
+            get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            print(nombre,medida,get_diseno)
+            if not get_diseno:
+                get_id = self.env['dtm.diseno.almacen'].search_count([])
+
+                id = get_id + 1
+                for result2 in range (1,get_id):
+                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                        id = result2
+                        break
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ self.descripcion + "')")
+                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+                self.codigo = get_diseno[0].id
+
+            else:
+                vals = {
+                    "cantidad": self.cantidad - self.apartado,
+                    "caracteristicas":self.descripcion
+                }
+                get_diseno.write(vals)
+                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+                self.codigo = get_diseno[0].id
+
+        elif len(get_info)>1:
+            raise ValidationError("Material Duplicado")
 
     def clean_tablas_id(self,tabla,dato_id): #Borra datos repetidos de las tablas meny2one
         get_campo = self.env[tabla].search([])
@@ -79,66 +87,13 @@ class Tubos(models.Model):
         else:
             self.cantidad -= 1
 
-    @api.model
-    def create (self,vals):
-        res = super(Tubos, self).create(vals)
-        get_info = self.env['dtm.materiales.tubos'].search([])
-        mapa ={}
-        for get in get_info:
-            material_id = get.material_id
-            calibre_id = get.calibre_id
-            calibre = get.calibre
-            diametro_id = get.diametro_id
-            diametro = get.diametro
-            largo_id = get.largo_id
-            largo = get.largo
-            cadena = material_id,calibre_id,calibre,largo_id,largo,diametro_id,diametro
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_tubos WHERE id="+str(get.id))
-                raise ValidationError("Material Duplicado")
-            else:
-                mapa[cadena] = 1
-        return res
+
 
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Tubos,self).get_view(view_id, view_type,**options)
-        get_info = self.env['dtm.materiales.tubos'].search([])
-        mapa ={}
-        for get in get_info:
-            material_id = get.material_id
-            calibre_id = get.calibre_id
-            calibre = get.calibre
-            diametro_id = get.diametro_id
-            diametro = get.diametro
-            largo_id = get.largo_id
-            largo = get.largo
-            cadena = material_id,calibre_id,calibre,largo_id,largo,diametro_id,diametro
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_tubos WHERE id="+str(get.id))
-            else:
-                mapa[cadena] = 1
-
-            nombre = "Tubo " + get.material_id.nombre
-            medida = str(get.diametro) + " x " + str(get.largo) + " @ " + str(get.calibre)
-            get_info = self.env['dtm.diseno.almacen'].search([("nombre", "=", nombre), ("medida", "=", medida)])
-
-            if not get.descripcion:
-                descripcion = ""
-            else:
-                descripcion = get.descripcion
-
-            if get_info:
-                self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
-            else:
-                # print(nombre,medida)
-                get_id = self.env['dtm.diseno.almacen'].search_count([])
-                for result2 in range (1,get_id+1):
-                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                        id = result2
-                        break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ descripcion+ "')")
-
+        get_info = self.env['dtm.materiales.tubos'].search([("codigo","=",False)])
+        # get_info.unlink()
         return res
 
     @api.onchange("calibre_id")

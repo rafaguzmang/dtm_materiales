@@ -35,7 +35,7 @@ class Perfiles(models.Model):
         get_info = self.env['dtm.materiales.perfiles'].search([("material_id","=",self.material_id.id),("calibre","=",self.calibre),("largo","=",self.largo),("ancho","=",self.ancho),("alto","=",self.alto)])
         if len(get_info)==1:
              # Agrega los materiales nuevo al modulo de diseño
-            nombre = "Perfil " + self.material_id.nombre + " "
+            nombre = "Perfil " + self.material_id.nombre
             medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre) + ", "+ str(self.largo)
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             if not get_diseno:

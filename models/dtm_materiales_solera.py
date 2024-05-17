@@ -30,7 +30,7 @@ class Solera(models.Model):
         get_info = self.env['dtm.materiales.solera'].search([("material_id","=",self.material_id.id),("calibre","=",self.calibre),("largo","=",self.largo),("ancho","=",self.ancho)])
         if len(get_info)==1:
              # Agrega los materiales nuevo al modulo de diseño
-            nombre = "Solera " + self.material_id.nombre + " "
+            nombre = "Solera " + self.material_id.nombre
             medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre)
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             if not get_diseno:
@@ -41,7 +41,7 @@ class Solera(models.Model):
                     if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
                         id = result2
                         break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ self.descripcion + "')")
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ self.descripcion + "')")
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
                 self.codigo = get_diseno[0].id
 
@@ -89,11 +89,10 @@ class Solera(models.Model):
             self.cantidad -= 1
 
 
-
-
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Solera,self).get_view(view_id, view_type,**options)
-        get_info = self.env['dtm.materiales.solera'].search([])
+        get_info = self.env['dtm.materiales.solera'].search([("codigo","=",False)])
+        # get_info.unlink()
         return res
 
 
