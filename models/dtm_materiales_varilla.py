@@ -30,7 +30,6 @@ class Varilla(models.Model):
             nombre = "Varilla " + self.material_id.nombre
             medida = str(self.largo) + " x " + str(self.diametro)
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-            print(nombre,medida,get_diseno)
             if not get_diseno:
                 get_id = self.env['dtm.diseno.almacen'].search_count([])
 
