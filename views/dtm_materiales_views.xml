@@ -32,6 +32,9 @@
 
                 <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
                 <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>
+                <filter string="Completa" name="lamina_completa" domain="['|',('largo','=',10),'|',('ancho','=',4),('ancho','=',3),'|',
+                                                                              ('largo','=',8),'|',('ancho','=',4),('ancho','=',3),'|',
+                                                                               ('largo','=',6),'|',('ancho','=',4),('ancho','=',3)]"/>
                 <separator/>
                 <filter string="@ 10" name="diseno_cal_11" domain="[('calibre','like','10')]"/>
                 <filter string="@ 11" name="diseno_cal_11" domain="[('calibre','like','11')]"/>

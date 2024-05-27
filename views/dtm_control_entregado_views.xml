@@ -23,6 +23,6 @@
             </field>
         </record>
 
-        <menuitem id="dtm_control_entregado_menu" action="dtm_control_entregado_accion" />
+<!--        <menuitem id="dtm_control_entregado_menu" action="dtm_control_entregado_accion" />-->
     </data>
 </odoo>

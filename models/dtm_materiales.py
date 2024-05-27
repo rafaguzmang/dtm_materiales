@@ -34,9 +34,6 @@ class Materiales(models.Model):
         else:
             self.cantidad -= 1
 
-
-
-
     def accion_guardar(self):
 
         if not self.descripcion:

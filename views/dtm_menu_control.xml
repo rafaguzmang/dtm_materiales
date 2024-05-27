@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+     <menuitem name="Control de materiales" id="menu_root_dtm_control">
+         <menuitem id="dtm_control_entradas"  action="dtm_control_entradas_accion"/>
+         <menuitem id="dtm_control_entregado_menu" action="dtm_control_entregado_accion" />
+         <menuitem id="dtm_control_recibido" action="dtm_control_recibido_accion"/>
+     </menuitem>
+</odoo>
