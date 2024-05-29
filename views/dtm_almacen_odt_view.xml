@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="dtm_almacen_odt_tree" model="ir.ui.view">
+        <field name="name">dtm_almacen_odt_tree</field>
+        <field name="model">dtm.almacen.odt</field>
+        <field name="arch" type="xml">
+            <tree >
+                <field name="ot_number" />
+                <field name="tipe_order"  />
+                <field name="date_in"  />
+                <field name="date_rel"  />
+                <field name="firma" />
+            </tree>
+        </field>
+    </record>
+
+
+
+    <record id="dtm_almacen_odt_view_form" model="ir.ui.view">
+        <field name="name">dtm_almacen_odt_view_form</field>
+        <field name="model">dtm.almacen.odt</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <header>
+                        <button name="accion_firma" type="object" string="Firmar" icon="fa-pencil" class="btn btn-primary"/>
+<!--                        <button name="accion_imprimir" type="object" string="Salida de Proyecto" class="btn btn-primary"/>-->
+                </header>
+                <sheet>
+                    <group>
+                        <field name="ot_number" />
+                        <field name="tipe_order"  />
+                        <field name="date_in"  />
+                        <field name="date_rel"  />
+                        <field name="firma" />
+                        <field name="materials_ids" >
+                           <tree >
+                                <field name="materials_list" />
+                                <field name="materials_cuantity"  />
+                                <field name="materials_inventory"  />
+                                <field name="materials_required"  />
+                           </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="dtm_almacen_odt_accion" model="ir.actions.act_window">
+        <field name="name">Orden de trabajo</field>
+        <field name="res_model">dtm.almacen.odt</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="dtm_almacen_odt" parent="" action="dtm_almacen_odt_accion"/>
+
+
+</odoo>

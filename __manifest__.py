@@ -1,6 +1,7 @@
 {
     "name":"Materiales",
     "description": "Conteo de materiales",
+    "depends":["dtm_odt"],
     "data":[        
         'security/ir.model.access.csv',
         'views/dtm_materiales_views.xml',
@@ -19,6 +20,7 @@
         'views/dtm_control_entradas_views.xml',
         'views/dtm_control_recibido_views.xml',
         'views/dtm_control_entregado_views.xml',
+        'views/dtm_almacen_odt_view.xml',
         #menú
         'views/dtm_menu.xml',
         'views/dtm_menu_control.xml'

@@ -12,5 +12,6 @@ from . import dtm_materiales_consumibles
 from . import dtm_materiales_herramientas
 from . import dtm_materiales_otros
 from . import dtm_control_entradas
+from . import dtm_almacen_odt
 
 

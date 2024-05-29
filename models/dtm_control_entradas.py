@@ -25,9 +25,6 @@ class Entradas(models.Model):
     cantidad_real = fields.Integer(string="Recibido")
 
 
-
-
-
     def consultaAlmacen(self):
          if re.match(".*[Ll][aáAÁ][mM][iI][nN][aA].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales'].search([("codigo","=",self.codigo)])
@@ -49,17 +46,12 @@ class Entradas(models.Model):
          elif re.match(".*[vV][aA][rR][iI][lL][lL][aA].*",self.descripcion):
             pass
 
-
     def convertidor_medidas(self,text):
         text = str(text)
-
         if re.match(".+\.0$",text):
             print(text[:text.find(".")] +" "+ str(Fraction(text[text.find("."):])))
             return text[:text.find(".")] +" "+ str(Fraction(text[text.find("."):]))
-
         return text
-
-
 
 
     def action_done(self):
@@ -122,21 +114,11 @@ class Entradas(models.Model):
                         "correctiva":self.correctiva,
                         "cantidad_real":self.cantidad_real,
                     }
-                #     get_recibido.create(vals)
-                # print(self.id)
-
-
-
-
-
-
-                # self.env.cr.execute("DELETE FROM dtm_control_entradas WHERE id="+str(self.id))
 
     @api.onchange("cantidad_real")
     def _action_cantidad_real(self):
         if self.cantidad_real > self.cantidad:
             self.cantidad_real = self.cantidad
-
 
 class Recibido(models.Model):
     _name = "dtm.control.recibido"
