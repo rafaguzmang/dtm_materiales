@@ -46,7 +46,7 @@
     </record>
 
     <record id="dtm_control_recibido_accion" model="ir.actions.act_window">
-        <field name="name">Control de recibido</field>
+        <field name="name">Recibo</field>
         <field name="res_model">dtm.control.recibido</field>
         <field name="view_mode">tree,form</field>
     </record>

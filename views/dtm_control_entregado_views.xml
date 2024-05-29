@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id = "dtm_control_entregado_accion" model="ir.actions.act_window">
-            <field name="name">Entregado</field>
+            <field name="name">Entregado a producción</field>
             <field name="res_model">dtm.control.entregado</field>
             <field name="view_mode">tree</field>
         </record>

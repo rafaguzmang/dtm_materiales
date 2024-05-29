@@ -58,7 +58,7 @@
     </record>
 
     <record id="dtm_control_entradas_accion" model="ir.actions.act_window">
-        <field name="name">Control de entradas</field>
+        <field name="name">En transito</field>
         <field name="res_model">dtm.control.entradas</field>
         <field name="view_mode">tree,form</field>
     </record>

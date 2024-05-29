@@ -20,7 +20,7 @@ class Materiales(models.Model):
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
     cantidad = fields.Integer(string="Stock", default=0)
-    apartado = fields.Integer(string="Apartado", readonly="True", default=0)
+    apartado = fields.Integer(string="Projectado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" ,store=True)
     localizacion = fields.Text(string="Localización")
 
