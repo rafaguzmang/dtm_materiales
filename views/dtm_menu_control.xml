@@ -4,5 +4,6 @@
          <menuitem id="dtm_control_entradas"  action="dtm_control_entradas_accion"/>
          <menuitem id="dtm_control_entregado_menu" action="dtm_control_entregado_accion" />
          <menuitem id="dtm_control_recibido" action="dtm_control_recibido_accion"/>
+         <menuitem id="dtm_almacen_odt" action="dtm_almacen_odt_accion"/>
      </menuitem>
 </odoo>
