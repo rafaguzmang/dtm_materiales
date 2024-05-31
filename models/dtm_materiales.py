@@ -65,16 +65,38 @@ class Materiales(models.Model):
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
                 self.codigo = get_diseno[0].id
 
+
+            get_ot = self.env['dtm.materials.line'].search([("medida","=",get_diseno.medida),("nombre","=",get_diseno.nombre)])
+            # print(get_ot)
+            self.apartado = 0
+            self.disponible = self.cantidad
+            for item in get_ot:
+                # print(item.materials_cuantity,item.materials_inventory,item.materials_required,self.disponible)
+                if self.disponible <= 0:
+                    inventory = 0
+                    required = item.materials_cuantity
+                elif self.disponible - item.materials_cuantity <= 0:
+                    inventory = self.disponible
+                    required = abs(self.disponible - item.materials_cuantity)
+                elif item.materials_cuantity <= self.disponible:
+                    inventory = item.materials_cuantity
+                    required = 0
+                self.apartado +=  item.materials_cuantity
+                item.write({
+                    "materials_inventory":inventory,
+                    "materials_required":required,
+                })
+
+                self.disponible = self.cantidad - self.apartado
+
         elif len(get_info)>1:
             raise ValidationError("Material Duplicado")
-
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales'].search([("codigo","=",False)])
         get_info.unlink()
         return res
-
 
     @api.onchange("calibre_id")
     def _onchange_calibre_id(self):
@@ -125,7 +147,6 @@ class Materiales(models.Model):
 
             if self.ancho > self.largo:
                 raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
-
     # Filtra si los datos no corresponden al formato de medidas
     def MatchFunction(self,text):
         if text:
@@ -147,7 +168,6 @@ class Materiales(models.Model):
     def _anchange_cantidad(self):
 
         self.cantidad += self.entradas
-
 
     def accion_salidas(self):#-----------------Resta una unidad al stock----------------------------------------------
 
@@ -192,9 +212,6 @@ class Materiales(models.Model):
             return round(sum,4)
         else:
             return float(text)
-
-
-
  # Limpia los valores de las tablas que no cumplan con el formato de medidas
     def CleanTables(self,table,data):
         get_info = self.env[table].search([])

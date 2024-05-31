@@ -5,7 +5,7 @@ from datetime import datetime
 class OrdenTrabajo(models.Model):
     _name = "dtm.almacen.odt"
     _description = "Modelo para ver los materiales solicitados por parte de diseño"
-
+    _order = "id desc"
 
     ot_number = fields.Integer(string="NÚMERO DE ORDEN",readonly=True)
     tipe_order = fields.Char(string="TIPO",readonly=True)
