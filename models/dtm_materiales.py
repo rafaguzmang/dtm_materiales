@@ -65,7 +65,7 @@ class Materiales(models.Model):
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
                 self.codigo = get_diseno[0].id
 
-
+            #Actualiza la lista de materiales de las OT
             get_ot = self.env['dtm.materials.line'].search([("medida","=",get_diseno.medida),("nombre","=",get_diseno.nombre)])
             # print(get_ot)
             self.apartado = 0

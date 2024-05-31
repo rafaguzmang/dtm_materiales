@@ -152,7 +152,7 @@
     </record>
 
     <record id="dtm_canal_accion" model="ir.actions.act_window">
-        <field name="name">Canal</field>
+        <field name="name">Canal y Vigas</field>
         <field name="res_model">dtm.materiales.canal</field>
         <field name="view_mode">tree,form</field>
     </record>
