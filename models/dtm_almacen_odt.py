@@ -15,7 +15,6 @@ class OrdenTrabajo(models.Model):
     materials_ids = fields.Many2many("dtm.materials.line", readonly=True)
     firma = fields.Char(string="Firmato")
 
-
     #---------------------Resumen de descripción------------
 
     description = fields.Text(string="DESCRIPCIÓN")
@@ -29,6 +28,9 @@ class OrdenTrabajo(models.Model):
         get_ot = self.env['dtm.odt'].search([("ot_number","=",self.ot_number)])
         get_ot.write({"firma_almacen": self.env.user.partner_id.name})
         get_procesos = self.env['dtm.proceso'].search([("ot_number","=",self.ot_number)])
-        get_procesos.write({"firma_almacen": "Almacen"})
+        get_procesos.write({
+            "firma_almacen": self.env.user.partner_id.name,
+            "firma_almacen_kanba":"Almacén"
+        })
 
 

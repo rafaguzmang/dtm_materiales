@@ -22,7 +22,7 @@ class Materiales(models.Model):
     cantidad = fields.Integer(string="Stock", default=0)
     apartado = fields.Integer(string="Proyectado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" ,store=True)
-    localizacion = fields.Text(string="Localización")
+    localizacion = fields.Char(string="Localización")
 
     def accion_proyecto(self):
         if self.apartado <= 0:

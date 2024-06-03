@@ -65,85 +65,107 @@
         <field name="name">dtm_materiales_view_form</field>
         <field name="model">dtm.materiales</field>
         <field name="arch" type="xml">
-            <form string="">
+            <form>
+                <style type="text/css">
+                    h1 {
+                        color: #9900cc;
+                    }
+                    .titulo-id {
+                        display: flex;
+                        justify-content: space-around;
+                        margin-bottom: 30px
+                    }
+                    .custom-sheet{
+                         max-width: 50%;
+                    }
+                    .informacion{
+                        color:#ff6600;
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                    .cantidades{
+                        color:##9900cc;
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                    .cantidades, .entradas {
+                        display: flex;
+                    }
+                    .custom-sheet{
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .contenedor{
+                        display: flex;
+                        justify-content: center;
+                    }
+
+                </style>
                 <header>
-                        <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
-                        <button name="accion_proyecto" type="object" string="Salida de Proyecto" class="btn btn-primary"/>
+                    <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
+                    <button name="accion_proyecto" type="object" string="Salida de Proyecto" class="btn btn-primary"/>
                 </header>
-                <sheet>
-                        <div class="row ">
-                            <div class="col-10 d-flex justify-content-left">
-                                <h1>LÁMINA</h1>
-                            </div>
-                            <div class="col-2 d-flex justify-content-right ">
-                                 <h1><field name="codigo" /> </h1>
-                            </div>
+                <sheet class="contenedor">
+                    <div class="custom-sheet">
+                        <div class="titulo-id">
+                            <h1 class="titulo">LÁMINA</h1>
+                            <h1><field name="codigo" /> </h1>
                         </div>
-                        <br></br>
-                        <div class="row d-flex justify-content-between">
-                              <div class="col-3 d-flex flex-column justify-content-start" >
+                        <div class="informacion">
+                            <h3>Apartado:
+                                <field name="apartado"  />
+                            </h3>
+                            <h3>Disponible:
+                                <field name="disponible" />
+                            </h3>
+                        </div>
+
+                        <div class="">
+                              <div>
                                     <h2>Material</h2>
-                                    <field name="material_id" options = "{'no_open': True}" />
+                                    <field name="material_id"  />
                               </div>
-                              <div class="col-3  d-flex flex-column justify-content-start">
+                              <div class="">
                                 <h2>Calibre</h2>
-                                   <field name="calibre_id" options = "{'no_open': True}"/>
+                                   <field name="calibre_id" />
                               </div>
-                              <div class="col-3  d-flex flex-column justify-content-start">
+                              <div class="">
                                 <h2>Largo</h2>
-                                    <field name="largo_id" options = "{'no_open': True}"/>
+                                    <field name="largo_id" />
                               </div>
-                              <div class="col-3  d-flex flex-column justify-content-start">
+                              <div class="">
                                 <h2>Ancho</h2>
-                                   <field name="ancho_id" options = "{'no_open': True}"/>
+                                <field name="ancho_id" />
+                              </div>
+                              <div>
+                                <h2>Localización</h2>
+                                <field name="localizacion" />
+                              </div>
+                              <div>
+                                <h2>Descripción</h2>
+                                <field name="descripcion" />
                               </div>
                         </div>
-                        <div class="row">
-                            <br></br>
+                        <div class="cantidades ">
+                            <h1>
+                                <p>Stock:</p>
+                                <field name="cantidad" />
+                            </h1>
+                            <h1>
+                                <p>Entradas:</p>
+                                <field name="entradas" />
+                            </h1>
                         </div>
-                        <div class="row ">
-                            <div class="col-12 d-flex justify-content-start">
-                                <div class="col-2 d-flex ">
-                                    <h3 class="text-warning" >Apartado:
+                        <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary"/>
 
-                                        <field name="apartado"  />
-                                    </h3>
-                                </div>
-                                 <div class="col-2 d-flex ">
-                                     <h3 class="text-primary">Disponible:
-                                       <field name="disponible" />
-                                     </h3>
-                                </div>
-                            </div>
-                        </div>
-                        <br></br><br></br>
-                         <div class="row ">
-                            <div class="col-12 d-flex justify-content-between">
-                                <h1 class="text-success">Stock:
-                                    <field name="cantidad" />
-                                </h1>
-                                <h1 >
-                                    Entradas:
-                                    <field name="entradas" />
-                                    <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary"/>
-                                </h1>
-                            </div>
-                        </div>
 
-                        <notebook>
-                            <page string="localizacion">
-                                <field name="localizacion" />
-                            </page>
-                            <page string="Notas">
-                                <field name="descripcion" />
-                            </page>
-                        </notebook>
                         <group>
                             <field name="calibre" options = "{'no_open': True}" invisible="1"/>
                             <field name="largo" options = "{'no_open': True}" invisible="1"/>
                             <field name="ancho" options = "{'no_open': True}" invisible="1"/>
                             <field name="area" options = "{'no_open': True}" invisible="1"/>
                         </group>
+                    </div>
                 </sheet>
             </form>
         </field>
