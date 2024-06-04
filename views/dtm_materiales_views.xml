@@ -117,7 +117,7 @@
                         border-radius: 5px;
                         margin-top: -23px;
                         margin-bottom: -22px;
-                        width:25%
+                        width:50%
                     }
                    .botones{
                         display:flex;
@@ -215,8 +215,6 @@
                             </div>
                             <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary guardar"/>
                         </div>
-
-
                     </div>
                         <group>
                             <field name="calibre" options = "{'no_open': True}" invisible="1"/>

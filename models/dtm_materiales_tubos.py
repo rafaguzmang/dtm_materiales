@@ -21,7 +21,7 @@ class Tubos(models.Model):
     cantidad = fields.Integer(string="Stock", default=0)
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
-    localizacion = fields.Text(string="Localización")
+    localizacion = fields.Char(string="Localización")
 
     def accion_guardar(self):
         if not self.descripcion:
