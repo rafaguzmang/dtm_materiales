@@ -65,51 +65,107 @@
         <field name="name">dtm_materiales_view_form</field>
         <field name="model">dtm.materiales</field>
         <field name="arch" type="xml">
-            <form>
+            <form >
                 <style type="text/css">
-                    h1 {
-                        color: #9900cc;
+                    .o_form_sheet{
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        margin:0;
                     }
+                    h1 {
+                        color: #71649c;
+                    }
+
                     .titulo-id {
                         display: flex;
-                        justify-content: space-around;
-                        margin-bottom: 30px
+                        justify-content: center;
+                        border-top: 2px solid #71649c;
+                        margin-top: 5px;
+                        padding-top: 10px;
+
                     }
-                    .custom-sheet{
-                         max-width: 50%;
-                    }
+
                     .informacion{
-                        color:#ff6600;
+                        color:#71649c;
                         display: flex;
                         justify-content: space-between;
+                        padding-bottom: 10px;
+
+                    }
+                    .pie-pag{
+                        display: flex;
+                        flex-direction: column;
                     }
                     .cantidades{
-                        color:##9900cc;
+                        color:#71649c;
                         display: flex;
                         justify-content: space-between;
                     }
-                    .cantidades, .entradas {
+
+                    .contenedor{
                         display: flex;
+                        width: 100%;
+                        background: yellow;
                     }
                     .custom-sheet{
                         display: flex;
                         flex-direction: column;
+                        background: rgba(230, 255, 255,.5);
+                        padding: 5px;
+                        border: 1px solid rgba(0, 0, 0,0.2);
+                        border-radius: 5px;
+                        margin-top: -23px;
+                        margin-bottom: -22px;
+                        width:25%
                     }
-                    .contenedor{
-                        display: flex;
-                        justify-content: center;
+                   .botones{
+                        display:flex;
+                        justify-content: space-between;
+                    }
+                    .guardar{
+                        height: 50px;
+                    }
+                    .description{
+                        margin-top: 5px;
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border-radius: 5px;
+                        padding: 3px;
+                        text-align: center;
+                        margin-bottom:15px
+                    }
+                    .contenedor-datos{
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border-radius: 5px;
+                        padding-left: 5px;
+                    }
+                    .titulo{
+                        margin-left: 10px;
+
+                    }
+                    .codigo{
+                        margin-right: 10px;
+                    }
+                    .stock{
+                        display:flex
+                    }
+                    .campo{
+                        text-align:center
                     }
 
+
                 </style>
-                <header>
-                    <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
-                    <button name="accion_proyecto" type="object" string="Salida de Proyecto" class="btn btn-primary"/>
-                </header>
+
                 <sheet class="contenedor">
+
                     <div class="custom-sheet">
+                        <div class="botones">
+                            <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
+                            <button name="accion_proyecto" type="object" string="Salida de Proyecto" class="btn btn-primary"/>
+                        </div>
                         <div class="titulo-id">
+                            <h1 class="codigo"><field name="codigo" /> </h1>
                             <h1 class="titulo">LÁMINA</h1>
-                            <h1><field name="codigo" /> </h1>
                         </div>
                         <div class="informacion">
                             <h3>Apartado:
@@ -120,52 +176,56 @@
                             </h3>
                         </div>
 
-                        <div class="">
-                              <div>
-                                    <h2>Material</h2>
-                                    <field name="material_id"  />
+                        <div class="contenedor-datos">
+                              <div class="datos">
+                                <h2>Material</h2>
+                                <field name="material_id"  />
                               </div>
-                              <div class="">
+                              <div class="datos">
                                 <h2>Calibre</h2>
                                    <field name="calibre_id" />
                               </div>
-                              <div class="">
+                              <div class="datos">
                                 <h2>Largo</h2>
                                     <field name="largo_id" />
                               </div>
-                              <div class="">
+                              <div class="datos">
                                 <h2>Ancho</h2>
                                 <field name="ancho_id" />
                               </div>
-                              <div>
+                              <div class="datos">
                                 <h2>Localización</h2>
                                 <field name="localizacion" />
                               </div>
-                              <div>
-                                <h2>Descripción</h2>
-                                <field name="descripcion" />
-                              </div>
                         </div>
-                        <div class="cantidades ">
-                            <h1>
-                                <p>Stock:</p>
-                                <field name="cantidad" />
-                            </h1>
-                            <h1>
-                                <p>Entradas:</p>
-                                <field name="entradas" />
-                            </h1>
+                        <div class="description">
+                            <h2>Descripción</h2>
+                            <field name="descripcion" />
                         </div>
-                        <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary"/>
+                        <div class="pie-pag ">
+                            <div class="cantidades">
+                                <h1 class="stock" >
+                                    <p>Stock:</p>
+                                    <field name="cantidad"  class="campo"/>
+                                </h1>
+                                <h1 class="stock">
+                                    <p>Entradas:</p>
+                                    <field name="entradas" class="campo"/>
+                                </h1>
+                            </div>
+                            <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary guardar"/>
+                        </div>
 
 
+                    </div>
                         <group>
                             <field name="calibre" options = "{'no_open': True}" invisible="1"/>
                             <field name="largo" options = "{'no_open': True}" invisible="1"/>
                             <field name="ancho" options = "{'no_open': True}" invisible="1"/>
                             <field name="area" options = "{'no_open': True}" invisible="1"/>
                         </group>
-                    </div>
+
+
                 </sheet>
             </form>
         </field>
