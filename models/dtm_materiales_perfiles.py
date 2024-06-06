@@ -36,7 +36,7 @@ class Perfiles(models.Model):
         if len(get_info)==1:
              # Agrega los materiales nuevo al modulo de diseño
             nombre = "Perfil " + self.material_id.nombre
-            medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre) + ", "+ str(self.largo)
+            medida = str(self.alto) + " x " + str(self.ancho) + " @ " + str(self.calibre) + ", "+ str(self.largo)
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             if not get_diseno:
                 get_id = self.env['dtm.diseno.almacen'].search_count([])
