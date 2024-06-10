@@ -164,7 +164,7 @@
                         </div>
                         <div class="titulo-id">
                             <h1 class="codigo"><field name="codigo" /> </h1>
-                            <h1 class="titulo">LÁMINA</h1>
+                            <h1 class="titulo">PERFILES</h1>
                         </div>
                         <div class="informacion">
                             <h3>Apartado:
@@ -185,12 +185,16 @@
                                    <field name="calibre_id" />
                               </div>
                               <div class="datos">
-                                <h2>Largo</h2>
-                                    <field name="largo_id" />
+                                <h2>Alto</h2>
+                                <field name="alto_id" />
                               </div>
                               <div class="datos">
                                 <h2>Ancho</h2>
                                 <field name="ancho_id" />
+                              </div>
+                              <div class="datos">
+                                <h2>Largo</h2>
+                                <field name="largo_id" />
                               </div>
                               <div class="datos">
                                 <h2>Localización</h2>
@@ -220,6 +224,7 @@
                         <group>
                             <field name="calibre" options = "{'no_open': True}" invisible="1"/>
                             <field name="largo" options = "{'no_open': True}" invisible="1"/>
+                            <field name="alto" options = "{'no_open': True}" invisible="1"/>
                             <field name="ancho" options = "{'no_open': True}" invisible="1"/>
                             <field name="area" options = "{'no_open': True}" invisible="1"/>
                         </group>
