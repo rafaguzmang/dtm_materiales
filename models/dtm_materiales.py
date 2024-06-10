@@ -39,7 +39,6 @@ class Materiales(models.Model):
         if not self.descripcion:
             self.descripcion = ""
         get_info = self.env['dtm.materiales'].search([("material_id","=",self.material_id.id),("calibre","=",self.calibre),("largo","=",self.largo),("ancho","=",self.ancho)])
-        print(get_info)
         if len(get_info)==1:
              # Agrega los materiales nuevo al modulo de diseño
             nombre = "Lámina " + self.material_id.nombre
@@ -89,7 +88,6 @@ class Materiales(models.Model):
                         "materials_required":required,
                     })
                     self.disponible = self.cantidad - self.apartado
-
         elif len(get_info)>1:
             raise ValidationError("Material Duplicado")
 

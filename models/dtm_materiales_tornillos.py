@@ -7,6 +7,7 @@ class Tornillos(models.Model):
     _description = "Sección para llevar el inventario de los tornillos"
     _rec_name = "material_id"
 
+    codigo = fields.Integer(string="ID", readonly=True)
     material_id = fields.Many2one("dtm.tornillos.nombre",string="Nombre",required=True)
     diametro_id = fields.Many2one("dtm.tornillos.diametro",string="DIAMETRO", required=True)
     diametro = fields.Float(string="Decimal")
@@ -21,30 +22,63 @@ class Tornillos(models.Model):
     localizacion = fields.Text(string="Localización")
 
 
-    def write(self,vals):
-        res = super(Tornillos,self).write(vals)
-        nombre = "Tornillo "+self.material_id.nombre
-        medida = str(self.diametro) + " x " + str(self.largo)
-        get_info = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-        descripcion = ""
-        if self.descripcion:
-            descripcion = self.descripcion
+    def accion_guardar(self):
+        if not self.descripcion:
+            self.descripcion = ""
+        get_info = self.env['dtm.materiales.tornillos'].search([("material_id","=",self.material_id.id),("diametro","=",self.diametro),("largo","=",self.largo)])
+        print(get_info)
+        if  len(get_info)==1:
+            nombre = "Tornillo "+self.material_id.nombre
+            medida = str(self.diametro) + " x " + str(self.largo)
+            get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            print(nombre,medida,get_diseno)
+            if not get_diseno:
+                get_id = self.env['dtm.diseno.almacen'].search_count([])
 
-        if get_info:
-            # print("existe")
-            # print(self.disponible,self.area,descripcion,nombre,medida)
-            self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(self.disponible)+", area="+str(self.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
-        else:
-            # print("no existe")
-            # print(nombre,medida,self.largo,self.disponible)
-            get_id = self.env['dtm.diseno.almacen'].search_count([])
-            for result2 in range (1,get_id+1):
-                if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                    id = result2
-                    break
-            self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ descripcion+ "')")
+                id = get_id + 1
+                for result2 in range (1,get_id):
+                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
+                        id = result2
+                        break
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"', '"+ self.descripcion + "')")
+                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+                self.codigo = get_diseno[0].id
 
-        return res
+            else:
+                vals = {
+                    "cantidad": self.cantidad - self.apartado,
+                    "caracteristicas":self.descripcion
+                }
+                get_diseno.write(vals)
+                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+                self.codigo = get_diseno[0].id
+
+            #Actualiza la lista de materiales de las OT
+            get_ot = self.env['dtm.materials.line'].search([("medida","=",get_diseno.medida),("nombre","=",get_diseno.nombre)])
+            # print(get_ot)
+            self.apartado = 0
+            self.disponible = self.cantidad
+            for item in get_ot:
+                # print(item.materials_cuantity,item.materials_inventory,item.materials_required,self.disponible)
+                if item.materials_required > 0:
+                    if self.disponible <= 0:
+                        inventory = 0
+                        required = item.materials_cuantity
+                    elif self.disponible - item.materials_cuantity <= 0:
+                        inventory = self.disponible
+                        required = abs(self.disponible - item.materials_cuantity)
+                    elif item.materials_cuantity <= self.disponible:
+                        inventory = item.materials_cuantity
+                        required = 0
+                    self.apartado +=  item.materials_cuantity
+                    item.write({
+                        "materials_inventory":inventory,
+                        "materials_required":required,
+                    })
+                    self.disponible = self.cantidad - self.apartado
+        elif len(get_info)>1:
+            raise ValidationError("Material Duplicado")
+
 
     def accion_proyecto(self):
         if self.apartado <= 0:
@@ -56,66 +90,10 @@ class Tornillos(models.Model):
         else:
             self.cantidad -= 1
 
-    @api.model
-    def create (self,vals):
-        res = super(Tornillos, self).create(vals)
-        get_info = self.env['dtm.materiales.tornillos'].search([])
-        mapa ={}
-        for get in get_info:
-            material_id = get.material_id
-            diametro_id = get.diametro_id
-            diametro = get.diametro
-            largo_id = get.largo_id
-            largo = get.largo
-            cadena = material_id,diametro_id,largo_id,largo,diametro
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_tornillos WHERE id="+str(get.id))
-                raise ValidationError("Material Duplicado")
-            else:
-                mapa[cadena] = 1
-        return res
-
-
-
-
-
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Tornillos,self).get_view(view_id, view_type,**options)
-        get_info = self.env['dtm.materiales.tornillos'].search([])
-        mapa ={}
-        for get in get_info:
-            material_id = get.material_id
-            diametro_id = get.diametro_id
-            diametro = get.diametro
-            largo_id = get.largo_id
-            largo = get.largo
-            cadena = material_id,diametro_id,largo_id,largo,diametro
-            if mapa.get(cadena):
-                self.env.cr.execute("DELETE FROM dtm_materiales_tornillos WHERE id="+str(get.id))
-                raise ValidationError("Material Duplicado")
-            else:
-                mapa[cadena] = 1
-
-            nombre = "Tornillo "+ get.material_id.nombre
-            medida = str(get.diametro) + " x " + str(get.largo)
-            get_esp = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-            descripcion = ""
-            if get.descripcion:
-                descripcion = get.descripcion
-
-            if get_esp:
-                self.env.cr.execute("UPDATE dtm_diseno_almacen SET cantidad="+str(get.disponible)+", area="+str(get.largo)+", caracteristicas='"+descripcion+"' WHERE nombre='"+nombre+"' and medida='"+medida+"'")
-            else:
-                get_id = self.env['dtm.diseno.almacen'].search_count([])
-                id = get_id + 1
-                for result2 in range (1,get_id+1):
-                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                        id = result2
-                        break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(get.disponible)+", '"+nombre+"', '"+medida+"',"+str(get.largo)+", '"+ str(descripcion)+ "')")
-
-        self.clean_tablas_id("dtm.tornillos.largo","largo")
-        self.clean_tablas_id("dtm.tornillos.diametro","diametro")
+        get_info = self.env['dtm.materiales.tornillos'].search([("codigo","=",False)])
+        get_info.unlink()
         return res
 
     def clean_tablas_id(self,tabla,dato_id): #Borra datos repetidos de las tablas meny2one
