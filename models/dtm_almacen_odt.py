@@ -13,6 +13,7 @@ class OrdenTrabajo(models.Model):
     date_rel = fields.Date(string="FECHA DE ENTREGA", default= datetime.today())
     color = fields.Char(string="COLOR",default="N/A")
     materials_ids = fields.Many2many("dtm.materials.line", readonly=True)
+    materials_npi_ids = fields.Many2many("dtm.materials.npi",readonly=True)
     firma = fields.Char(string="Firmato")
 
     #---------------------Resumen de descripción------------

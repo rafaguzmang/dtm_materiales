@@ -23,7 +23,6 @@
             <form string="">
                 <header>
                         <button name="accion_firma" type="object" string="Firmar" icon="fa-pencil" class="btn btn-primary"/>
-<!--                        <button name="accion_imprimir" type="object" string="Salida de Proyecto" class="btn btn-primary"/>-->
                 </header>
                 <sheet>
                     <group>
@@ -32,7 +31,15 @@
                         <field name="date_in"  />
                         <field name="date_rel"  />
                         <field name="firma" />
-                        <field name="materials_ids" >
+                        <field name="materials_ids" attrs="{'invisible': [('tipe_order', '=', 'NPI')]}" >
+                           <tree >
+                                <field name="materials_list"  />
+                                <field name="materials_cuantity"  />
+                                <field name="materials_inventory"  />
+                                <field name="materials_required"  />
+                           </tree>
+                        </field>
+                        <field name="materials_npi_ids"  attrs="{'invisible': [('tipe_order', '=', 'OT')]}">
                            <tree >
                                 <field name="materials_list" />
                                 <field name="materials_cuantity"  />
