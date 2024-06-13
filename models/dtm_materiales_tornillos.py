@@ -9,11 +9,8 @@ class Tornillos(models.Model):
 
     codigo = fields.Integer(string="ID", readonly=True)
     material_id = fields.Many2one("dtm.tornillos.nombre",string="Nombre",required=True)
-    diametro_id = fields.Many2one("dtm.tornillos.diametro",string="DIAMETRO", required=True)
     diametro = fields.Float(string="Decimal")
-    largo_id = fields.Many2one("dtm.tornillos.largo",string="LARGO", required=True)
     largo = fields.Float(string="Decimal")
-    # area = fields.Float(string="Area")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
     cantidad = fields.Integer(string="Stock", default=0)
@@ -32,7 +29,6 @@ class Tornillos(models.Model):
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             if not get_diseno:
                 get_id = self.env['dtm.diseno.almacen'].search_count([])
-
                 id = get_id + 1
                 for result2 in range (1,get_id):
                     if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
@@ -94,79 +90,6 @@ class Tornillos(models.Model):
         get_info.unlink()
         return res
 
-    def clean_tablas_id(self,tabla,dato_id): #Borra datos repetidos de las tablas meny2one
-        get_campo = self.env[tabla].search([])
-        map = {}
-        for campo in get_campo:
-            if map.get(campo[dato_id]):
-                map[campo[dato_id]] = map.get(campo[dato_id])+1
-                sust = self.env[tabla].search([(dato_id,"=",campo[dato_id])])[0].id
-                dato_id = re.sub("nombre","material",dato_id)
-                get_repetido = self.env["dtm.materiales.tornillos"].search([(dato_id+"_id","=",campo.id)])
-                for repetido in get_repetido:
-                    vals = {
-                        dato_id+"_id": sust
-                    }
-                    repetido.write(vals)
-                tabla_main = re.sub("\.","_",tabla)
-                self.env.cr.execute("DELETE FROM "+tabla_main+" WHERE id = "+str(campo.id))
-
-            else:
-                map[campo[dato_id]] = 1
-
-    @api.onchange("largo_id")
-    def _onchange_largo_id(self):
-        self.env.cr.execute("UPDATE dtm_tornillos_largo SET  largo='0' WHERE largo is NULL;")
-        text = self.largo_id
-        text = text.largo
-        self.CleanTables("dtm.tornillos.largo","largo")
-        if text:
-            self.MatchFunction(text)
-            verdadero = self.MatchFunction(text)
-            if verdadero and text:
-                # print(verdadero, text)
-                result = self.convertidor_medidas(text)
-                self.largo = result
-                # self.area = self.ancho * self.largo
-            # if self.ancho > self.largo:
-                # raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
-
-    @api.onchange("diametro_id")
-    def _onchange_diametro_id(self):
-        self.env.cr.execute("UPDATE dtm_tornillos_largo SET  largo='0' WHERE largo    is NULL;")
-        text = self.diametro_id
-        text = text.diametro
-        self.CleanTables("dtm.tornillos.largo","largo")
-        if text:
-            self.MatchFunction(text)
-            verdadero = self.MatchFunction(text)
-            if verdadero and text:
-                # print(verdadero, text)
-                result = self.convertidor_medidas(text)
-                self.diametro = result
-                # self.area = self.diametro * self.largo
-
-            # if self.ancho > self.largo:
-            #     raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
-
-    # Filtra si los datos no corresponden al formato de medidas
-    def MatchFunction(self,text):
-        if text:
-            x = re.match('\d\.{0,1}\d*$',text)
-            if not x:
-                x = re.match("^[\d]+\/[\d]+$",text)
-                if not x:
-                    x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
-                    if not x:
-                        raise ValidationError("Solo se aceptan los siguientes formatos:\n"+
-                                              "  1..      \"Números\"\n" +
-                                              "  1/1    \"Fracción\"\n" +
-                                              "  1 1/1 \"Números espacio fracción\" \n")
-                        return False
-
-        return True
-
-
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):
         # print(self.cantidad)
@@ -183,53 +106,11 @@ class Tornillos(models.Model):
         for result in self:
             result.disponible = result.cantidad - result.apartado
 
-    def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
-        res = []
-        for result in self:
-            res.append((result.id,f'{result.id}: {result.material_id.nombre}  DIAMETRO: {result.diametro_id.diametro} LARGO:  {result.largo_id.largo}   '))
-        return res
-
-    def convertidor_medidas(self,text):
-        save = []
-        save_float = []
-        if re.match("^[\d]+ [\d]+\/[\d]+$",text):
-            x = re.split("\s",text)
-            for res in x:
-              save.append(res)
-              if re.match("^[\d]+\/[\d]+$",res):
-                x = re.split("\/",res)
-                save.remove(res)
-                for res in x:
-                  save.append(res)
-            for res in save:
-              save_float.append(float(res))
-            sum = save_float[0]+save_float[1]/save_float[2]
-            return round(sum,4)
-        elif re.match("^[\d]+\/[\d]+$",text):
-            x = re.split("\/",text)
-            for res in x:
-              save.append(float(res))
-            sum = save[0]/save[1]
-            return round(sum,4)
-        else:
-            return float(text)
-
-
- # Limpia los valores de las tablas que no cumplan con el formato de medidas
-    def CleanTables(self,table,data):
-        get_info = self.env[table].search([])
-        table = table.replace(".","_")
-        for result in get_info:
-            text = result[data]
-            x = re.match('^[\d]+$',text)
-            if not x:
-                x = re.match("^[\d]+\/[\d]+$",text)
-                if not x:
-                    x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
-                    if not x:
-                        self.env.cr.execute("DELETE FROM "+table+" WHERE "+ data +" = '"+ text +"'")
-
-
+    # def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
+    #     res = []
+    #     for result in self:
+    #         res.append((result.id,f'{result.id}: {result.material_id.nombre}  DIAMETRO: {result.diametro_id.diametro} LARGO:  {result.largo_id.largo}   '))
+    #     return res
 
 class NombreMaterial(models.Model):
     _name = "dtm.tornillos.nombre"

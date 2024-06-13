@@ -6,17 +6,12 @@
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
                     <field name="codigo" />
-                    <field name="id" invisible="1"/>
                     <field name="material_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="calibre_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="calibre" invisible="1"/>
-                    <field name="largo_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="largo" invisible="1"/>
-                    <field name="ancho_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="ancho" invisible="1"/>
-                    <field name="alto_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="alto" invisible="1"/>
-                    <field name="area" invisible="1"/>
+                    <field name="calibre" invisible="0"/>
+                    <field name="largo" invisible="0"/>
+                    <field name="ancho" invisible="0"/>
+                    <field name="alto" invisible="0"/>
+                    <field name="area" invisible="0"/>
                     <field name="cantidad" attrs="{'invisible': [('cantidad','=',0)]}"/>
                     <field name="apartado"  attrs="{'invisible': [('cantidad','=',0)]}"/>
                     <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}"/>
@@ -163,9 +158,7 @@
 
 
                 </style>
-
                 <sheet class="contenedor">
-
                     <div class="custom-sheet">
                         <div class="botones">
                             <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
@@ -173,7 +166,7 @@
                         </div>
                         <div class="titulo-id">
                             <h1 class="codigo"><field name="codigo" /> </h1>
-                            <h1 class="titulo">LÁMINA</h1>
+                            <h1 class="titulo">Àngulos</h1>
                         </div>
                         <div class="informacion">
                             <h3>Apartado:
@@ -191,19 +184,19 @@
                               </div>
                               <div class="datos">
                                 <h2>Calibre</h2>
-                                   <field name="calibre_id" />
+                                   <field name="calibre" />
                               </div>
                               <div class="datos">
                                 <h2>Alto</h2>
-                                    <field name="alto_id" />
+                                    <field name="alto" />
                               </div>
                               <div class="datos">
                                 <h2>Ancho</h2>
-                                <field name="ancho_id" />
+                                <field name="ancho" />
                               </div>
                               <div class="datos">
                                 <h2>Largo</h2>
-                                    <field name="largo_id" />
+                                    <field name="largo" />
                               </div>
                               <div class="localizacion">
                                 <h2>Localización</h2>
@@ -228,14 +221,6 @@
                             <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary guardar"/>
                         </div>
                     </div>
-                    <group>
-                        <field name="calibre" options = "{'no_open': True}" invisible="1"/>
-                        <field name="largo" options = "{'no_open': True}" invisible="1"/>
-                        <field name="ancho" options = "{'no_open': True}" invisible="1"/>
-                        <field name="alto" options = "{'no_open': True}" invisible="1"/>
-                    </group>
-
-
                 </sheet>
             </form>
         </field>

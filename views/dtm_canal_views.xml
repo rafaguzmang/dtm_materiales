@@ -6,20 +6,14 @@
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
                     <field name="codigo" />
-                    <field name="id" invisible="1"/>
-                    <field name="material_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="espesor_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="espesor" invisible="1"/>
-                    <field name="alto_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="alto" invisible="1"/>
-                    <field name="ancho_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="ancho" invisible="1"/>
-                    <field name="largo_id" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="largo" invisible="1"/>
-<!--                    <field name="area" invisible="1"/>-->
-                    <field name="cantidad" attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="apartado"  attrs="{'invisible': [('cantidad','=',0)]}"/>
-                    <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}"/>
+                    <field name="material_id" />
+                    <field name="espesor" invisible="0"/>
+                    <field name="alto" invisible="0"/>
+                    <field name="ancho" invisible="0"/>
+                    <field name="largo" invisible="0"/>
+                    <field name="cantidad"/>
+                    <field name="apartado"/>
+                    <field name="disponible"/>
             </tree>
         </field>
     </record>
@@ -35,27 +29,27 @@
                         <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
                         <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>
                         <separator/>
-                        <filter string="@ 10" name="diseno_cal_11" domain="[('espesor','like','10')]"/>
-                        <filter string="@ 11" name="diseno_cal_11" domain="[('espesor','like','11')]"/>
-                        <filter string="@ 12" name="diseno_cal_11" domain="[('espesor','like','12')]"/>
-                        <filter string="@ 14" name="diseno_cal_14" domain="[('espesor','like','14')]"/>
-                        <filter string="@ 16" name="diseno_cal_16" domain="[('espesor','like','16')]"/>
-                        <filter string="@ 18" name="diseno_cal_18" domain="[('espesor','like','18')]"/>
-                        <filter string="@ 20" name="diseno_cal_18" domain="[('espesor','like','20')]"/>
-                        <filter string="@ 22" name="diseno_cal_22" domain="[('espesor','like','22')]"/>
+                        <filter string="@ 10" name="diseno_cal_11" domain="[('espesor','like','10.0')]"/>
+                        <filter string="@ 11" name="diseno_cal_11" domain="[('espesor','like','11.0')]"/>
+                        <filter string="@ 12" name="diseno_cal_11" domain="[('espesor','like','12.0')]"/>
+                        <filter string="@ 14" name="diseno_cal_14" domain="[('espesor','like','14.0')]"/>
+                        <filter string="@ 16" name="diseno_cal_16" domain="[('espesor','like','16.0')]"/>
+                        <filter string="@ 18" name="diseno_cal_18" domain="[('espesor','like','18.0')]"/>
+                        <filter string="@ 20" name="diseno_cal_18" domain="[('espesor','like','20.0')]"/>
+                        <filter string="@ 22" name="diseno_cal_22" domain="[('espesor','like','22.0')]"/>
                         <separator/>
                         <filter string="Ácero al carbón" name="diseno_carbon" domain="[('material_id','ilike','carbón')]"/>
                         <filter string="Inoxidable" name="diseno_inox" domain="[('material_id','ilike','inoxidable')]"/>
                         <filter string="Galvanizado" name="diseno_cal_11" domain="[('material_id','ilike','galvanizado')]"/>
                         <filter string="Aluminio" name="diseno_cal_14" domain="[('material_id','ilike','aluminio')]"/>
                         <separator/>
-                        <filter string="@ 1/4" name="diseno_cal_1_4" domain="[('espesor','like','.25')]"/>
-                        <filter string="@ 1/8" name="diseno_cal_1_8" domain="[('espesor','like','.125')]"/>
-                        <filter string="@ 3/8" name="diseno_cal_3_8" domain="[('espesor','like','.375')]"/>
-                        <filter string="@ 1/2" name="diseno_cal_1_2" domain="[('espesor','like','.5')]"/>
-                        <filter string="@ 5/8" name="diseno_cal_5_8" domain="[('espesor','like','.625')]"/>
-                        <filter string="@ 3/4" name="diseno_cal_3_4" domain="[('espesor','like','.75')]"/>
-                        <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('espesor','like','.1875')]"/>
+                        <filter string="@ 1/4" name="diseno_cal_1_4" domain="[('espesor','like','0.25')]"/>
+                        <filter string="@ 1/8" name="diseno_cal_1_8" domain="[('espesor','like','0.125')]"/>
+                        <filter string="@ 3/8" name="diseno_cal_3_8" domain="[('espesor','like','0.375')]"/>
+                        <filter string="@ 1/2" name="diseno_cal_1_2" domain="[('espesor','like','0.5')]"/>
+                        <filter string="@ 5/8" name="diseno_cal_5_8" domain="[('espesor','like','0.625')]"/>
+                        <filter string="@ 3/4" name="diseno_cal_3_4" domain="[('espesor','like','0.75')]"/>
+                        <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('espesor','like','0.1875')]"/>
 
                    </search>
                </field>
@@ -163,7 +157,6 @@
 
 
                 </style>
-
                 <sheet class="contenedor">
 
                     <div class="custom-sheet">
@@ -173,7 +166,7 @@
                         </div>
                         <div class="titulo-id">
                             <h1 class="codigo"><field name="codigo" /> </h1>
-                            <h1 class="titulo">LÁMINA</h1>
+                            <h1 class="titulo">CANAL Y VIGAS</h1>
                         </div>
                         <div class="informacion">
                             <h3>Apartado:
@@ -187,23 +180,23 @@
                         <div class="contenedor-datos">
                               <div class="datos">
                                 <h2>Material</h2>
-                                <field name="espesor_id"  />
+                                <field name="material_id"  />
                               </div>
                               <div class="datos">
-                                <h2>Calibre</h2>
-                                   <field name="alto_id" />
+                                <h2>Espesor</h2>
+                                   <field name="espesor" />
                               </div>
                               <div class="datos">
                                 <h2>Alto</h2>
-                                    <field name="ancho_id" />
+                                    <field name="alto" />
                               </div>
                               <div class="datos">
                                 <h2>Ancho</h2>
-                                <field name="largo_id" />
+                                <field name="ancho" />
                               </div>
                               <div class="datos">
                                 <h2>Largo</h2>
-                                    <field name="largo_id" />
+                                    <field name="largo" />
                               </div>
                               <div class="localizacion">
                                 <h2>Localización</h2>
@@ -228,16 +221,7 @@
                             <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary guardar"/>
                         </div>
                     </div>
-                    <group>
-                        <field name="espesor" options = "{'no_open': True}" invisible="1"/>
-                        <field name="largo" options = "{'no_open': True}" invisible="1"/>
-                        <field name="ancho" options = "{'no_open': True}" invisible="1"/>
-                        <field name="alto" options = "{'no_open': True}" invisible="1"/>
-                    </group>
-
-
                 </sheet>
-
             </form>
         </field>
     </record>

@@ -5,14 +5,9 @@
         <field name="model">dtm.materiales.tornillos</field>
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
-                    <field name="id" invisible="1"/>
                     <field name="material_id"/>
-<!--                    <field name="tipo" invisible="1"/>-->
-                    <field name="largo_id"/>
-                    <field name="largo" invisible="1"/>
-                    <field name="diametro_id"/>
-                    <field name="diametro" invisible="1"/>
-<!--                    <field name="area" invisible="1"/>-->
+                    <field name="largo" invisible="0"/>
+                    <field name="diametro" invisible="0"/>
                     <field name="cantidad"/>
                     <field name="apartado" />
                     <field name="disponible" />
@@ -135,7 +130,7 @@
                             <h1 class="codigo">
                                 <field name="codigo" />
                             </h1>
-                            <h1 class="titulo">Tornillos</h1>
+                            <h1 class="titulo">TORNILLERÍA</h1>
                         </div>
                         <div class="informacion">
                             <h3>Apartado:
@@ -152,11 +147,11 @@
                               </div>
                               <div class="datos">
                                 <h2>Diámetro</h2>
-                                <field name="diametro_id" />
+                                <field name="diametro" />
                               </div>
                               <div class="datos">
                                 <h2>Largo</h2>
-                                    <field name="largo_id" />
+                                    <field name="largo" />
                               </div>
                               <div class="datos">
                                 <h2>Localización</h2>
@@ -181,12 +176,6 @@
                             <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary guardar"/>
                         </div>
                     </div>
-                        <group>
-                            <field name="diametro" options = "{'no_open': True}" invisible="1"/>
-                            <field name="largo" options = "{'no_open': True}" invisible="1"/>
-                        </group>
-
-
                 </sheet>
             </form>
         </field>

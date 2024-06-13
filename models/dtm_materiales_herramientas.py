@@ -14,71 +14,22 @@ class Herramientas(models.Model):
     cantidad = fields.Integer(string="Stock", default=0)
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
-
-    def accion_proyecto(self):
-        if self.apartado <= 0:
-            self.apartado = 0
-        else:
-            self.apartado -= 1
-        if self.cantidad <= 0:
-            self.cantidad = 0
-        else:
-            self.cantidad -= 1
+    localizacion = fields.Char(string="Localización")
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):
-        # print(self.cantidad)
         self.cantidad += self.entradas
 
     def accion_salidas(self):#-----------------Resta una unidad al stock----------------------------------------------
-        # print(self.cantidad)
          if self.cantidad <= 0:
             self.cantidad = 0
          else:
             self.cantidad -= 1
 
-    def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
-        for result in self:
-            result.disponible = result.cantidad - result.apartado
-
-    def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
-        res = []
-        for result in self:
-            res.append((result.id,f'{result.id}: {result.nombre_id.nombre} '))
-        return res
-
-    @api.model
-    def create (self,vals):
-        res = super(Herramientas, self).create(vals)
-        get_info = self.env['dtm.materiales.herramientas'].search([])
-
-        mapa ={}
-        for get in get_info:
-            nombre_id = get.nombre_id.nombre
-
-
-            if mapa.get(nombre_id):
-                self.env.cr.execute("DELETE FROM dtm_materiales_herramientas WHERE id="+str(get.id))
-                raise ValidationError("Material Duplicado")
-            else:
-                mapa[nombre_id] = 1
-
-        return res
-
-    def get_view(self, view_id=None, view_type='form', **options):
-        res = super(Herramientas,self).get_view(view_id, view_type,**options)
-        get_info = self.env['dtm.materiales.herramientas'].search([])
-
-        mapa ={}
-        for get in get_info:
-            nombre_id = get.nombre_id.nombre
-
-            if mapa.get(nombre_id):
-                self.env.cr.execute("DELETE FROM dtm_materiales_herramientas WHERE id="+str(get.id))
-
-            else:
-                mapa[nombre_id] = 1
-        return res
+    def accion_guardar(self):
+        get_info = self.env['dtm.materiales.herramientas'].search([("nombre_id","=",self.nombre_id.id)])
+        if len(get_info)>1:
+            raise ValidationError("Material Duplicado")
 
 
 class NombreHerramientas(models.Model):

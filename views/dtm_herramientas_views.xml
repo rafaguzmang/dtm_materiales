@@ -8,10 +8,7 @@
                     <field name="id" invisible="1"/>
                     <field name="nombre_id"  />
                     <field name="descripcion"  />
-                    <field name="entradas"  />
                     <field name="cantidad"  />
-                    <field name="apartado"   />
-                    <field name="disponible"   />
             </tree>
         </field>
     </record>
@@ -21,57 +18,141 @@
         <field name="model">dtm.materiales.herramientas</field>
         <field name="arch" type="xml">
             <form string="">
-                <header>
-                        <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
-                        <button name="accion_proyecto" type="object" string="Salida de Proyecto" class="btn btn-primary"/>
-                </header>
-                <sheet>
-                        <div class="row ">
-                            <div class="col-12 d-flex justify-content-center">
-                                <h1>Consumibles</h1>
-                            </div>
-                        </div>
-                        <br></br>
-                        <div class="row d-flex justify-content-between">
-                            <div class="col-6 d-flex flex-column justify-content-start" >
-                                <h2>Nombre</h2>
-                                <field name="nombre_id" options = "{'no_open': True}" />
-                            </div>
-                            <div class="col-12 d-flex flex-column justify-content-start" >
-                                <h2>Descripción</h2>
-                                <field name="descripcion" options = "{'no_open': True}" />
-                            </div>
+                <style type="text/css">
+                    .o_form_sheet{
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        margin:0;
+                    }
+                    h1 {
+                        color: #71649c;
+                    }
 
+                    .titulo-id {
+                        display: flex;
+                        justify-content: center;
+                        border-top: 2px solid #71649c;
+                        margin-top: 5px;
+                        padding-top: 10px;
+
+                    }
+
+                    .informacion{
+                        color:#71649c;
+                        display: flex;
+                        justify-content: space-between;
+                        padding-bottom: 10px;
+
+                    }
+                    .pie-pag{
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .cantidades{
+                        color:#71649c;
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom:0;
+                    }
+
+                    .contenedor{
+                        display: flex;
+                        width: 100%;
+                        background: yellow;
+                    }
+                    .custom-sheet{
+                        display: flex;
+                        flex-direction: column;
+                        background: rgba(230, 255, 255,.5);
+                        padding: 5px;
+                        border: 1px solid rgba(0, 0, 0,0.2);
+                        border-radius: 5px;
+                        margin-top: -23px;
+                        margin-bottom: -22px;
+                        width:50%
+                    }
+                   .botones{
+                        display:flex;
+                        justify-content: space-between;
+                    }
+                    .guardar{
+                        height: 35px;
+                        margin:0;
+                        padding:0;
+                    }
+                    .description{
+                        margin-top: 5px;
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border-radius: 5px;
+                        padding: 3px;
+                        text-align: center;
+                        margin-bottom:3px
+                        font-size:10px;
+                    }
+                    .contenedor-datos{
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border-radius: 5px;
+                        padding-left: 5px;
+                    }
+                    .titulo{
+                        margin-left: 10px;
+
+                    }
+                    .codigo{
+                        margin-right: 10px;
+                    }
+                    .stock{
+                        display:flex;
+<!--                        font-size:14px-->
+                    }
+                    .campo{
+                        text-align:center
+                    }
+                    .localizacion{
+                        display:flex;
+                    }
+
+
+                </style>
+                <sheet class="contenedor">
+
+                    <div class="custom-sheet">
+                        <div class="botones">
+                            <button name="accion_salidas" type="object" string="Salidas" class="btn btn-primary"/>
                         </div>
-                        <div class="row">
-                            <br></br>
+                        <div class="titulo-id">
+                            <h1 class="codigo"><field name="id" /> </h1>
+                            <h1 class="titulo">CANAL Y VIGAS</h1>
                         </div>
-                        <div class="row ">
-                            <div class="col-12 d-flex justify-content-start">
-                                <div class="col-2 d-flex ">
-                                    <h3 class="text-warning" >Apartado:
-                                        <field name="apartado"  />
-                                    </h3>
-                                </div>
-                                 <div class="col-2 d-flex ">
-                                     <h3 class="text-primary">Disponible:
-                                       <field name="disponible" />
-                                     </h3>
-                                </div>
-                            </div>
+                        <div class="contenedor-datos">
+                              <div class="datos">
+                                <h2>Material</h2>
+                                <field name="nombre_id"  />
+                              </div>
+                              <div class="localizacion">
+                                <h2>Localización</h2>
+                                <field name="localizacion" />
+                              </div>
                         </div>
-                        <br></br><br></br>
-                         <div class="row ">
-                            <div class="col-12 d-flex justify-content-between">
-                                <h1 class="text-success">Stock:
-                                    <field name="cantidad"  />
+                        <div class="description">
+                            <h2>Descripción</h2>
+                            <field name="descripcion" />
+                        </div>
+                        <div class="pie-pag ">
+                            <div class="cantidades">
+                                <h1 class="stock" >
+                                    <p>Stock:</p>
+                                    <field name="cantidad"  class="campo"/>
                                 </h1>
-                                <h1 >
-                                    Entradas:
-                                    <field name="entradas" />
+                                <h1 class="stock">
+                                    <p>Entradas:</p>
+                                    <field name="entradas" class="campo"/>
                                 </h1>
                             </div>
+                            <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary guardar"/>
                         </div>
+                    </div>
                 </sheet>
             </form>
         </field>

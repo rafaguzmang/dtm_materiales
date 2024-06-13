@@ -6,15 +6,10 @@
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
                     <field name="codigo" />
-                    <field name="id" invisible="1"/>
                     <field name="material_id" />
-                    <field name="calibre_id" />
-                    <field name="calibre" invisible="1"/>
-                    <field name="diametro_id" />
-                    <field name="diametro" invisible="1"/>
-                    <field name="largo_id" />
-                    <field name="largo" invisible="1"/>
-<!--                    <field name="area" invisible="1"/>-->
+                    <field name="calibre" invisible="0"/>
+                    <field name="diametro" invisible="0"/>
+                    <field name="largo" invisible="0"/>
                     <field name="cantidad" />
                     <field name="apartado"  />
                     <field name="disponible"  />
@@ -33,27 +28,27 @@
                         <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
                         <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>
                         <separator/>
-                        <filter string="@ 10" name="diseno_cal_11" domain="[('calibre','like','10')]"/>
-                        <filter string="@ 11" name="diseno_cal_11" domain="[('calibre','like','11')]"/>
-                        <filter string="@ 12" name="diseno_cal_11" domain="[('calibre','like','12')]"/>
-                        <filter string="@ 14" name="diseno_cal_14" domain="[('calibre','like','14')]"/>
-                        <filter string="@ 16" name="diseno_cal_16" domain="[('calibre','like','16')]"/>
-                        <filter string="@ 18" name="diseno_cal_18" domain="[('calibre','like','18')]"/>
-                        <filter string="@ 20" name="diseno_cal_18" domain="[('calibre','like','20')]"/>
-                        <filter string="@ 22" name="diseno_cal_22" domain="[('calibre','like','22')]"/>
+                        <filter string="@ 10" name="diseno_cal_11" domain="[('calibre','like','10.0')]"/>
+                        <filter string="@ 11" name="diseno_cal_11" domain="[('calibre','like','11.0')]"/>
+                        <filter string="@ 12" name="diseno_cal_11" domain="[('calibre','like','12.0')]"/>
+                        <filter string="@ 14" name="diseno_cal_14" domain="[('calibre','like','14.0')]"/>
+                        <filter string="@ 16" name="diseno_cal_16" domain="[('calibre','like','16.0')]"/>
+                        <filter string="@ 18" name="diseno_cal_18" domain="[('calibre','like','18.0')]"/>
+                        <filter string="@ 20" name="diseno_cal_18" domain="[('calibre','like','20.0')]"/>
+                        <filter string="@ 22" name="diseno_cal_22" domain="[('calibre','like','22.0')]"/>
                         <separator/>
                         <filter string="Ácero al carbón" name="diseno_carbon" domain="[('material_id','ilike','carbón')]"/>
                         <filter string="Inoxidable" name="diseno_inox" domain="[('material_id','ilike','inoxidable')]"/>
                         <filter string="Galvanizado" name="diseno_cal_11" domain="[('material_id','ilike','galvanizado')]"/>
                         <filter string="Aluminio" name="diseno_cal_14" domain="[('material_id','ilike','aluminio')]"/>
                         <separator/>
-                        <filter string="@ 1/4" name="diseno_cal_1_4" domain="[('calibre','like','.25')]"/>
-                        <filter string="@ 1/8" name="diseno_cal_1_8" domain="[('calibre','like','.125')]"/>
-                        <filter string="@ 3/8" name="diseno_cal_3_8" domain="[('calibre','like','.375')]"/>
-                        <filter string="@ 1/2" name="diseno_cal_1_2" domain="[('calibre','like','.5')]"/>
-                        <filter string="@ 5/8" name="diseno_cal_5_8" domain="[('calibre','like','.625')]"/>
-                        <filter string="@ 3/4" name="diseno_cal_3_4" domain="[('calibre','like','.75')]"/>
-                        <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('calibre','like','.1875')]"/>
+                        <filter string="@ 1/4" name="diseno_cal_1_4" domain="[('calibre','like','0.25')]"/>
+                        <filter string="@ 1/8" name="diseno_cal_1_8" domain="[('calibre','like','0.125')]"/>
+                        <filter string="@ 3/8" name="diseno_cal_3_8" domain="[('calibre','like','0.375')]"/>
+                        <filter string="@ 1/2" name="diseno_cal_1_2" domain="[('calibre','like','0.5')]"/>
+                        <filter string="@ 5/8" name="diseno_cal_5_8" domain="[('calibre','like','0.625')]"/>
+                        <filter string="@ 3/4" name="diseno_cal_3_4" domain="[('calibre','like','0.75')]"/>
+                        <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('calibre','like','0.1875')]"/>
 
                    </search>
                </field>
@@ -162,7 +157,7 @@
                         </div>
                         <div class="titulo-id">
                             <h1 class="codigo"><field name="codigo" /> </h1>
-                            <h1 class="titulo">LÁMINA</h1>
+                            <h1 class="titulo">Tubos</h1>
                         </div>
                         <div class="informacion">
                             <h3>Apartado:
@@ -180,15 +175,15 @@
                               </div>
                               <div class="datos">
                                 <h2>Calibre</h2>
-                                   <field name="calibre_id" />
+                                   <field name="calibre" />
                               </div>
                               <div class="datos">
                                     <h2>Diametro</h2>
-                                    <field name="diametro_id" />
+                                    <field name="diametro" />
                               </div>
                               <div class="datos">
                                 <h2>Largo</h2>
-                                    <field name="largo_id" />
+                                    <field name="largo" />
                               </div>
                               <div class="datos">
                                 <h2>Localización</h2>
@@ -213,13 +208,6 @@
                             <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary guardar"/>
                         </div>
                     </div>
-                        <group>
-                            <field name="calibre" options = "{'no_open': True}" invisible="1"/>
-                            <field name="largo" options = "{'no_open': True}" invisible="1"/>
-                            <field name="diametro" options = "{'no_open': True}" invisible="1"/>
-                        </group>
-
-
                 </sheet>
             </form>
         </field>

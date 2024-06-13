@@ -9,12 +9,9 @@ class Solera(models.Model):
 
     codigo = fields.Integer(string="ID", readonly=True)
     material_id = fields.Many2one("dtm.solera.nombre",string="MATERIAL",required=True)
-    calibre_id = fields.Many2one("dtm.solera.calibre",string="CALIBRE",required=True)
-    calibre = fields.Float(string="Decimal")
-    largo_id = fields.Many2one("dtm.solera.largo",string="LARGO", required=True)
-    largo = fields.Float(string="Decimal")
-    ancho_id = fields.Many2one("dtm.solera.ancho",string="ANCHO", required=True)
-    ancho = fields.Float(string="Decimal")
+    calibre = fields.Float(string="Calibre")
+    largo = fields.Float(string="Largo")
+    ancho = fields.Float(string="Ancho")
     area = fields.Float(string="Area")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
@@ -81,27 +78,6 @@ class Solera(models.Model):
         elif len(get_info)>1:
             raise ValidationError("Material Duplicado")
 
-
-    def clean_tablas_id(self,tabla,dato_id): #Borra datos repetidos de las tablas meny2one
-        get_campo = self.env[tabla].search([])
-        map = {}
-        for campo in get_campo:
-            if map.get(campo[dato_id]):
-                map[campo[dato_id]] = map.get(campo[dato_id])+1
-                sust = self.env[tabla].search([(dato_id,"=",campo[dato_id])])[0].id
-                dato_id = re.sub("nombre","material",dato_id)
-                get_repetido = self.env["dtm.materiales.solera"].search([(dato_id+"_id","=",campo.id)])
-                for repetido in get_repetido:
-                    vals = {
-                        dato_id+"_id": sust
-                    }
-                    repetido.write(vals)
-                tabla_main = re.sub("\.","_",tabla)
-                self.env.cr.execute("DELETE FROM "+tabla_main+" WHERE id = "+str(campo.id))
-
-            else:
-                map[campo[dato_id]] = 1
-
     def accion_proyecto(self):
         if self.apartado <= 0:
             self.apartado = 0
@@ -116,78 +92,16 @@ class Solera(models.Model):
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Solera,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales.solera'].search([("codigo","=",False)])
-        # get_info.unlink()
+        get_info.unlink()
         return res
 
-
-
-    @api.onchange("calibre_id")
-    def _onchange_calibre_id(self):
-        self.env.cr.execute("UPDATE public.dtm_solera_calibre SET  calibre='0' WHERE calibre is NULL;")
-        text = self.calibre_id
-        text = text.calibre
-        if text:
-            self.CleanTables("dtm.solera.calibre","calibre")
-            verdadero = self.MatchFunction(text)
-            if verdadero and text:
-                # print(verdadero, text)
-                result = self.convertidor_medidas(text)
-                self.calibre = result
-                # print(result)
-
-
-    @api.onchange("largo_id")
+    @api.onchange("largo")
     def _onchange_largo_id(self):
-        self.env.cr.execute("UPDATE public.dtm_solera_largo SET  largo='0' WHERE largo is NULL;")
-        text = self.largo_id
-        text = text.largo
-        self.CleanTables("dtm.solera.largo","largo")
-        if text:
-            self.MatchFunction(text)
-            verdadero = self.MatchFunction(text)
-            if verdadero and text:
-                # print(verdadero, text)
-                result = self.convertidor_medidas(text)
-                self.largo = result
-                self.area = self.ancho * self.largo
-            if self.ancho > self.largo:
+        pass
 
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
-
-    @api.onchange("ancho_id")
+    @api.onchange("ancho")
     def _onchange_ancho_id(self):
-        self.env.cr.execute("UPDATE dtm_solera_ancho SET  ancho='0' WHERE ancho    is NULL;")
-        text = self.ancho_id
-        text = text.ancho
-        self.CleanTables("dtm.solera.ancho","ancho")
-        if text:
-            self.MatchFunction(text)
-            verdadero = self.MatchFunction(text)
-            if verdadero and text:
-                # print(verdadero, text)
-                result = self.convertidor_medidas(text)
-                self.ancho = result
-                self.area = self.ancho * self.largo
-
-            if self.ancho > self.largo:
-                raise ValidationError("El valor de 'ANCHO' no debe ser mayor que el 'LARGO'")
-
-    # Filtra si los datos no corresponden al formato de medidas
-    def MatchFunction(self,text):
-        if text:
-            x = re.match('\d\.{0,1}\d*$',text)
-            if not x:
-                x = re.match("^[\d]+\/[\d]+$",text)
-                if not x:
-                    x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
-                    if not x:
-                        raise ValidationError("Solo se aceptan los siguientes formatos:\n"+
-                                              "  1..      \"Números\"\n" +
-                                              "  1/1    \"Fracción\"\n" +
-                                              "  1 1/1 \"Números espacio fracción\" \n")
-                        return False
-
-        return True
+       pass
 
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
@@ -206,53 +120,11 @@ class Solera(models.Model):
         for result in self:
             result.disponible = result.cantidad - result.apartado
 
-    def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
-        res = []
-        for result in self:
-            res.append((result.id,f'{result.id}: {result.material_id.nombre} CALIBRE: {result.calibre_id.calibre} LARGO:  {result.largo_id.largo}  ANCHO: {result.ancho_id.ancho} '))
-        return res
-
-    def convertidor_medidas(self,text):
-        save = []
-        save_float = []
-        if re.match("^[\d]+ [\d]+\/[\d]+$",text):
-            x = re.split("\s",text)
-            for res in x:
-              save.append(res)
-              if re.match("^[\d]+\/[\d]+$",res):
-                x = re.split("\/",res)
-                save.remove(res)
-                for res in x:
-                  save.append(res)
-            for res in save:
-              save_float.append(float(res))
-            sum = save_float[0]+save_float[1]/save_float[2]
-            return round(sum,4)
-        elif re.match("^[\d]+\/[\d]+$",text):
-            x = re.split("\/",text)
-            for res in x:
-              save.append(float(res))
-            sum = save[0]/save[1]
-            return round(sum,4)
-        else:
-            return float(text)
-
-
-
- # Limpia los valores de las tablas que no cumplan con el formato de medidas
-    def CleanTables(self,table,data):
-        get_info = self.env[table].search([])
-        table = table.replace(".","_")
-        for result in get_info:
-            text = result[data]
-            x = re.match('^[\d]+$',text)
-            if not x:
-                x = re.match("^[\d]+\/[\d]+$",text)
-                if not x:
-                    x = re.match("^[\d]+ [\d]+\/[\d]+$",text)
-                    if not x:
-                        self.env.cr.execute("DELETE FROM "+table+" WHERE "+ data +" = '"+ text +"'")
-
+    # def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
+    #     res = []
+    #     for result in self:
+    #         res.append((result.id,f'{result.id}: {result.material_id.nombre} CALIBRE: {result.calibre_id.calibre} LARGO:  {result.largo_id.largo}  ANCHO: {result.ancho_id.ancho} '))
+    #     return res
 
 
 class NombreMaterial(models.Model):
