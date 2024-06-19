@@ -27,27 +27,27 @@
                         <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
                         <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>
                         <separator/>
-                        <filter string="@ 10" name="diseno_cal_11" domain="[('diametro','like','10.0')]"/>
-                        <filter string="@ 11" name="diseno_cal_11" domain="[('diametro','like','11.0')]"/>
-                        <filter string="@ 12" name="diseno_cal_11" domain="[('diametro','like','12.0')]"/>
-                        <filter string="@ 14" name="diseno_cal_14" domain="[('diametro','like','14.0')]"/>
-                        <filter string="@ 16" name="diseno_cal_16" domain="[('diametro','like','16.0')]"/>
-                        <filter string="@ 18" name="diseno_cal_18" domain="[('diametro','like','18.0')]"/>
-                        <filter string="@ 20" name="diseno_cal_18" domain="[('diametro','like','20.0')]"/>
-                        <filter string="@ 22" name="diseno_cal_22" domain="[('diametro','like','22.0')]"/>
+                        <filter string="@ 10" name="diseno_cal_11" domain="[('diametro','like',10)]"/>
+                        <filter string="@ 11" name="diseno_cal_11" domain="[('diametro','like',11)]"/>
+                        <filter string="@ 12" name="diseno_cal_11" domain="[('diametro','like',12)]"/>
+                        <filter string="@ 14" name="diseno_cal_14" domain="[('diametro','like',14)]"/>
+                        <filter string="@ 16" name="diseno_cal_16" domain="[('diametro','like',16)]"/>
+                        <filter string="@ 18" name="diseno_cal_18" domain="[('diametro','like',18)]"/>
+                        <filter string="@ 20" name="diseno_cal_18" domain="[('diametro','like',20)]"/>
+                        <filter string="@ 22" name="diseno_cal_22" domain="[('diametro','like',22)]"/>
                         <separator/>
                         <filter string="lisa" name="diseno_carbon" domain="[('material_id','ilike','lisa')]"/>
                         <filter string="hexagonal" name="diseno_inox" domain="[('material_id','ilike','hexagonal')]"/>
                         <filter string="cuadrada" name="diseno_inox" domain="[('material_id','ilike','cuadrada')]"/>
                         <separator/>
-                        <filter string="@ 1/4" name="diseno_cal_1_4" domain="[('diametro','like','0.25')]"/>
-                        <filter string="@ 1/8" name="diseno_cal_1_8" domain="[('diametro','like','0.125')]"/>
-                        <filter string="@ 3/8" name="diseno_cal_3_8" domain="[('diametro','like','0.375')]"/>
-                        <filter string="@ 1/2" name="diseno_cal_1_2" domain="[('diametro','like','0.5')]"/>
-                        <filter string="@ 5/8" name="diseno_cal_5_8" domain="[('diametro','like','0.625')]"/>
-                        <filter string="@ 3/4" name="diseno_cal_3_4" domain="[('diametro','like','0.75')]"/>
-                        <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('diametro','like','0.1875')]"/>
-                       <filter string="@ 7/16" name="diseno_cal_3_16" domain="[('diametro','like','0.4375')]"/>
+                        <filter string="@ 1/4" name="diseno_cal_1_4" domain="[('diametro','like',.25)]"/>
+                        <filter string="@ 1/8" name="diseno_cal_1_8" domain="[('diametro','like',.125)]"/>
+                        <filter string="@ 3/8" name="diseno_cal_3_8" domain="[('diametro','like',.375)]"/>
+                        <filter string="@ 1/2" name="diseno_cal_1_2" domain="[('diametro','like',.5)]"/>
+                        <filter string="@ 5/8" name="diseno_cal_5_8" domain="[('diametro','like',.625)]"/>
+                        <filter string="@ 3/4" name="diseno_cal_3_4" domain="[('diametro','like',.75)]"/>
+                        <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('diametro','like',.1875)]"/>
+                       <filter string="@ 7/16" name="diseno_cal_3_16" domain="[('diametro','like',.4375)]"/>
 
                    </search>
                </field>

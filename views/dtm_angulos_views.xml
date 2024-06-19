@@ -30,27 +30,27 @@
                         <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
                         <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>
                         <separator/>
-                        <filter string="@ 10" name="diseno_cal_11" domain="[('calibre','like','10')]"/>
-                        <filter string="@ 11" name="diseno_cal_11" domain="[('calibre','like','11')]"/>
-                        <filter string="@ 12" name="diseno_cal_11" domain="[('calibre','like','12')]"/>
-                        <filter string="@ 14" name="diseno_cal_14" domain="[('calibre','like','14')]"/>
-                        <filter string="@ 16" name="diseno_cal_16" domain="[('calibre','like','16')]"/>
-                        <filter string="@ 18" name="diseno_cal_18" domain="[('calibre','like','18')]"/>
-                        <filter string="@ 20" name="diseno_cal_18" domain="[('calibre','like','20')]"/>
-                        <filter string="@ 22" name="diseno_cal_22" domain="[('calibre','like','22')]"/>
+                        <filter string="@ 10" name="diseno_cal_11" domain="[('calibre','like',10)]"/>
+                        <filter string="@ 11" name="diseno_cal_11" domain="[('calibre','like',11)]"/>
+                        <filter string="@ 12" name="diseno_cal_11" domain="[('calibre','like',12)]"/>
+                        <filter string="@ 14" name="diseno_cal_14" domain="[('calibre','like',14)]"/>
+                        <filter string="@ 16" name="diseno_cal_16" domain="[('calibre','like',16)]"/>
+                        <filter string="@ 18" name="diseno_cal_18" domain="[('calibre','like',18)]"/>
+                        <filter string="@ 20" name="diseno_cal_18" domain="[('calibre','like',20)]"/>
+                        <filter string="@ 22" name="diseno_cal_22" domain="[('calibre','like',22)]"/>
                         <separator/>
                         <filter string="Ácero al carbón" name="diseno_carbon" domain="[('material_id','ilike','carbón')]"/>
                         <filter string="Inoxidable" name="diseno_inox" domain="[('material_id','ilike','inoxidable')]"/>
                         <filter string="Galvanizado" name="diseno_cal_11" domain="[('material_id','ilike','galvanizado')]"/>
                         <filter string="Aluminio" name="diseno_cal_14" domain="[('material_id','ilike','aluminio')]"/>
                         <separator/>
-                        <filter string="@ 1/4" name="diseno_cal_1_4" domain="[('calibre','like','.25')]"/>
-                        <filter string="@ 1/8" name="diseno_cal_1_8" domain="[('calibre','like','.125')]"/>
-                        <filter string="@ 3/8" name="diseno_cal_3_8" domain="[('calibre','like','.375')]"/>
-                        <filter string="@ 1/2" name="diseno_cal_1_2" domain="[('calibre','like','.5')]"/>
-                        <filter string="@ 5/8" name="diseno_cal_5_8" domain="[('calibre','like','.625')]"/>
-                        <filter string="@ 3/4" name="diseno_cal_3_4" domain="[('calibre','like','.75')]"/>
-                        <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('calibre','like','.1875')]"/>
+                        <filter string="@ 1/4" name="diseno_cal_1_4" domain="[('calibre','like',.25)]"/>
+                        <filter string="@ 1/8" name="diseno_cal_1_8" domain="[('calibre','like',.125)]"/>
+                        <filter string="@ 3/8" name="diseno_cal_3_8" domain="[('calibre','like',.375)]"/>
+                        <filter string="@ 1/2" name="diseno_cal_1_2" domain="[('calibre','like',.5)]"/>
+                        <filter string="@ 5/8" name="diseno_cal_5_8" domain="[('calibre','like',.625)]"/>
+                        <filter string="@ 3/4" name="diseno_cal_3_4" domain="[('calibre','like',.75)]"/>
+                        <filter string="@ 3/16" name="diseno_cal_3_16" domain="[('calibre','like',.1875)]"/>
 
                    </search>
                </field>
