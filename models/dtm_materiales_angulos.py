@@ -13,7 +13,7 @@ class Angulos(models.Model):
     calibre = fields.Float(string="Calibre")
     largo = fields.Float(string="Largo")
     ancho = fields.Float(string="Ancho")
-    alto = fields.Float(string="Decimal", compute="_compute_alto_id", store=True)
+    alto = fields.Float(string="Decimal",  store=True)
     area = fields.Float(string="Area")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
@@ -31,7 +31,7 @@ class Angulos(models.Model):
         if len(get_info)==1:
              # Agrega los materiales nuevo al modulo de diseño
             nombre = "Ángulo " + self.material_id.nombre
-            medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre) + ", "+ str(self.largo)
+            medida = str(self.alto) + " x " + str(self.ancho) + " @ " + str(self.calibre) + ", "+ str(self.largo)
 
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             if not get_diseno:
