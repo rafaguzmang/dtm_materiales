@@ -13,7 +13,7 @@ class Angulos(models.Model):
     calibre = fields.Float(string="Calibre")
     largo = fields.Float(string="Largo")
     ancho = fields.Float(string="Ancho")
-    alto = fields.Float(string="Decimal",  store=True)
+    alto = fields.Float(string="Alto")
     area = fields.Float(string="Area")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
