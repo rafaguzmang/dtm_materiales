@@ -1,7 +1,7 @@
 {
     "name":"Materiales",
     "description": "Conteo de materiales",
-    "depends":["dtm_odt"],
+    "depends":["dtm_odt",'base', 'mail'],
     "data":[        
         'security/ir.model.access.csv',
         'views/dtm_materiales_views.xml',

@@ -4,6 +4,7 @@ from datetime import datetime
 
 class OrdenTrabajo(models.Model):
     _name = "dtm.almacen.odt"
+    _inherit = ['mail.thread']
     _description = "Modelo para ver los materiales solicitados por parte de diseño"
     _order = "id desc"
 
