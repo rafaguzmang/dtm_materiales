@@ -31,7 +31,7 @@ class Rodamientos(models.Model):
             self.descripcion = ""
         get_info = self.env['dtm.materiales.rodamientos'].search([("material_id","=",self.material_id.id)])
         if  len(get_info)==1:
-            nombre = self.material_id.nombre
+            nombre = "Rodamientos" + self.material_id.nombre
             medida = ""
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             if not get_diseno:
