@@ -23,14 +23,18 @@ class Tornillos(models.Model):
         if not self.descripcion:
             self.descripcion = ""
         get_info = self.env['dtm.materiales.tornillos'].search([("material_id","=",self.material_id.id),("diametro","=",self.diametro),("largo","=",self.largo)])
+        print(get_info)
         if  len(get_info)==1:
             nombre = "Tornillo "+self.material_id.nombre
             medida = str(self.diametro) + " x " + str(self.largo)
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            print(get_diseno)
             if not get_diseno:
-                get_id = self.env['dtm.diseno.almacen'].search_count([])
-                id = get_id + 1
-                for result2 in range (1,get_id):
+                get_id = self.env['dtm.diseno.almacen'].search([], order='id desc',limit=1)
+                print(get_id.id)
+                id = get_id.id + 1
+                print(id)
+                for result2 in range (1,get_id.id):
                     if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
                         id = result2
                         break
