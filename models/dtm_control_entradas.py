@@ -72,7 +72,9 @@ class Entradas(models.Model):
                 for get in get_compras:
                     if get.cantidad <= cantidad and get.comprado != "comprado":
                         vals = {
-                            "comprado": "comprado"
+                            "comprado": "comprado",
+                            "cantidad_almacen":self.cantidad_real
+
                         }
                         get.write(vals)
                         vals = {
@@ -125,10 +127,10 @@ class Entradas(models.Model):
                 #         "cantidad_real":self.cantidad_real,
                 #     }
 
-    @api.onchange("cantidad_real")
-    def _action_cantidad_real(self):
-        if self.cantidad_real > self.cantidad:
-            self.cantidad_real = self.cantidad
+    # @api.onchange("cantidad_real")
+    # def _action_cantidad_real(self):
+    #     if self.cantidad_real > self.cantidad:
+    #         self.cantidad_real = self.cantidad
 
 class Recibido(models.Model):
     _name = "dtm.control.recibido"
