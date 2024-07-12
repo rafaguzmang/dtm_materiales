@@ -24,45 +24,53 @@ class Entradas(models.Model):
     correctiva = fields.Char(string="Acción Correctiva")
     cantidad_real = fields.Integer(string="Recibido")
 
-    def actualizacion(self,material):
-         if material:
-            cantidad = material.cantidad + self.cantidad_real
-            material.write({
-                "cantidad": cantidad,
-                "disponible":cantidad-material.apartado
-            })
+
 
     def consultaAlmacen(self):
          if re.match(".*[Ll][aáAÁ][mM][iI][nN][aA].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[aáAÁ][nN][gG][uU][lL][oO][sS]*.*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.angulos'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[cC][aA][nN][aA][lL].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.canal'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[pP][eE][rR][fF][iI][lL].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.perfiles'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[pP][iI][nN][tT][uU][rR][aA].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.pintura'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[Rr][oO][dD][aA][mM][iI][eE][nN][tT][oO].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.rodamientos'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[tT][oO][rR][nN][iI][lL][lL][oO].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.tornillos'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[tT][uU][bB][oO].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.tubos'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[vV][aA][rR][iI][lL][lL][aA].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.varilla'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
          elif re.match(".*[sS][oO][lL][eE][rR][aA].*",self.descripcion):
             get_alamacen = self.env['dtm.materiales.solera'].search([("codigo","=",self.codigo)])
-            self.actualizacion(get_alamacen)
+         self.actualizacion(get_alamacen)
+
+    def actualizacion(self,material):
+         if material:
+            get_items = self.env['dtm.materials.line'].search([("materials_list","=",material.codigo)],order="create_date ASC")#Trae todas las ordenes y las ordena de la mas antigua a la mas nueva
+            cantidad = material.cantidad + self.cantidad_real
+            apartado = material.apartado
+            disponible = cantidad -apartado
+            if disponible < 0:
+                disponible = 0
+            sum = 0
+            for item in get_items:
+                if disponible >= item.materials_required:
+                    sum += item.materials_required
+                    item.write({
+                        "materials_required":0,
+                        "materials_availabe":item.materials_cuantity
+                    })
+            material.write({
+                "cantidad":cantidad,
+                "apartado":apartado,
+                "disponible":disponible - sum
+            })
+
 
     def action_done(self):
         if self.material_correcto and self.material_calidad and self.material_aprobado:
@@ -103,29 +111,9 @@ class Entradas(models.Model):
                      "correctiva":self.correctiva,
                      "cantidad_real":self.cantidad_real
                 })
-                record = self.env["dtm.control.entradas"].browse(self.id)
-                record.unlink()
+                self.env["dtm.control.entradas"].search([("id","=",self._origin.id)]).unlink()
 
 
-
-                #  # Pasa los datos del modulo entradas al de entregado
-                # if not get_recibido:
-                #     vals = {
-                #         "proveedor":self.proveedor,
-                #         "codigo":self.codigo,
-                #         "descripcion":self.descripcion,
-                #         "cantidad":self.cantidad,
-                #         "fecha_recepcion":self.fecha_recepcion,
-                #         "fecha_real":self.fecha_real,
-                #         "material_correcto":self.material_correcto,
-                #         "material_cantidad":self.material_cantidad,
-                #         "material_calidad":self.material_calidad,
-                #         "material_entiempo":self.material_entiempo,
-                #         "material_aprobado":self.material_aprobado,
-                #         "motivo":self.motivo,
-                #         "correctiva":self.correctiva,
-                #         "cantidad_real":self.cantidad_real,
-                #     }
 
     # @api.onchange("cantidad_real")
     # def _action_cantidad_real(self):

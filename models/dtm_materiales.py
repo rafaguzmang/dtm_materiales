@@ -88,6 +88,8 @@ class Materiales(models.Model):
         elif len(get_info)>1:
             raise ValidationError("Material Duplicado")
 
+        self.entradas = 0
+
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales'].search([("codigo","=",False)])
