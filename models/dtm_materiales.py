@@ -10,10 +10,10 @@ class Materiales(models.Model):
 
     codigo = fields.Integer(string="ID", readonly=True)
     material_id = fields.Many2one("dtm.nombre.material",string="MATERIAL",required=True)
-    calibre = fields.Float(string="Calibre")
-    largo = fields.Float(string="Largo")
-    ancho = fields.Float(string="Ancho")
-    area = fields.Float(string="Area")
+    calibre = fields.Float(string="Calibre", digits=(12, 4))
+    largo = fields.Float(string="Largo", digits=(12, 4))
+    ancho = fields.Float(string="Ancho", digits=(12, 4))
+    area = fields.Float(string="Area", digits=(12, 4))
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
     cantidad = fields.Integer(string="Stock", default=0)
@@ -41,6 +41,7 @@ class Materiales(models.Model):
             nombre = "Lámina " + self.material_id.nombre
             medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre)
             get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            self.area = self.largo * self.ancho
             if not get_diseno:
                 get_id = self.env['dtm.diseno.almacen'].search([], order='id desc',limit=1)
 
@@ -95,14 +96,6 @@ class Materiales(models.Model):
         get_info = self.env['dtm.materiales'].search([("codigo","=",False)])
         get_info.unlink()
         return res
-
-    @api.onchange("largo_id")
-    def _onchange_largo_id(self):
-       pass
-
-    @api.onchange("ancho_id")
-    def _onchange_ancho_id(self):
-      pass
 
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
