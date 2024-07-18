@@ -27,27 +27,28 @@ class Entradas(models.Model):
 
 
     def consultaAlmacen(self):
+         get_almacen = self.env['dtm.materiales.otros'].search([("codigo","=",self.codigo)])
          if re.match(".*[Ll][aáAÁ][mM][iI][nN][aA].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales'].search([("codigo","=",self.codigo)])
          elif re.match(".*[aáAÁ][nN][gG][uU][lL][oO][sS]*.*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.angulos'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales.angulos'].search([("codigo","=",self.codigo)])
          elif re.match(".*[cC][aA][nN][aA][lL].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.canal'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales.canal'].search([("codigo","=",self.codigo)])
          elif re.match(".*[pP][eE][rR][fF][iI][lL].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.perfiles'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales.perfiles'].search([("codigo","=",self.codigo)])
          elif re.match(".*[pP][iI][nN][tT][uU][rR][aA].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.pintura'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales.pintura'].search([("codigo","=",self.codigo)])
          elif re.match(".*[Rr][oO][dD][aA][mM][iI][eE][nN][tT][oO].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.rodamientos'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales.rodamientos'].search([("codigo","=",self.codigo)])
          elif re.match(".*[tT][oO][rR][nN][iI][lL][lL][oO].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.tornillos'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales.tornillos'].search([("codigo","=",self.codigo)])
          elif re.match(".*[tT][uU][bB][oO].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.tubos'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales.tubos'].search([("codigo","=",self.codigo)])
          elif re.match(".*[vV][aA][rR][iI][lL][lL][aA].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.varilla'].search([("codigo","=",self.codigo)])
+            get_almacen = self.env['dtm.materiales.varilla'].search([("codigo","=",self.codigo)])
          elif re.match(".*[sS][oO][lL][eE][rR][aA].*",self.descripcion):
-            get_alamacen = self.env['dtm.materiales.solera'].search([("codigo","=",self.codigo)])
-         self.actualizacion(get_alamacen)
+            get_almacen = self.env['dtm.materiales.solera'].search([("codigo","=",self.codigo)])
+         self.actualizacion(get_almacen)
 
     def actualizacion(self,material):
          if material:
