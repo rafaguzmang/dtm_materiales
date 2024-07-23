@@ -44,7 +44,7 @@ class Perfiles(models.Model):
                         break
                 self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ self.descripcion + "')")
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)], limit = 1)
-                self.codigo = get_diseno.id
+                self.codigo = get_diseno[0].id
             else:
                 vals = {
                     "cantidad": self.cantidad - self.apartado,
@@ -54,28 +54,27 @@ class Perfiles(models.Model):
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)],limit = 1)
                 self.codigo = get_diseno.id
              #Actualiza la lista de materiales de las OT
-            get_ot = self.env['dtm.materials.line'].search([("medida","=",get_diseno.medida),("nombre","=",get_diseno.nombre)])
+            # get_ot = self.env['dtm.materials.line'].search([("materials_list","=",get_diseno.id)])
             # print(get_ot)
-            self.apartado = 0
-            self.disponible = self.cantidad
-            for item in get_ot:
-                # print(item.materials_cuantity,item.materials_inventory,item.materials_required,self.disponible)
-                if self.disponible <= 0:
-                    inventory = 0
-                    required = item.materials_cuantity
-                elif self.disponible - item.materials_cuantity <= 0:
-                    inventory = self.disponible
-                    required = abs(self.disponible - item.materials_cuantity)
-                elif item.materials_cuantity <= self.disponible:
-                    inventory = item.materials_cuantity
-                    required = 0
-                self.apartado +=  item.materials_cuantity
-                item.write({
-                    "materials_inventory":inventory,
-                    "materials_required":required,
-                })
-
-                self.disponible = self.cantidad - self.apartado
+            # self.apartado = 0
+            # self.disponible = self.cantidad
+            # for item in get_ot:
+            #     # print(item.materials_cuantity,item.materials_inventory,item.materials_required,self.disponible)
+            #     # if self.disponible <= 0:
+            #     #     inventory = 0
+            #     #     required = item.materials_cuantity
+            #     # elif self.disponible - item.materials_cuantity <= 0:
+            #     #     inventory = self.disponible
+            #     #     required = abs(self.disponible - item.materials_cuantity)
+            #     # elif item.materials_cuantity <= self.disponible:
+            #     #     inventory = item.materials_cuantity
+            #     #     required = 0
+            #     self.apartado +=  item.materials_cuantity
+            #     item.write({
+            #         "materials_inventory":inventory,
+            #     })
+            #
+            #     self.disponible = self.cantidad - self.apartado
 
         elif len(get_info)>1:
             raise ValidationError("Material Duplicado")
