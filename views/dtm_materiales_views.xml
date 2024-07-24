@@ -24,8 +24,7 @@
        <field name="model">dtm.materiales</field>
        <field name ="arch" type="xml">
            <search>
-                <field name="calibre"/>
-                <field name="apartado"  />
+                <field name="codigo"/>
 
                 <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
                 <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>

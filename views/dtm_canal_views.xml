@@ -23,8 +23,7 @@
                <field name="model">dtm.materiales.canal</field>
                <field name ="arch" type="xml">
                    <search>
-                        <field name="espesor"></field>
-                        <field name="apartado"  />
+                        <field name="codigo"/>
 
                         <filter string="stock" name="stock" domain="[('cantidad','!=','0')]"/>
                         <filter string="apartado" name="apartado" domain="[('apartado','!=','0')]"/>
