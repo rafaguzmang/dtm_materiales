@@ -24,8 +24,6 @@ class Entradas(models.Model):
     correctiva = fields.Char(string="Acción Correctiva")
     cantidad_real = fields.Integer(string="Recibido")
 
-
-
     def consultaAlmacen(self):
          get_almacen = self.env['dtm.materiales.otros'].search([("codigo","=",self.codigo)])
          if re.match(".*[Ll][aáAÁ][mM][iI][nN][aA].*",self.descripcion):

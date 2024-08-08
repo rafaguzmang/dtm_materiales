@@ -23,7 +23,7 @@ class Angulos(models.Model):
     localizacion = fields.Char(string="Localización")
 
     def accion_guardar(self):
-
+        email = self.env.user.partner_id.email
         if not self.descripcion:
             self.descripcion = ""
 
@@ -42,11 +42,13 @@ class Angulos(models.Model):
                     if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
                         id = result2
                         break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ self.descripcion + "')")
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(0)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ self.descripcion + "')")
+                if "almacen@dtmindustry.com" in email:
+                    self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ self.descripcion + "')")
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)], limit = 1)
                 self.codigo = get_diseno.id
 
-            else:
+            elif "almacen@dtmindustry.com" in email:
                 vals = {
                     "cantidad": self.cantidad - self.apartado,
                     "caracteristicas":self.descripcion
@@ -55,44 +57,27 @@ class Angulos(models.Model):
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)],limit = 1)
                 self.codigo = get_diseno.id
 
-            #  #Actualiza la lista de materiales de las OT
-            # get_ot = self.env['dtm.materials.line'].search([("medida","=",get_diseno.medida),("nombre","=",get_diseno.nombre)])
-            # # print(get_ot)
-            # self.apartado = 0
-            # self.disponible = self.cantidad
-            # for item in get_ot:
-            #     # print(item.materials_cuantity,item.materials_inventory,item.materials_required,self.disponible)
-            #     if self.disponible <= 0:
-            #         inventory = 0
-            #         required = item.materials_cuantity
-            #     elif self.disponible - item.materials_cuantity <= 0:
-            #         inventory = self.disponible
-            #         required = abs(self.disponible - item.materials_cuantity)
-            #     elif item.materials_cuantity <= self.disponible:
-            #         inventory = item.materials_cuantity
-            #         required = 0
-            #     self.apartado +=  item.materials_cuantity
-            #     item.write({
-            #         "materials_inventory":inventory,
-            #         "materials_required":required,
-            #     })
-            #
-            #     self.disponible = self.cantidad - self.apartado
-
-
         elif len(get_info)>1:
             raise ValidationError("Material Duplicado")
 
+        self.cantidad = 0
+        self.entradas = 0
+
+
+
+
 
     def accion_proyecto(self):
-        if self.apartado <= 0:
-            self.apartado = 0
-        else:
-            self.apartado -= 1
-        if self.cantidad <= 0:
-            self.cantidad = 0
-        else:
-            self.cantidad -= 1
+        email = self.env.user.partner_id.email
+        if "almacen@dtmindustry.com" in email:
+            if self.apartado <= 0:
+                self.apartado = 0
+            else:
+                self.apartado -= 1
+            if self.cantidad <= 0:
+                self.cantidad = 0
+            else:
+                self.cantidad -= 1
 
     def get_view(self, view_id=None, view_type='form', **options):
         res = super(Angulos,self).get_view(view_id, view_type,**options)
@@ -115,19 +100,27 @@ class Angulos(models.Model):
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):
-        # print(self.cantidad)
-        self.cantidad += self.entradas
+        email = self.env.user.partner_id.email
+        if "almacen@dtmindustry.com" in email:
+            self.cantidad += self.entradas
 
     def accion_salidas(self):#-----------------Resta una unidad al stock----------------------------------------------
-        # print(self.cantidad)
-        if self.cantidad <= 0:
-            self.cantidad = 0
-        else:
-            self.cantidad -= 1
+        email = self.env.user.partner_id.email
+        if "almacen@dtmindustry.com" in email:
+            if self.cantidad <= 0:
+                self.cantidad = 0
+            else:
+                self.cantidad -= 1
 
+    @api.depends("cantidad")
     def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
         for result in self:
-            result.disponible = result.cantidad - result.apartado
+            email = result.env.user.partner_id.email
+            if "almacen@dtmindustry.com" in email:
+                result.disponible = 0
+                if result.cantidad - result.apartado > 0:
+                    result.disponible = result.cantidad - result.apartado
+
 
     # def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
     #     res = []
