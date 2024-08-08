@@ -203,11 +203,12 @@
                             <div class="cantidades">
                                 <h1 class="stock" >
                                     <p>Stock:</p>
-                                    <field name="cantidad"  class="campo"/>
+                                    <field name="cantidad"  class="campo" attrs="{'invisible': [('user_almacen', '!=', True)]}"/>
+                                    <field name="user_almacen" invisible="1" />
                                 </h1>
                                 <h1 class="stock">
                                     <p>Entradas:</p>
-                                    <field name="entradas" class="campo"/>
+                                    <field name="entradas" class="campo" attrs="{'invisible': [('user_almacen', '!=', True)]}"/>
                                 </h1>
                             </div>
                             <button name="accion_guardar" type="object" string="Guardar" class="btn btn-primary guardar"/>

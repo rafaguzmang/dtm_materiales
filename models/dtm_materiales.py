@@ -20,10 +20,11 @@ class Materiales(models.Model):
     apartado = fields.Integer(string="Proyectado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" ,store=True)
     localizacion = fields.Char(string="Localización")
+    user_almacen = fields.Boolean()
 
     def accion_proyecto(self):
         email = self.env.user.partner_id.email
-        if "almacen@dtmindustry.com" in email:
+        if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
             if self.apartado <= 0:
                 self.apartado = 0
             else:
@@ -52,13 +53,14 @@ class Materiales(models.Model):
                     if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
                         id = result2
                         break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(0)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ self.descripcion + "')")
-                if "almacen@dtmindustry.com" in email:
-                    self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ self.descripcion + "')")
+                cantidad = 0
+                if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
+                    cantidad = self.disponible
+                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(cantidad)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ self.descripcion + "')")
                 get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
                 self.codigo = get_diseno[0].id
 
-            elif "almacen@dtmindustry.com" in email:
+            elif   email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"] :
                 vals = {
                     "cantidad": self.cantidad - self.apartado,
                     "caracteristicas":self.descripcion
@@ -68,7 +70,6 @@ class Materiales(models.Model):
                 self.codigo = get_diseno[0].id
         elif len(get_info)>1:
             raise ValidationError("Material Duplicado")
-        self.cantidad = 0
         self.entradas = 0
 
 
@@ -76,18 +77,24 @@ class Materiales(models.Model):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales'].search([("codigo","=",False)])
         get_info.unlink()
+
+        email = self.env.user.partner_id.email
+        self.user_almacen = False
+        if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
+            self.user_almacen = True
+
         return res
 
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------
     def _anchange_cantidad(self):
         email = self.env.user.partner_id.email
-        if "almacen@dtmindustry.com" in email:
+        if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
             self.cantidad += self.entradas
 
     def accion_salidas(self):#-----------------Resta una unidad al stock----------------------------------------------
         email = self.env.user.partner_id.email
-        if "almacen@dtmindustry.com" in email:
+        if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
              if self.cantidad <= 0:
                 self.cantidad = 0
              else:
@@ -96,11 +103,7 @@ class Materiales(models.Model):
     @api.depends("cantidad")
     def _compute_disponible(self):#-----------------------------Saca la cantidad del material que hay disponible---------------
         for result in self:
-            email = result.env.user.partner_id.email
-            if "almacen@dtmindustry.com" in email:
-                result.disponible = 0
-                if result.cantidad - result.apartado > 0:
-                    result.disponible = result.cantidad - result.apartado
+            result.disponible = result.cantidad - result.apartado
 
     # def name_get(self):#--------------------------------Arreglo para cuando usa este modulo como Many2one--------------------
     #     res = []
