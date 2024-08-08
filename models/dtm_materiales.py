@@ -20,7 +20,14 @@ class Materiales(models.Model):
     apartado = fields.Integer(string="Proyectado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" ,store=True)
     localizacion = fields.Char(string="Localización")
-    user_almacen = fields.Boolean()
+    user_almacen = fields.Boolean(compute="_compute_user_email_match")
+
+    def _compute_user_email_match(self):
+        for record in self:
+            email = self.env.user.partner_id.email
+            record.user_almacen = False
+            if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
+                record.user_almacen = True
 
     def accion_proyecto(self):
         email = self.env.user.partner_id.email
@@ -77,13 +84,9 @@ class Materiales(models.Model):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales'].search([("codigo","=",False)])
         get_info.unlink()
-
-        email = self.env.user.partner_id.email
-        self.user_almacen = False
-        if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
-            self.user_almacen = True
-
         return res
+
+
 
 
     @api.onchange("entradas")#---------------------------Suma material nuevo------------------------------------------

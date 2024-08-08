@@ -19,7 +19,14 @@ class Solera(models.Model):
     apartado = fields.Integer(string="Apartado", readonly="True", default=0)
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
     localizacion = fields.Char(string="Localización")
-    user_almacen = fields.Boolean()
+    user_almacen = fields.Boolean(compute="_compute_user_email_match")
+
+    def _compute_user_email_match(self):
+        for record in self:
+            email = self.env.user.partner_id.email
+            record.user_almacen = False
+            if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
+                record.user_almacen = True
 
     def accion_guardar(self):
         email = self.env.user.partner_id.email
