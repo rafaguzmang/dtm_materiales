@@ -7,7 +7,7 @@ class Canal(models.Model):
     _description = "Sección para llevar el inventario de las canal"
     _rec_name = "material_id"
 
-    codigo = fields.Integer(string="ID", readonly=True)
+    codigo = fields.Integer(string="Código", readonly=True)
     material_id = fields.Many2one("dtm.canal.nombre",string="MATERIAL",required=True)
     espesor = fields.Float(string="Espesor")
     ancho = fields.Float(string="Ancho")

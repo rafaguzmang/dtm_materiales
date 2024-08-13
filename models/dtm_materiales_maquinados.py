@@ -7,7 +7,7 @@ class Maquinados(models.Model):
     _description = "Sección para llevar el inventario de los maquinados"
     _rec_name = "nombre_id"
 
-    codigo = fields.Integer(string="ID", readonly=True)
+    codigo = fields.Integer(string="Código", readonly=True)
     nombre_id = fields.Many2one("dtm.maquinados.nombre",string="NOMBRE",required=True)
     descripcion = fields.Text(string="DESCRIPCIÓN")
     entradas = fields.Integer(string="Entradas", default=0)

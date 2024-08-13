@@ -7,10 +7,10 @@ class Varilla(models.Model):
     _description = "Sección para llevar el inventario de los varilla"
     _rec_name = "material_id"
 
-    codigo = fields.Integer(string="ID", readonly=True)
+    codigo = fields.Integer(string="Código", readonly=True)
     material_id = fields.Many2one("dtm.varilla.nombre",string="MATERIAL",required=True)
-    diametro = fields.Float(string="Decimal")
-    largo = fields.Float(string="Decimal")
+    diametro = fields.Float(string="Diámetro")
+    largo = fields.Float(string="Largo")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
     cantidad = fields.Integer(string="Stock", default=0)

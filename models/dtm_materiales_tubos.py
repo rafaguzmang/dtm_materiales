@@ -7,7 +7,7 @@ class Tubos(models.Model):
     _description = "Sección para llevar el inventario de los tubos"
     _rec_name = "material_id"
 
-    codigo = fields.Integer(string="ID", readonly=True)
+    codigo = fields.Integer(string="Código", readonly=True)
     material_id = fields.Many2one("dtm.tubos.nombre",string="MATERIAL",required=True)
     calibre = fields.Float(string="Calibre")
     diametro = fields.Float(string="Diametro", store=True)

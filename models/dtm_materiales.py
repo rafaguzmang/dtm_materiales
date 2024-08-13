@@ -8,7 +8,7 @@ class Materiales(models.Model):
     _rec_name = "material_id"
     _description = "Lista de materiales láminas"
 
-    codigo = fields.Integer(string="ID", readonly=True)
+    codigo = fields.Integer(string="Código", readonly=True)
     material_id = fields.Many2one("dtm.nombre.material",string="MATERIAL",required=True)
     calibre = fields.Float(string="Calibre", digits=(12, 4))
     largo = fields.Float(string="Largo", digits=(12, 4))

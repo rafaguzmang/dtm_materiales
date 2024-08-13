@@ -7,7 +7,7 @@ class Rodamientos(models.Model):
     _description = "Sección para llevar el inventario de los rodamientos"
     _rec_name = "material_id"
 
-    codigo = fields.Integer(string="ID", readonly=True)
+    codigo = fields.Integer(string="Código", readonly=True)
     material_id = fields.Many2one("dtm.rodamientos.nombre",string="Nombre",required=True)
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)

@@ -7,7 +7,7 @@ class Solera(models.Model):
     _description = "Sección para llevar el inventario de las solera"
     _rec_name = "material_id"
 
-    codigo = fields.Integer(string="ID", readonly=True)
+    codigo = fields.Integer(string="Código", readonly=True)
     material_id = fields.Many2one("dtm.solera.nombre",string="MATERIAL",required=True)
     calibre = fields.Float(string="Calibre")
     largo = fields.Float(string="Largo")
