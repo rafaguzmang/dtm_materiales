@@ -84,6 +84,10 @@ class Materiales(models.Model):
         res = super(Materiales,self).get_view(view_id, view_type,**options)
         get_info = self.env['dtm.materiales'].search([("codigo","=",False)])
         get_info.unlink()
+        get_info = self.env['dtm.materiales'].search([])
+        for info in get_info:
+            if info.cantidad < 0: info.write({"cantidad":0})
+
         return res
 
 
