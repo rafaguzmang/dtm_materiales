@@ -5,7 +5,7 @@
         <field name="model">dtm.materiales.pintura</field>
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
-                    <field name="id" invisible="1"/>
+                    <field name="id"/>
                     <field name="material_id" />
                     <field name="tipo" />
                     <field name="cantidades" />
@@ -133,7 +133,7 @@
                         </div>
                         <div class="contenedor-datos">
                               <div class="datos">
-                                <h2>Material</h2>
+                                <h2>Color</h2>
                                 <field name="material_id"  />
                               </div>
                               <div class="datos">

@@ -29,14 +29,14 @@
                         <field name="date_in"  />
                         <field name="date_rel"  />
                         <field name="firma" />
-                        <field name="materials_ids" attrs="{'invisible': [('tipe_order', '=', 'NPI')]}" >
-                           <tree >
-                                <field name="materials_list"  />
-                                <field name="materials_cuantity"  />
-                                <field name="materials_inventory"  />
-                                <field name="materials_required"  />
-                           </tree>
-                        </field>
+<!--                        <field name="materials_ids" attrs="{'invisible': [('tipe_order', '=', 'NPI')]}" >-->
+<!--                           <tree >-->
+<!--                                <field name="materials_list"  />-->
+<!--                                <field name="materials_cuantity"  />-->
+<!--                                <field name="materials_inventory"  />-->
+<!--                                <field name="materials_required"  />-->
+<!--                           </tree>-->
+<!--                        </field>-->
                         <field name="materials_npi_ids"  attrs="{'invisible': [('tipe_order', '=', 'OT')]}">
                            <tree >
                                 <field name="materials_list" />

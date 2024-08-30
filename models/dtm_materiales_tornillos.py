@@ -9,8 +9,8 @@ class Tornillos(models.Model):
 
     codigo = fields.Integer(string="Código", readonly=True)
     material_id = fields.Many2one("dtm.tornillos.nombre",string="Nombre",required=True)
-    diametro = fields.Float(string="Diámetro")
-    largo = fields.Float(string="Largo")
+    diametro = fields.Float(string="Diámetro",digits=(12, 4))
+    largo = fields.Float(string="Largo",digits=(12, 4))
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
     cantidad = fields.Integer(string="Stock", default=0)
