@@ -27,40 +27,33 @@ class Varilla(models.Model):
                 record.user_almacen = True
 
     def accion_guardar(self):
-        email = self.env.user.partner_id.email
-        if not self.descripcion:
-            self.descripcion = ""
-        get_info = self.env['dtm.materiales.varilla'].search([("material_id","=",self.material_id.id),("diametro","=",self.diametro),("largo","=",self.largo)])
-        if len(get_info)==1:
-             # Agrega los materiales nuevo al modulo de diseño
-            nombre = "Varilla " + self.material_id.nombre
-            medida = str(self.largo) + " x " + str(self.diametro)
-            get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-            if not get_diseno:
-                get_id = self.env['dtm.diseno.almacen'].search([], order='id desc',limit=1)
-
-                id = get_id.id + 1
-                for result2 in range (1,get_id.id):
-                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                        id = result2
-                        break
-                cantidad = 0
-                if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
-                    cantidad = self.disponible
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(cantidad)+", '"+nombre+"', '"+medida+"',"+str(self.largo)+", '"+ self.descripcion + "')")
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-                self.codigo = get_diseno[0].id
-            elif email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
-                vals = {
-                    "cantidad": self.cantidad - self.apartado,
-                    "caracteristicas":self.descripcion
+        get_almacen = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        vals = {
+                    "cantidad": self.cantidad,
+                    "apartado": self.apartado,
+                    "disponible": self.disponible,
+                    "area":self.largo
                 }
-                get_diseno.write(vals)
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-                self.codigo = get_diseno[0].id
-        elif len(get_info)>1:
-            raise ValidationError("Material Duplicado")
-        self.entradas = 0
+        if get_almacen:
+            get_almacen.write(vals)
+        else:
+            for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+1):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",find_id)]):
+                    self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
+                    break
+            nombre = f"Varilla {self.material_id.nombre}"
+            medida = f"{self.largo} x {self.diametro}"
+            vals["nombre"] = nombre
+            vals["medida"] = medida
+            get_almacen.create(vals)
+            get_almacen = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            self.codigo = get_almacen.id
+
+            for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+2):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",find_id)]):
+                    self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
+                    break
+
 
     def accion_proyecto(self):
         email = self.env.user.partner_id.email

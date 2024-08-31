@@ -16,57 +16,35 @@ class Otros(models.Model):
     disponible = fields.Integer(string="Disponible", readonly="True", compute="_compute_disponible" )
     localizacion = fields.Char(string="Localización")
 
+
     def accion_guardar(self):
-        if not self.descripcion:
-            self.descripcion = ""
-        get_info = self.env['dtm.materiales.otros'].search([("nombre_id","=",self.nombre_id.id)])
-        if len(get_info)==1:
-             # Agrega los materiales nuevo al modulo de diseño
-            nombre = self.nombre_id.nombre
-            medida = ""
-            get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("caracteristicas","=",self.descripcion)])
-            if not get_diseno:
-                get_id = self.env['dtm.diseno.almacen'].search_count([])
-                id = get_id + 1
-                for result2 in range (1,get_id):
-                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                        id = result2
-                        break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"', '"+ self.descripcion + "')")
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("caracteristicas","=",self.descripcion)])
-                self.codigo = get_diseno[0].id
-            else:
-                vals = {
-                    "cantidad": self.cantidad - self.apartado,
-                    "caracteristicas":self.descripcion
+        get_almacen = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        vals = {
+                    "cantidad": self.cantidad,
+                    "apartado": self.apartado,
+                    "disponible": self.disponible,
                 }
-                get_diseno.write(vals)
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("caracteristicas","=",self.descripcion)])
-                self.codigo = get_diseno[0].id
-             #Actualiza la lista de materiales de las OT
-            # get_ot = self.env['dtm.materials.line'].search([("medida","=",get_diseno.medida),("nombre","=",get_diseno.nombre)])
-            # # print(get_ot)
-            # self.apartado = 0
-            # self.disponible = self.cantidad
-            # for item in get_ot:
-            #     # print(item.materials_cuantity,item.materials_inventory,item.materials_required,self.disponible)
-            #     if self.disponible <= 0:
-            #         inventory = 0
-            #         required = item.materials_cuantity
-            #     elif self.disponible - item.materials_cuantity <= 0:
-            #         inventory = self.disponible
-            #         required = abs(self.disponible - item.materials_cuantity)
-            #     elif item.materials_cuantity <= self.disponible:
-            #         inventory = item.materials_cuantity
-            #         required = 0
-            #     self.apartado +=  item.materials_cuantity
-            #     item.write({
-            #         "materials_inventory":inventory,
-            #         "materials_required":required,
-            #     })
-            #     self.disponible = self.cantidad - self.apartado
-        elif len(get_info)>1:
-            raise ValidationError("Material Duplicado")
+        if get_almacen:
+            get_almacen.write(vals)
+        else:
+            for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+1):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",find_id)]):
+                    self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
+                    break
+
+            nombre = f"Otros {self.material_id.nombre}"
+            medida = ""
+            vals["nombre"] = nombre
+            vals["medida"] = medida
+            get_almacen.create(vals)
+            get_almacen = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            self.codigo = get_almacen.id
+
+            for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+2):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",find_id)]):
+                    self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
+                    break
+
 
 
     def accion_proyecto(self):

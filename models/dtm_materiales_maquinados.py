@@ -17,36 +17,31 @@ class Maquinados(models.Model):
     localizacion = fields.Char(string="Localización")
 
     def accion_guardar(self):
-        if not self.descripcion:
-            self.descripcion = ""
-        get_info = self.env['dtm.materiales.maquinados'].search([("nombre_id","=",self.nombre_id.id)])
-        if len(get_info)==1:
-             # Agrega los materiales nuevo al modulo de diseño
-            nombre = f"Maquinados {self.nombre_id.nombre}"
-            medida = ""
-            get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("caracteristicas","=",self.descripcion)])
-            if not get_diseno:
-                get_id = self.env['dtm.diseno.almacen'].search([], order='id desc',limit=1)
-
-                id = get_id.id + 1
-                for result2 in range (1,get_id.id):
-                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                        id = result2
-                        break
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida,caracteristicas) VALUES ("+str(id)+","+str(self.disponible)+", '"+nombre+"', '"+medida+"', '"+ self.descripcion + "')")
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("caracteristicas","=",self.descripcion)])
-                self.codigo = get_diseno[0].id
-            else:
-                vals = {
-                    "cantidad": self.cantidad - self.apartado,
-                    "caracteristicas":self.descripcion
+        get_almacen = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        vals = {
+                    "cantidad": self.cantidad,
+                    "apartado": self.apartado,
+                    "disponible": self.disponible,
                 }
-                get_diseno.write(vals)
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("caracteristicas","=",self.descripcion)])
-                self.codigo = get_diseno[0].id
+        if get_almacen:
+            get_almacen.write(vals)
+        else:
+            for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+1):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",find_id)]):
+                    self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
+                    break
+            nombre = f"Maquinados {self.material_id.nombre}"
+            medida = ""
+            vals["nombre"] = nombre
+            vals["medida"] = medida
+            get_almacen.create(vals)
+            get_almacen = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
+            self.codigo = get_almacen.id
 
-        elif len(get_info)>1:
-            raise ValidationError("Material Duplicado")
+            for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+2):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",find_id)]):
+                    self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
+                    break
 
 
     def accion_proyecto(self):
