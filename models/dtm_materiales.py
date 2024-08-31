@@ -42,42 +42,34 @@ class Materiales(models.Model):
                 self.cantidad -= 1
 
     def accion_guardar(self):
-        email = self.env.user.partner_id.email
-        if not self.descripcion:
-            self.descripcion = ""
-        get_info = self.env['dtm.materiales'].search([("material_id","=",self.material_id.id),("calibre","=",self.calibre),("largo","=",self.largo),("ancho","=",self.ancho)])
-        if len(get_info)==1:
-             # Agrega los materiales nuevo al modulo de diseño
-            nombre = "Lámina " + self.material_id.nombre
-            medida = str(self.largo) + " x " + str(self.ancho) + " @ " + str(self.calibre)
-            get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-            self.area = self.largo * self.ancho
-            if not get_diseno:
-                get_id = self.env['dtm.diseno.almacen'].search([], order='id desc',limit=1)
-
-                id = get_id.id + 1
-                for result2 in range (1,get_id.id):
-                    if not self.env['dtm.diseno.almacen'].search([("id","=",result2)]):
-                        id = result2
-                        break
-                cantidad = 0
-                if email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"]:
-                    cantidad = self.disponible
-                self.env.cr.execute("INSERT INTO dtm_diseno_almacen ( id,cantidad, nombre, medida, area,caracteristicas) VALUES ("+str(id)+","+str(cantidad)+", '"+nombre+"', '"+medida+"',"+str(self.area)+", '"+ self.descripcion + "')")
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-                self.codigo = get_diseno[0].id
-
-            elif   email in ["almacen@dtmindustry.com","rafaguzmang@hotmail.com"] :
-                vals = {
-                    "cantidad": self.cantidad - self.apartado,
-                    "caracteristicas":self.descripcion
+        get_almacen = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        vals = {
+                    "cantidad": self.cantidad,
+                    "apartado": self.apartado,
+                    "disponible": self.disponible,
+                    "area":self.largo * self.ancho
                 }
-                get_diseno.write(vals)
-                get_diseno = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
-                self.codigo = get_diseno[0].id
-        elif len(get_info)>1:
-            raise ValidationError("Material Duplicado")
-        self.entradas = 0
+        if get_almacen:
+            get_almacen.write(vals)
+        else:
+            for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+1):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",find_id)]):
+                    self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
+                    break
+
+
+            vals["nombre"] = f"Lámina {self.material_id.nombre}"
+            vals["medida"] = f"{self.largo} x {self.ancho} @ {self.calibre}"
+            get_almacen.create(vals)
+            get_almacen = self.env['dtm.diseno.almacen'].search([("nombre","=",f"Lámina {self.material_id.nombre}"),("medida","=",f"{self.largo} x {self.ancho} @ {self.calibre}")])
+            self.codigo = get_almacen.id
+
+            for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+2):
+                if not self.env['dtm.diseno.almacen'].search([("id","=",find_id)]):
+                    self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
+                    break
+
+
 
 
     def get_view(self, view_id=None, view_type='form', **options):
@@ -87,6 +79,11 @@ class Materiales(models.Model):
         get_info = self.env['dtm.materiales'].search([])
         for info in get_info:
             if info.cantidad < 0: info.write({"cantidad":0})
+
+        get_diseno = self.env['dtm.materiales'].search([])
+        for item in get_diseno:
+            if not self.env['dtm.diseno.almacen'].search([("id","=",item.codigo)]):
+                item.unlink()
 
         return res
 
