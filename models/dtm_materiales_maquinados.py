@@ -17,7 +17,7 @@ class Maquinados(models.Model):
     localizacion = fields.Char(string="Localización")
 
     def accion_guardar(self):
-        get_almacen_codigo = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_codigo = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
         get_almacen_desc = self.env['dtm.diseno.almacen'].search([("nombre","=",f"Maquinados {self.nombre_id.nombre}")])
         vals = {
                     "cantidad": self.cantidad,

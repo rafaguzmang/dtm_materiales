@@ -42,7 +42,7 @@ class Materiales(models.Model):
                 self.cantidad -= 1
 
     def accion_guardar(self):
-        get_almacen_codigo = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_codigo = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
         get_almacen_desc = self.env['dtm.diseno.almacen'].search([("nombre","=",f"Lámina {self.material_id.nombre}"),("medida","=",f"{self.largo} x {self.ancho} @ {self.calibre}")])
 
         vals = {

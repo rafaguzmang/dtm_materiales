@@ -10,16 +10,6 @@
                 <field name="descripcion" />
                 <field name="cantidad" />
                 <field name="fecha_recepcion" />
-<!--                <field name="material_correcto" />-->
-<!--                <field name="material_cantidad" />-->
-<!--                <field name="material_calidad" />-->
-<!--                <field name="material_entiempo" />-->
-<!--                <field name="material_aprobado" />-->
-<!--                <field name="motivo" />-->
-<!--                <field name="correctiva" />-->
-<!--                <button name="action_done" type="object" string="Listo" class="btn btn-primary" icon="fa-check"/>-->
-
-<!--                    <field name="disponible"  attrs="{'invisible': [('cantidad','=',0)]}"/>-->
             </tree>
         </field>
     </record>
@@ -49,7 +39,9 @@
                         <field name="motivo" attrs="{'invisible':  [('material_aprobado','=',True)]}" />
                         <field name="correctiva" attrs="{'invisible':  [('material_aprobado','=',True)]}"/>
                         <field name="cantidad_real" options='{"type": "number"}'/>
+                        <field name="notas" options='{"type": "number"}'/>
                     </group>
+
                     <button name="action_done" type="object" string="Listo" class="btn btn-primary" icon="fa-check" attrs="{'invisible':  [('cantidad_real','=',0)]}"/>
 
                 </sheet>
