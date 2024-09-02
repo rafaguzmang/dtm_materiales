@@ -27,13 +27,16 @@ class Tornillos(models.Model):
                 record.user_almacen = True
 
     def accion_guardar(self):
-        get_almacen = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_codigo = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_desc = self.env['dtm.diseno.almacen'].search([("nombre","=",f"Tornillería {self.material_id.nombre}"),("medida","=",f"{self.diametro} x {self.largo}")])
         vals = {
-                    "cantidad": self.cantidad,
-                    "apartado": self.apartado,
-                    "disponible": self.disponible,
+                "cantidad": self.cantidad,
+                "apartado": self.apartado,
+                "disponible": self.disponible,
                 }
-        if get_almacen:
+        if get_almacen_codigo or get_almacen_desc:
+            get_almacen = get_almacen_codigo if get_almacen_codigo else get_almacen_desc
+            self.codigo = get_almacen.id
             get_almacen.write(vals)
         else:
             for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+1):
@@ -44,7 +47,7 @@ class Tornillos(models.Model):
             medida = f"{self.diametro} x {self.largo}"
             vals["nombre"] = nombre
             vals["medida"] = medida
-            get_almacen.create(vals)
+            get_almacen_codigo.create(vals)
             get_almacen = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             self.codigo = get_almacen.id
 

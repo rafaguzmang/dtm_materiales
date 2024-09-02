@@ -5,6 +5,7 @@
         <field name="model">dtm.materiales.tornillos</field>
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
+                    <field name="codigo" />
                     <field name="material_id"/>
                     <field name="largo" invisible="0"/>
                     <field name="diametro" invisible="0"/>

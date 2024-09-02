@@ -5,6 +5,7 @@
         <field name="model">dtm.materiales.maquinados</field>
         <field name="arch" type="xml">
             <tree decoration-danger="cantidad==0">
+                    <field name="codigo" invisible="0"/>
                     <field name="nombre_id" />
                     <field name="descripcion" invisible="0"/>
                     <field name="cantidad" />

@@ -11,7 +11,7 @@ class Canal(models.Model):
     material_id = fields.Many2one("dtm.canal.nombre",string="MATERIAL",required=True)
     espesor = fields.Float(string="Espesor")
     ancho = fields.Float(string="Ancho")
-    alto = fields.Float(string="Alto", compute="_compute_alto_id", store=True)
+    alto = fields.Float(string="Alto")
     largo = fields.Float(string="Largo")
     descripcion = fields.Text(string="Descripción")
     entradas = fields.Integer(string="Entradas", default=0)
@@ -29,14 +29,17 @@ class Canal(models.Model):
                 record.user_almacen = True
 
     def accion_guardar(self):
-        get_almacen = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_codigo = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_desc = self.env['dtm.diseno.almacen'].search([("nombre","=",f"Canal {self.material_id.nombre}"),("medida","=",f"{self.alto} x {self.ancho} espesor {self.espesor}, {self.largo}")])
         vals = {
                     "cantidad": self.cantidad,
                     "apartado": self.apartado,
                     "disponible": self.disponible,
                     "area":self.largo
                 }
-        if get_almacen:
+        if get_almacen_codigo or get_almacen_desc:
+            get_almacen = get_almacen_codigo if get_almacen_codigo else get_almacen_desc
+            self.codigo = get_almacen.id
             get_almacen.write(vals)
         else:
             for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+1):
@@ -47,7 +50,7 @@ class Canal(models.Model):
             medida = f"{self.alto} x {self.ancho} espesor {self.espesor}, {self.largo}"
             vals["nombre"] = nombre
             vals["medida"] = medida
-            get_almacen.create(vals)
+            get_almacen_codigo.create(vals)
             get_almacen = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             self.codigo = get_almacen.id
 

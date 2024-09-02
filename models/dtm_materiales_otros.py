@@ -18,13 +18,16 @@ class Otros(models.Model):
 
 
     def accion_guardar(self):
-        get_almacen = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_codigo = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_desc = self.env['dtm.diseno.almacen'].search([("nombre","=",f"Otros {self.nombre_id.nombre}"),("medida","=","")])
         vals = {
                     "cantidad": self.cantidad,
                     "apartado": self.apartado,
                     "disponible": self.disponible,
                 }
-        if get_almacen:
+        if get_almacen_codigo or get_almacen_desc:
+            get_almacen = get_almacen_codigo if get_almacen_codigo else get_almacen_desc
+            self.codigo = get_almacen.id
             get_almacen.write(vals)
         else:
             for find_id in range(1,self.env['dtm.diseno.almacen'].search([], order='id desc', limit=1).id+1):
@@ -32,11 +35,11 @@ class Otros(models.Model):
                     self.env.cr.execute(f"SELECT setval('dtm_diseno_almacen_id_seq', {find_id}, false);")
                     break
 
-            nombre = f"Otros {self.material_id.nombre}"
+            nombre = f"Otros {self.nombre_id.nombre}"
             medida = ""
             vals["nombre"] = nombre
             vals["medida"] = medida
-            get_almacen.create(vals)
+            get_almacen_codigo.create(vals)
             get_almacen = self.env['dtm.diseno.almacen'].search([("nombre","=",nombre),("medida","=",medida)])
             self.codigo = get_almacen.id
 
