@@ -37,7 +37,7 @@ class Rodamientos(models.Model):
                 self.cantidad -= 1
 
     def accion_guardar(self):
-        get_almacen_codigo = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_codigo = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
         get_almacen_desc = self.env['dtm.diseno.almacen'].search([("nombre","=",f"Rodamientos {self.material_id.nombre}"),("medida","=",f"{self.descripcion}")])
         vals = {
                     "cantidad": self.cantidad,

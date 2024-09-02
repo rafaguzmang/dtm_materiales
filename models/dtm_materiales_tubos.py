@@ -29,7 +29,7 @@ class Tubos(models.Model):
                 record.user_almacen = True
 
     def accion_guardar(self):
-        get_almacen_codigo = self.env['dtm.diseno.almacen'].browse(self.codigo)
+        get_almacen_codigo = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
         get_almacen_desc = self.env['dtm.diseno.almacen'].search([("nombre","=",f"Tubo {self.material_id.nombre}"),("medida","=",f"{self.largo} x {self.diametro} @ {self.calibre}")])
         vals = {
                     "cantidad": self.cantidad,
