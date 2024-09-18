@@ -28,7 +28,7 @@ class Entradas(models.Model):
 
     def action_done(self):
         if self.material_correcto and self.material_calidad and self.material_aprobado:
-            get_compras = self.env['dtm.compras.realizado'].search([("nombre","=",self.descripcion),("proveedor","=",self.proveedor),("codigo","=",self.codigo),("cantidad","=",self.cantidad)])
+            get_compras = self.env['dtm.compras.realizado'].search([("fecha_recepcion","=",self.fecha_recepcion),("nombre","=",self.descripcion),("proveedor","=",self.proveedor),("codigo","=",self.codigo),("cantidad","=",self.cantidad)])
             if get_compras and get_compras.cantidad <= self.cantidad and get_compras.comprado != "comprado":
                 vals = {
                             "comprado": "Comprado",
