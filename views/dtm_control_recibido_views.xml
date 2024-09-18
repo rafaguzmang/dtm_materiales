@@ -51,6 +51,18 @@
         <field name="view_mode">tree,form</field>
     </record>
 
+    <record id = "dtm_control_recibido_search" model="ir.ui.view">
+            <field name="name">dtm_control_recibido_search</field>
+            <field name="model">dtm.control.recibido</field>
+            <field name ="arch" type="xml">
+               <search>
+                    <field name="proveedor"/>
+                    <field name="codigo"/>
+                    <field name="descripcion"/>
+               </search>
+            </field>
+        </record>
+
 <!--    <menuitem id="dtm_control_recibido" action="dtm_control_recibido_accion"/>-->
     
    

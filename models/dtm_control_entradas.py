@@ -28,7 +28,8 @@ class Entradas(models.Model):
 
     def action_done(self):
         if self.material_correcto and self.material_calidad and self.material_aprobado:
-            get_compras = self.env['dtm.compras.realizado'].search([("nombre","=",self.descripcion),("proveedor","=",self.proveedor),("codigo","=",self.codigo),("cantidad","=",self.cantidad)])
+            get_compras = self.env['dtm.compras.realizado'].search([("fecha_recepcion","=",self.fecha_recepcion),("nombre","=",self.descripcion),("proveedor","=",self.proveedor),("codigo","=",self.codigo),("cantidad","=",self.cantidad)])
+            # Pone el material en comprado del modulo de compras
             if get_compras and get_compras.cantidad <= self.cantidad and get_compras.comprado != "comprado":
                 vals = {
                             "comprado": "Comprado",
@@ -37,12 +38,14 @@ class Entradas(models.Model):
                         }
                 get_compras.write(vals)
                 get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
+                # print(get_almacen,get_almacen.cantidad,self.cantidad)
                 if get_almacen:
                     get_almacen.write({
                         "cantidad":get_almacen.cantidad + self.cantidad,
                         "disponible":0 if get_almacen.cantidad + self.cantidad - get_almacen.apartado < 0 else get_almacen.cantidad + self.cantidad - get_almacen.apartado,
                     })
                 get_odt = self.env['dtm.odt'].search([],order='id desc')#Se usa para buscar las ordenes que contengan este item y poder hacer los calculos correspondientes
+                # print(get_odt)
                 for odt in get_odt:
                     if int(self.codigo) in odt.materials_ids.materials_list.mapped('id'):
                         get_cod = odt.materials_ids.search([("materials_list","=",int(self.codigo))])
