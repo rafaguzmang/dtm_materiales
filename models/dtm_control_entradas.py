@@ -32,7 +32,7 @@ class Entradas(models.Model):
             # Pone el material en comprado del modulo de compras
             if get_compras and get_compras.cantidad <= self.cantidad and get_compras.comprado != "comprado":
                 vals = {
-                            "comprado": "Comprado",
+                            "comprado": "Recibido",
                             "cantidad_almacen":self.cantidad_real
 
                         }
