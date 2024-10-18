@@ -37,30 +37,36 @@ class Entradas(models.Model):
 
                         }
                 get_compras.write(vals)
+                # Se obtienen los datos del inventario y carga el nuevo stock
                 get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
                 # print(get_almacen,get_almacen.cantidad,self.cantidad)
                 if get_almacen:
                     get_almacen.write({
                         "cantidad":get_almacen.cantidad + self.cantidad,
+                        #Hace la operación necesaria para obtener el disponible
                         "disponible":0 if get_almacen.cantidad + self.cantidad - get_almacen.apartado < 0 else get_almacen.cantidad + self.cantidad - get_almacen.apartado,
                     })
                 get_odt = self.env['dtm.odt'].search([],order='id desc')#Se usa para buscar las ordenes que contengan este item y poder hacer los calculos correspondientes
-                # print(get_odt)
+                print(self.codigo,get_odt)
                 for odt in get_odt:
-                    if int(self.codigo) in odt.materials_ids.materials_list.mapped('id'):
+                    if int(self.codigo) in odt.materials_ids.materials_list.mapped('id') or int(self.codigo) in odt.maquinados_id.material_id.materials_list.mapped('id'):
                         get_cod = odt.materials_ids.search([("materials_list","=",int(self.codigo))])
-                        for item in get_cod:
-                            get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
-                            vals = {
-                                "materials_inventory":get_almacen.cantidad,
-                            }
-                            if get_almacen.disponible >= item.materials_required:
-                                vals["materials_required"] = 0
-                                vals["materials_availabe"] = item.materials_cuantity
-                                get_almacen.write({
-                                    "disponible":get_almacen.disponible - item.materials_required
+                        get_cod_servicios = odt.maquinados_id.material_id.search([("materials_list","=",int(self.codigo))])
+                        print("Servicios",get_cod_servicios)
+                        for orm in [get_cod, get_cod_servicios]:
+                            for item in orm:
+                                print("itme",item)
+                                get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
+                                vals = {
+                                    "materials_inventory":get_almacen.cantidad,
+                                }
+                                if get_almacen.disponible >= item.materials_required:
+                                    vals["materials_required"] = 0
+                                    vals["materials_availabe"] = item.materials_cuantity
+                                    get_almacen.write({
+                                        "disponible":get_almacen.disponible - item.materials_required
                                 })
-                            item.write(vals)
+                                item.write(vals)
 
                 self.env['dtm.control.recibido'].create({
                      "proveedor":self.proveedor,
