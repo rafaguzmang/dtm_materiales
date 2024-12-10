@@ -9,6 +9,7 @@ class Entradas(models.Model):
     _name = "dtm.control.entradas"
     _description = "Modulo para llevar el control de entradas del almacén"
 
+    orden_trabajo = fields.Char(string="OT")
     proveedor = fields.Char(string="Proveedor", readonly=True)
     codigo = fields.Char(string="Codigo", readonly=True)
     descripcion = fields.Char(string="Descripción", readonly=True)
@@ -28,9 +29,12 @@ class Entradas(models.Model):
 
     def action_done(self):
         if self.material_correcto and self.material_calidad and self.material_aprobado:
+            # print(self.fecha_recepcion,self.descripcion,self.proveedor,self.codigo,self.cantidad)
             get_compras = self.env['dtm.compras.realizado'].search([("fecha_recepcion","=",self.fecha_recepcion),("nombre","=",self.descripcion),("proveedor","=",self.proveedor),("codigo","=",self.codigo),("cantidad","=",self.cantidad)])
             # Pone el material en comprado del modulo de compras
-            if get_compras and get_compras.cantidad <= self.cantidad and get_compras.comprado != "comprado":
+            # print(get_compras)
+            if get_compras and get_compras.cantidad <= self.cantidad and get_compras.comprado != "Recibido":
+                # print("Pasa",get_compras)
                 vals = {
                             "comprado": "Recibido",
                             "cantidad_almacen":self.cantidad_real
@@ -47,15 +51,15 @@ class Entradas(models.Model):
                         "disponible":0 if get_almacen.cantidad + self.cantidad - get_almacen.apartado < 0 else get_almacen.cantidad + self.cantidad - get_almacen.apartado,
                     })
                 get_odt = self.env['dtm.odt'].search([],order='id desc')#Se usa para buscar las ordenes que contengan este item y poder hacer los calculos correspondientes
-                print(self.codigo,get_odt)
+                # print(self.codigo,get_odt)
                 for odt in get_odt:
                     if int(self.codigo) in odt.materials_ids.materials_list.mapped('id') or int(self.codigo) in odt.maquinados_id.material_id.materials_list.mapped('id'):
                         get_cod = odt.materials_ids.search([("materials_list","=",int(self.codigo))])
                         get_cod_servicios = odt.maquinados_id.material_id.search([("materials_list","=",int(self.codigo))])
-                        print("Servicios",get_cod_servicios)
+                        # print("Servicios",get_cod_servicios)
                         for orm in [get_cod, get_cod_servicios]:
                             for item in orm:
-                                print("itme",item)
+                                # print("itme",item)
                                 get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
                                 vals = {
                                     "materials_inventory":get_almacen.cantidad,
@@ -95,6 +99,7 @@ class Recibido(models.Model):
     _description = "Tabla para llevar registro de los materiales pedidos por el área de compras"
     _order = "id desc"
 
+    orden_trabajo = fields.Char(string="OT")
     proveedor = fields.Char(string="Proveedor", readonly=True)
     codigo = fields.Char(string="Codigo", readonly=True)
     descripcion = fields.Char(string="Descripción", readonly=True)
