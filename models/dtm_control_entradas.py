@@ -24,6 +24,7 @@ class Entradas(models.Model):
     motivo = fields.Text(string="Motivo")
     correctiva = fields.Char(string="Acción Correctiva")
     cantidad_real = fields.Integer(string="Recibido")
+    factura = fields.Char(string="Factura")
     notas = fields.Text()
 
 
@@ -105,6 +106,7 @@ class Recibido(models.Model):
     codigo = fields.Char(string="Codigo", readonly=True)
     descripcion = fields.Char(string="Descripción", readonly=True)
     cantidad = fields.Integer(string="Cantidad", readonly=True)
+    factura = fields.Char(string="Factura")
     fecha_recepcion = fields.Date(string="Fecha estimada de recepción", readonly=True)
     fecha_real = fields.Date(string="Fecha de recepción", readonly=True)
     material_correcto = fields.Boolean(string="Material correcto", readonly=True)
