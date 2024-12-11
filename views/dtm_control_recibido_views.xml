@@ -10,6 +10,7 @@
                 <field name="codigo" />
                 <field name="descripcion" />
                 <field name="cantidad" />
+                <field name="factura" />
                 <field name="fecha_recepcion" />
             </tree>
         </field>
@@ -27,6 +28,7 @@
                         <field name="codigo" />
                         <field name="descripcion" />
                         <field name="cantidad" />
+                        <field name="factura" />
                         <field name="fecha_recepcion" />
                     </group>
                     <group>
