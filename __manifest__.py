@@ -20,7 +20,6 @@
         'views/dtm_control_entradas_views.xml',
         'views/dtm_control_recibido_views.xml',
         'views/dtm_control_entregado_views.xml',
-        'views/dtm_almacen_odt_view.xml',
         'views/dtm_materiales_maquinados_view.xml',
         #menú
         'views/dtm_menu.xml',
