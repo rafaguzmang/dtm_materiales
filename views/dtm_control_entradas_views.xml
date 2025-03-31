@@ -46,7 +46,7 @@
                         <field name="notas" options='{"type": "number"}'/>
                     </group>
 
-                    <button name="action_done" type="object" string="Listo" class="btn btn-primary" icon="fa-check" attrs="{'invisible':  [('cantidad_real','=',0)]}"/>
+<!--                    <button name="action_done" type="object" string="Listo" class="btn btn-primary" icon="fa-check" attrs="{'invisible':  [('cantidad_real','=',0)]}"/>-->
 
                 </sheet>
             </form>
