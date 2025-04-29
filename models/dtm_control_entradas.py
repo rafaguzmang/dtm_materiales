@@ -28,73 +28,68 @@ class Entradas(models.Model):
     notas = fields.Text()
 
 
-    def action_done(self):
-        if self.material_correcto and self.material_calidad and self.material_aprobado:
-            # print(self.fecha_recepcion,self.descripcion,self.proveedor,self.codigo,self.cantidad)
-            get_compras = self.env['dtm.compras.realizado'].search([("fecha_recepcion","=",self.fecha_recepcion),("nombre","=",self.descripcion),("proveedor","=",self.proveedor),("codigo","=",self.codigo),("cantidad","=",self.cantidad)])
-
-            # Pone el material en comprado del modulo de compras
-            # print(get_compras)
-            if get_compras and get_compras.cantidad <= self.cantidad and get_compras.comprado != "Recibido":
-                # print("Pasa",get_compras)
-                vals = {
-                            "comprado": "Recibido",
-                            "cantidad_almacen":self.cantidad_real
-
-                        }
-                get_compras.write(vals)
-                # Se obtienen los datos del inventario y carga el nuevo stock
-                get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
-                # print(get_almacen,get_almacen.cantidad,self.cantidad)
-                if get_almacen:
-                    get_almacen.write({
-                        "cantidad":get_almacen.cantidad + self.cantidad,
-                        #Hace la operación necesaria para obtener el disponible
-                        "disponible":0 if get_almacen.cantidad + self.cantidad - get_almacen.apartado < 0 else get_almacen.cantidad + self.cantidad - get_almacen.apartado,
-                    })
-                get_odt = self.env['dtm.odt'].search([],order='id desc')#Se usa para buscar las ordenes que contengan este item y poder hacer los calculos correspondientes
-                # print(self.codigo,get_odt)
-                for odt in get_odt:
-                    if int(self.codigo) in odt.materials_ids.materials_list.mapped('id') or int(self.codigo) in odt.maquinados_id.material_id.materials_list.mapped('id'):
-                        get_cod = odt.materials_ids.search([("materials_list","=",int(self.codigo))])
-                        get_cod_servicios = odt.maquinados_id.material_id.search([("materials_list","=",int(self.codigo))])
-                        # print("Servicios",get_cod_servicios)
-                        for orm in [get_cod, get_cod_servicios]:
-                            for item in orm:
-                                # print("itme",item)
-                                get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
-                                vals = {
-                                    "materials_inventory":get_almacen.cantidad,
-                                }
-                                if get_almacen.disponible >= item.materials_required:
-                                    vals["materials_required"] = 0
-                                    vals["materials_availabe"] = item.materials_cuantity
-                                    get_almacen.write({
-                                        "disponible":get_almacen.disponible - item.materials_required
-                                })
-                                item.write(vals)
-
-                self.env['dtm.control.recibido'].create({
-                     "proveedor":self.proveedor,
-                     "codigo":self.codigo,
-                     "descripcion":self.descripcion,
-                     "cantidad":self.cantidad,
-                     "fecha_recepcion":self.fecha_recepcion,
-                     "fecha_real":self.fecha_real,
-                     "material_correcto":self.material_correcto,
-                     "material_cantidad":self.material_cantidad,
-                     "material_calidad":self.material_calidad,
-                     "material_entiempo":self.material_entiempo,
-                     "material_aprobado":self.material_aprobado,
-                     "motivo":self.motivo,
-                     "correctiva":self.correctiva,
-                     "cantidad_real":self.cantidad_real
-                })
-                self.env["dtm.control.entradas"].search([("id","=",self._origin.id)]).unlink()
-
-
-
-
+    # def action_done(self):
+    #     if self.material_correcto and self.material_calidad and self.material_aprobado:
+    #         # print(self.fecha_recepcion,self.descripcion,self.proveedor,self.codigo,self.cantidad)
+    #         get_compras = self.env['dtm.compras.realizado'].search([("fecha_recepcion","=",self.fecha_recepcion),("nombre","=",self.descripcion),("proveedor","=",self.proveedor),("codigo","=",self.codigo),("cantidad","=",self.cantidad)])
+    #         # Pone el material en comprado del modulo de compras
+    #         # print(get_compras)
+    #         if get_compras and get_compras.cantidad <= self.cantidad and get_compras.comprado != "Recibido":
+    #             # print("Pasa",get_compras)
+    #             vals = {
+    #                         "comprado": "Recibido",
+    #                         "cantidad_almacen":self.cantidad_real
+    #
+    #                     }
+    #             get_compras.write(vals)
+    #             # Se obtienen los datos del inventario y carga el nuevo stock
+    #             get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
+    #             # print(get_almacen,get_almacen.cantidad,self.cantidad)
+    #             if get_almacen:
+    #                 get_almacen.write({
+    #                     "cantidad":get_almacen.cantidad + self.cantidad,
+    #                     #Hace la operación necesaria para obtener el disponible
+    #                     "disponible":0 if get_almacen.cantidad + self.cantidad - get_almacen.apartado < 0 else get_almacen.cantidad + self.cantidad - get_almacen.apartado,
+    #                 })
+    #             get_odt = self.env['dtm.odt'].search([],order='id desc')#Se usa para buscar las ordenes que contengan este item y poder hacer los calculos correspondientes
+    #             # print(self.codigo,get_odt)
+    #             for odt in get_odt:
+    #                 if int(self.codigo) in odt.materials_ids.materials_list.mapped('id') or int(self.codigo) in odt.maquinados_id.material_id.materials_list.mapped('id'):
+    #                     get_cod = odt.materials_ids.search([("materials_list","=",int(self.codigo))])
+    #                     get_cod_servicios = odt.maquinados_id.material_id.search([("materials_list","=",int(self.codigo))])
+    #                     # print("Servicios",get_cod_servicios)
+    #                     for orm in [get_cod, get_cod_servicios]:
+    #                         for item in orm:
+    #                             # print("itme",item)
+    #                             get_almacen = self.env['dtm.diseno.almacen'].search([("id","=",self.codigo)])
+    #                             vals = {
+    #                                 "materials_inventory":get_almacen.cantidad,
+    #                             }
+    #                             if get_almacen.disponible >= item.materials_required:
+    #                                 vals["materials_required"] = 0
+    #                                 vals["materials_availabe"] = item.materials_cuantity
+    #                                 get_almacen.write({
+    #                                     "disponible":get_almacen.disponible - item.materials_required
+    #                             })
+    #                             item.write(vals)
+    #
+    #             self.env['dtm.control.recibido'].create({
+    #                  "proveedor":self.proveedor,
+    #                  "codigo":self.codigo,
+    #                  "descripcion":self.descripcion,
+    #                  "cantidad":self.cantidad,
+    #                  "fecha_recepcion":self.fecha_recepcion,
+    #                  "fecha_real":self.fecha_real,
+    #                  "material_correcto":self.material_correcto,
+    #                  "material_cantidad":self.material_cantidad,
+    #                  "material_calidad":self.material_calidad,
+    #                  "material_entiempo":self.material_entiempo,
+    #                  "material_aprobado":self.material_aprobado,
+    #                  "motivo":self.motivo,
+    #                  "correctiva":self.correctiva,
+    #                  "cantidad_real":self.cantidad_real
+    #             })
+    #             self.env["dtm.control.entradas"].search([("id","=",self._origin.id)]).unlink()
 
 class Recibido(models.Model):
     _name = "dtm.control.recibido"

@@ -1,29 +1,12 @@
 {
     "name":"Materiales",
     "description": "Conteo de materiales",
-    "depends":["dtm_odt",'base', 'mail'],
-    "data":[        
+    "data":[
         'security/ir.model.access.csv',
-        'views/dtm_materiales_views.xml',
-        'views/dtm_perfiles_views.xml',
-        'views/dtm_tubos_views.xml',
-        'views/dtm_angulos_views.xml',
-        'views/dtm_soleras_views.xml',
-        'views/dtm_varilla_views.xml',
-        'views/dtm_canal_views.xml',
-        'views/dtm_tornillos_views.xml',
-        'views/dtm_rodamientos_views.xml',
-        'views/dtm_pintura_views.xml',
-        'views/dtm_consumibles_views.xml',
-        'views/dtm_herramientas_views.xml',
-        'views/dtm_otros_views.xml',
         'views/dtm_control_entradas_views.xml',
         'views/dtm_control_recibido_views.xml',
         'views/dtm_control_entregado_views.xml',
-        'views/dtm_materiales_maquinados_view.xml',
         #menú
-        'views/dtm_menu.xml',
-        'views/dtm_menu_control.xml'
     ],
     'license': 'LGPL-3',
 }
