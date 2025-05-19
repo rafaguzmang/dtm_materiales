@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <tree >
                 <field name="orden_trabajo" />
+                <field name="revision_ot" />
                 <field name="proveedor" />
                 <field name="codigo" />
                 <field name="descripcion" />

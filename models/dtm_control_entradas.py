@@ -10,6 +10,7 @@ class Entradas(models.Model):
     _description = "Modulo para llevar el control de entradas del almacén"
 
     orden_trabajo = fields.Char(string="OT")
+    revision_ot = fields.Integer(string="VER",default=1,readonly=True) # Esto es versión
     proveedor = fields.Char(string="Proveedor", readonly=True)
     codigo = fields.Char(string="Codigo", readonly=True)
     descripcion = fields.Char(string="Descripción", readonly=True)
