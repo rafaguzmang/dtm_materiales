@@ -28,8 +28,14 @@ class Entradas(models.Model):
     factura = fields.Char(string="Factura")
     notas = fields.Text()
 
+    def get_view(self, view_id=None, view_type='form', **options):
+        res = super(Entradas, self).get_view(view_id, view_type, **options)
+
+        get_comprado = self.env['dtm.compras.realizado'].search([('comprado','!=',True)])
+        print(get_comprado)
 
 
+        return res
 
 class Recibido(models.Model):
     _name = "dtm.control.recibido"
