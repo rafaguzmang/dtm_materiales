@@ -51,14 +51,8 @@ class Recibido(models.Model):
     factura = fields.Char(string="Factura")
     fecha_recepcion = fields.Date(string="Fecha estimada de recepción", readonly=True)
     fecha_real = fields.Date(string="Fecha de recepción", readonly=True)
-    material_correcto = fields.Boolean(string="Material correcto", readonly=True)
-    material_cantidad = fields.Boolean(string="Cantidad correcta", readonly=True)
-    material_calidad = fields.Boolean(string="Calidad establecida", readonly=True)
-    material_entiempo = fields.Boolean(string="Material a tiempo", readonly=True)
-    material_aprobado = fields.Boolean(string="Aprovado", readonly=True)
-    motivo = fields.Text(string="Motivo", readonly=True)
-    correctiva = fields.Char(string="Acción Correctiva", readonly=True)
     cantidad_real = fields.Integer(string="Recibido", readonly=True)
+    notas = fields.Char(string='Notas')
 
 class Entregado(models.Model):
     _name = "dtm.control.entregado"

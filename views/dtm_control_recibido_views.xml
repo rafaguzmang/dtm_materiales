@@ -32,16 +32,9 @@
                         <field name="fecha_recepcion" />
                     </group>
                     <group>
-                        <field name="material_correcto"  widget="boolean_toggle"/>
-                        <field name="material_cantidad" widget="boolean_toggle"/>
-                        <field name="material_calidad" widget="boolean_toggle"/>
-                        <field name="material_entiempo" widget="boolean_toggle"/>
-                        <field name="material_aprobado" widget="boolean_toggle"/>
                         <field name="fecha_real" />
                     </group>
                     <group>
-                        <field name="motivo" attrs="{'invisible':  [('material_aprobado','=',True)]}" />
-                        <field name="correctiva" attrs="{'invisible':  [('material_aprobado','=',True)]}"/>
                         <field name="cantidad_real" options='{"type": "number"}'/>
                     </group>
                 </sheet>
