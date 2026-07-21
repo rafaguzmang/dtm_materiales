@@ -41,7 +41,7 @@ class Entradas(models.Model):
 class Recibido(models.Model):
     _name = "dtm.control.recibido"
     _description = "Tabla para llevar registro de los materiales pedidos por el área de compras"
-    _order = "id desc"
+    _order = "create_date desc"
 
     orden_trabajo = fields.Char(string="OT")
     proveedor = fields.Char(string="Proveedor", readonly=True)
@@ -49,6 +49,8 @@ class Recibido(models.Model):
     descripcion = fields.Char(string="Descripción", readonly=True)
     cantidad = fields.Integer(string="Cantidad", readonly=True)
     factura = fields.Char(string="Factura")
+    precio = fields.Float(string="Precio")
+    total = fields.Float(string="Total")
     fecha_recepcion = fields.Date(string="Fecha estimada de recepción", readonly=True)
     fecha_real = fields.Date(string="Fecha de recepción", readonly=True)
     cantidad_real = fields.Integer(string="Recibido", readonly=True)

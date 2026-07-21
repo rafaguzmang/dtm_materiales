@@ -10,8 +10,10 @@
                 <field name="codigo" />
                 <field name="descripcion" />
                 <field name="cantidad" />
+                <field name="precio" />
+                <field name="total" />
                 <field name="factura" />
-                <field name="fecha_recepcion" />
+                <field name="create_date" string="Fecha de entrega" />
             </tree>
         </field>
     </record>
@@ -60,7 +62,7 @@
             </field>
         </record>
 
-<!--    <menuitem id="dtm_control_recibido" action="dtm_control_recibido_accion"/>-->
+   <menuitem id="dtm_control_recibido" action="dtm_control_recibido_accion"/>
     
    
 </odoo>
